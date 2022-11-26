@@ -1,21 +1,30 @@
-version: '3'
-
+version: '2'
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-14}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
-
-volumes:
-###> doctrine/doctrine-bundle ###
-  db-data:
-###< doctrine/doctrine-bundle ###
+    onepolis:
+        build:
+            context: ./php_apache
+        volumes:
+            - .:/var/www/html
+            - ./logs/html/:/var/www/html/app/logs/
+        links:
+            - mysql
+        ports:
+            - "6080:8000"
+        container_name: onepolis
+    mysql:
+        image: mysql:5.7
+        restart: always
+        ports:
+            - "6306:3306"
+        environment:
+          MYSQL_ROOT_PASSWORD: example
+        volumes:
+            - ./mysql_data:/var/lib/mysql    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+          - 6081:80
+        environment:
+          PMA_HOST: mysql
+          MYSQL_ROOT_PASSWORD: example      
