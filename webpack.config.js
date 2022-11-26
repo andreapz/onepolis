@@ -57,7 +57,16 @@ Encore
     })
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
+    .enableVersioning()
+    .addEntry('js/common', './assets/js/shared.js')
+    .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/login', './assets/js/login.js')
+    .addEntry('js/admin', './assets/js/admin.js')
+    .addEntry('js/search', './assets/js/search.js')
+    .addEntry('js/custom', './assets/js/custom.js')
+    .addStyleEntry('css/app', ['./assets/scss/app.scss'])
+    .addStyleEntry('css/admin', ['./assets/scss/admin.scss'])
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
