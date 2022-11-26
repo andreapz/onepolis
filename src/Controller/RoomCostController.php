@@ -49,7 +49,7 @@ class RoomCostController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-           $entityManager = $this->getDoctrine()->getManager();
+           $entityManager = $this->doctrine->getManager();
             $entityManager->persist($roomcost);
             $entityManager->flush();
 
@@ -96,7 +96,7 @@ class RoomCostController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($roomCost);
             $entityManager->flush();
 

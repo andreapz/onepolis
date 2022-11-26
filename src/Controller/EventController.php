@@ -11,6 +11,7 @@ use App\Form\Type\EventType;
 use App\Form\Type\CitizenPaymentType;
 use App\Utils\UUID;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,13 +23,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EventController extends AbstractController
 {
+    public function __construct(private ManagerRegistry $doctrine) {}
+
+    
     /**
      * @Route("/", name="homepage")
      * @Route("/event", name="event")
      */
     public function index()
     {
-        //$events = $this->getDoctrine()->getRepository(Event::class)->findAll(); 
+        //$events = $this->doctrine->getRepository(Event::class)->findAll(); 
         //return $this->render('event/index.html.twig', ['events' => $events]);
         return $this->redirectToRoute('event_show', ['ueid' => '1546058f-5a25-4334-85ae-e68f2a44bbaf']);
     }
@@ -39,14 +43,14 @@ class EventController extends AbstractController
      * @Route("/event/{ueid}", requirements={"id": "\d+"}, name="event_show", methods={"GET"})
      */
     public function showAction($ueid) {
-        $event = $this->getEvent($this, $this->getDoctrine(), $ueid);
+        $event = $this->getEvent($this, $this->doctrine, $ueid);
         
         $interval = $event->getInitialDate()->diff($event->getEndDate());
         $user = $this->getUser();
         $tasks = array();
         
         if(!is_null($user)) {
-            $tasks = $this->getDoctrine()
+            $tasks = $this->doctrine
                     ->getRepository(Task::class)
                     ->findAllByEventAndUser($event->getId(), $user->getId());
         }
@@ -97,7 +101,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($event);
             $event->setUeid(UUID::v4());
             $address->setEvent($event);
@@ -119,9 +123,9 @@ class EventController extends AbstractController
      * @Route("/admin/event/{ueid}/edit", requirements={"id": "\d+"}, name="admin_event_edit", methods={"POST", "GET"})
      */
     public function editAction(Request $request, $ueid) {
-        $event = $this->getEvent($this, $this->getDoctrine(), $ueid);
+        $event = $this->getEvent($this, $this->doctrine, $ueid);
         
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $originalTickets = new ArrayCollection();
 
         foreach ($event->getTickets() as $ticket) {
@@ -167,7 +171,7 @@ class EventController extends AbstractController
         $event = new Event();
         $event->setTitle('Mariapoli2018');
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($event);
         $em->flush();
 
@@ -179,7 +183,7 @@ class EventController extends AbstractController
      * @Route("/admin/events", name="admin_events", methods={"GET"})
      */
     public function eventsAction() {
-        $events = $this->getDoctrine()
+        $events = $this->doctrine
                 ->getRepository('App:Event')
                 ->findAll();
 
@@ -197,7 +201,7 @@ class EventController extends AbstractController
             throw $this->createNotFoundException('The EVENT does not exist');
         }
         
-        $event = $this->getDoctrine()
+        $event = $this->doctrine
                     ->getRepository(Event::class)
                     ->findOneByUeid($ueid);
         
@@ -205,7 +209,7 @@ class EventController extends AbstractController
             throw $this->createNotFoundException('The EVENT does not exist');
         }
         
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         //$event = $em->getRepository('AppBundle:Event')->find($eventId);
 
         if (!$event) {
@@ -230,7 +234,7 @@ class EventController extends AbstractController
             throw $this->createNotFoundException('The EVENT does not exist');
         }
         
-        $event = $this->getDoctrine()
+        $event = $this->doctrine
                     ->getRepository(Event::class)
                     ->findOneByUeid($ueid);
         
@@ -238,7 +242,7 @@ class EventController extends AbstractController
             throw $this->createNotFoundException('The EVENT does not exist');
         }
         
-        $prices = $this->getDoctrine()
+        $prices = $this->doctrine
                 ->getRepository(TicketCost::class)
                 ->findPrices($event->getId());
         

@@ -33,7 +33,7 @@ class AddressController extends AbstractController {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
             
             //$task->addCitizen($citizen);
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($address);
             $entityManager->flush();
             
@@ -69,7 +69,7 @@ class AddressController extends AbstractController {
         //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
 //@Security("is_granted('ROLE_ADMIN')")
         
-        $repository = $this->getDoctrine()->getRepository(Address::class);
+        $repository = $this->doctrine->getRepository(Address::class);
         $addressCitizen = $repository->find($addressId);
         
         $address = new Address();
@@ -82,7 +82,7 @@ class AddressController extends AbstractController {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
             
             //$task->addCitizen($citizen);
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($address);
             $entityManager->flush();
             
@@ -118,7 +118,7 @@ class AddressController extends AbstractController {
         //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
 //@Security("is_granted('ROLE_ADMIN')")
         
-        $repository = $this->getDoctrine()->getRepository(Address::class);
+        $repository = $this->doctrine->getRepository(Address::class);
         $address = $repository->find($citizen->getAddress());
         
         $form = $this->createForm(AddressType::class, $address);
@@ -128,7 +128,7 @@ class AddressController extends AbstractController {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
             
             //$task->addCitizen($citizen);
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($address);
             $entityManager->flush();
             

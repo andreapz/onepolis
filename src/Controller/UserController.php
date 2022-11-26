@@ -28,7 +28,7 @@ class UserController extends AbstractController
         // using an annotation: @Security("is_granted('show', post)")
         //$this->denyAccessUnlessGranted('show', $post, 'Posts can only be shown to their authors.');
         
-        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $users = $this->doctrine->getRepository(User::class)->findAll();
         //var_dump($users); die();
         return $this->render('admin/user/index.html.twig', ['users' => $users]);
     }

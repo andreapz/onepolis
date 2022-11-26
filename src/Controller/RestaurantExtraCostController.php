@@ -21,7 +21,7 @@ class RestaurantExtraCostController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $rooms = $this->getDoctrine()->getRepository(RestaurantExtraCost::class)->findAll();
+        $rooms = $this->doctrine->getRepository(RestaurantExtraCost::class)->findAll();
         // Every template name also has two extensions that specify the format and
         // engine for that template.
         // See https://symfony.com/doc/current/templating.html#template-suffix
@@ -89,7 +89,7 @@ class RestaurantExtraCostController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($extra);
             $entityManager->flush();
 
@@ -115,7 +115,7 @@ class RestaurantExtraCostController extends AbstractController {
        $result = array();
        $result['status'] = 'ERROR'; 
        $extra->setRestaurant(null);
-       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager = $this->doctrine->getManager();
        $entityManager->persist($extra);
        $entityManager->flush();
        $result['status'] = 'OK';

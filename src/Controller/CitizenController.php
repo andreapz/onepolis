@@ -221,7 +221,7 @@ class CitizenController extends AbstractController {
      */
     public function handleSearchRequest(Request $request, $_query)
     { 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         if ($_query) {
             if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
                 $data = $em->getRepository(Citizen::class)->findByName($_query);
@@ -255,7 +255,7 @@ class CitizenController extends AbstractController {
     */
     public function citySingle(Request $request, $id)
     { 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $city = null; 
  
         if ($id) {
@@ -290,7 +290,7 @@ class CitizenController extends AbstractController {
                 
             } else {
             
-                $repositoryTask = $this->getDoctrine()->getRepository(Task::class);
+                $repositoryTask = $this->doctrine->getRepository(Task::class);
                 $task = $repositoryTask->findOneByCode($payment->getCode());
                 
                 if ($task) {
@@ -303,11 +303,11 @@ class CitizenController extends AbstractController {
                     $payment->setUpdateDate(new \DateTime());
                     $payment->setDeleted(false);
 
-                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager = $this->doctrine->getManager();
                     $entityManager->persist($payment);
                     $entityManager->flush();
 
-                    $payments = $this->getDoctrine()->getRepository(CitizenPayment::class)->findAllByTask($payment->getTid());
+                    $payments = $this->doctrine->getRepository(CitizenPayment::class)->findAllByTask($payment->getTid());
                     $total = 0.0;
                     foreach ($payments as $p) {
                         $total += $p->getValue();
@@ -347,14 +347,14 @@ class CitizenController extends AbstractController {
         $payment->setDeleteDate(new \DateTime());
         $payment->setDeleted(true);
         
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $entityManager->persist($payment);
         $entityManager->flush();
         
-        $repositoryTask = $this->getDoctrine()->getRepository(Task::class);
+        $repositoryTask = $this->doctrine->getRepository(Task::class);
         $task = $repositoryTask->findOneId($payment->getTid());
 
-        $payments = $this->getDoctrine()->getRepository(CitizenPayment::class)->findAllByTask($payment->getTid());
+        $payments = $this->doctrine->getRepository(CitizenPayment::class)->findAllByTask($payment->getTid());
         $total = 0.0;
         foreach ($payments as $p) {
             $total += $p->getValue();
@@ -383,7 +383,7 @@ class CitizenController extends AbstractController {
         
         $checkin = CheckIn::create($citizen, $type, $this->getUser()->getId());
         $citizen->addCheckin($checkin);
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $entityManager->persist($citizen);
         $entityManager->flush();
         $result = array();
@@ -407,7 +407,7 @@ class CitizenController extends AbstractController {
         
         if ($d == 0 || $d == 1) {
             $citizen->setDeleted($d);
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($citizen);
             $entityManager->flush();
             $result['status'] = 'OK';
@@ -431,7 +431,7 @@ class CitizenController extends AbstractController {
      */
     public function deleteTicketDuplicatedAction($id, Request $request) {
         
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $data = $em->getRepository(Citizen::class)->findTicketDuplicated($id);
 
@@ -481,7 +481,7 @@ class CitizenController extends AbstractController {
      */
     public function searchCheckinsMapRequest($event)
     {
-        $data = $this->getDoctrine()->getRepository(CheckIn::class)->findCheckins($event);
+        $data = $this->doctrine->getRepository(CheckIn::class)->findCheckins($event);
         
         $result[] = array();
         

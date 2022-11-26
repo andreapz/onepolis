@@ -43,8 +43,8 @@ class TaskController extends AbstractController {
      * @Route("/task/index/{ref}", defaults={"_format"="html"}, requirements={"ref": "\d+"}, name="task_index", methods={"GET"})
      */
     public function indexAction($ref, $_format) {
-        $event = $this->getDoctrine()->getRepository(Event::class)->find($ref);
-        $tasks = $this->getDoctrine()->getRepository(Task::class)->findAll($ref);
+        $event = $this->doctrine->getRepository(Event::class)->find($ref);
+        $tasks = $this->doctrine->getRepository(Task::class)->findAll($ref);
         //findLatest($page);
         // Every template name also has two extensions that specify the format and
         // engine for that template.
@@ -59,7 +59,7 @@ class TaskController extends AbstractController {
      *
      */
     public function newAction($ueid, Request $request) {
-        $event = EventController::getEvent($this, $this->getDoctrine(), $ueid);
+        $event = EventController::getEvent($this, $this->doctrine, $ueid);
         $citizen = new Citizen();
         $citizen->setDelegate(0);
         $citizen->setDeleted(0);
@@ -92,10 +92,10 @@ class TaskController extends AbstractController {
         $restaurantes = array();
         $rooms = array();
                 
-        $branches = $this->getDoctrine()->getRepository(Branch::class)->findAll();
-        $relations = $this->getDoctrine()->getRepository(Relationship::class)->findAll();
-        $repository = $this->getDoctrine()->getRepository(Citizen::class);
-        $roomRepository = $this->getDoctrine()->getRepository(RoomReal::class);
+        $branches = $this->doctrine->getRepository(Branch::class)->findAll();
+        $relations = $this->doctrine->getRepository(Relationship::class)->findAll();
+        $repository = $this->doctrine->getRepository(Citizen::class);
+        $roomRepository = $this->doctrine->getRepository(RoomReal::class);
         
         foreach ($branches as $branche) {
             $branchmap[$branche->getId()] = $branche->getName();
@@ -147,7 +147,7 @@ class TaskController extends AbstractController {
             */
         }
 
-        $payments = $this->getDoctrine()->getRepository(CitizenPayment::class)->findAllByTask($task->getId());
+        $payments = $this->doctrine->getRepository(CitizenPayment::class)->findAllByTask($task->getId());
         $total = 0.0;
         foreach ($payments as $payment) {
             $total += $payment->getValue();
@@ -197,12 +197,12 @@ class TaskController extends AbstractController {
     public function editAction(Task $task, Request $request) {
         //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
 //@Security("is_granted('ROLE_ADMIN')")
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
 
         $tickets = array();
 
         foreach ($task->getCitizens() as $tcitizen) {
-            $citizenTickets = $this->getDoctrine()->getRepository(RestaurantCostCitizen::class)->findByCitizenAndEvent($tcitizen->getId(), $task->getEvent());
+            $citizenTickets = $this->doctrine->getRepository(RestaurantCostCitizen::class)->findByCitizenAndEvent($tcitizen->getId(), $task->getEvent());
             //$tickets[$citizen->getId()] = $citizenTickets;
             foreach ($citizenTickets as $citizenTicket) {
                /* if (empty($tickets[$tcitizen->getId()])) {
@@ -256,7 +256,7 @@ class TaskController extends AbstractController {
 
             $task->setUid($user->getId());
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
 
@@ -326,7 +326,7 @@ class TaskController extends AbstractController {
 
         $task->setAmount($amount);
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $entityManager->persist($task);
         $entityManager->flush();
 
@@ -344,7 +344,7 @@ class TaskController extends AbstractController {
 
         $task->setOrdered(0);
         
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $entityManager->persist($task);
         $entityManager->flush();
 
@@ -357,7 +357,7 @@ class TaskController extends AbstractController {
      */
     public function searchRequest(Request $request, $event, $hotel)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         if ($hotel) {
             $data = $em->getRepository(Citizen::class)->findByHotel($event, $hotel);
@@ -419,7 +419,7 @@ class TaskController extends AbstractController {
      */
     public function searchAllocationRequest($event, $hotel, $rendering)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $data = $em->getRepository(Citizen::class)->findByMatch($hotel);
 
@@ -497,7 +497,7 @@ class TaskController extends AbstractController {
      */
     public function searchRestaurantRequest(Request $request, $event, $restaurant, $meal)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         if ($meal == 0) {
             $data = $em->getRepository(Citizen::class)->findByRestaurant($restaurant);
@@ -553,7 +553,7 @@ class TaskController extends AbstractController {
      */
     public function searchRestaurantAllocationRequest($event, $restaurant)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $data = $em->getRepository(Citizen::class)->findByRestaurantMatch($restaurant);
 
@@ -598,13 +598,13 @@ class TaskController extends AbstractController {
     public function showByUserAction($id, Request $request) {
         $userid = $this->getUser()->getId();
         $users = [$this->getUser()];
-        $rooms = $this->getDoctrine()->getRepository(Room::class)->findAll();
+        $rooms = $this->doctrine->getRepository(Room::class)->findAll();
         
         $postData = $request->request->get('match');
         $roomid = $postData['room'];
             
         if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+            $users = $this->doctrine->getRepository(User::class)->findAll();
             $userid = $postData['user'];
         }
         
@@ -663,13 +663,13 @@ class TaskController extends AbstractController {
     public function tasksAction(Event $event, $r) {
        
         
-        $citizens = $this->getDoctrine()->getRepository(Citizen::class)
+        $citizens = $this->doctrine->getRepository(Citizen::class)
                 ->findByAdmin($event->getId(), '', $r);
         
-        $payments = $this->getDoctrine()->getRepository(Task::class)
+        $payments = $this->doctrine->getRepository(Task::class)
                 ->findByAdmin($event->getId(), '', $r);
 
-        $checkins = $this->getDoctrine()->getRepository(CheckIn::class)
+        $checkins = $this->doctrine->getRepository(CheckIn::class)
                 ->findCheckins($event->getId());
 
         return $this->searchByUser($citizens, $payments, $checkins);
@@ -689,13 +689,13 @@ class TaskController extends AbstractController {
             $userid = $this->getUser()->getId();
         }
         
-        $citizens = $this->getDoctrine()->getRepository(Citizen::class)
+        $citizens = $this->doctrine->getRepository(Citizen::class)
                 ->findByUser($event->getId(), $userid, $r);
         
-        $payments = $this->getDoctrine()->getRepository(Task::class)
+        $payments = $this->doctrine->getRepository(Task::class)
                 ->findByUser($event->getId(), $userid, $r);
         
-        $checkins = $this->getDoctrine()->getRepository(CheckIn::class)
+        $checkins = $this->doctrine->getRepository(CheckIn::class)
                 ->findCheckins($event->getId());
        
         return $this->searchByUser($citizens, $payments, $checkins);

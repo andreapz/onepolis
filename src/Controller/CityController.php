@@ -27,7 +27,7 @@ class CityController extends AbstractController {
      * @Route("/city/handleSearch/{_query?}", name="city_handle_search", methods={"POST", "GET"})
      */
     public function handleSearchRequest(Request $request, $_query) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         if ($_query) {
             $data = $em->getRepository(City::class)->findByName($_query);
         } else {
@@ -46,7 +46,7 @@ class CityController extends AbstractController {
      * @Route("/city/{id?}", name="city_page", methods={"GET"})
      */
     public function citySingle(Request $request, $id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $city = null;
 
         if ($id) {
@@ -66,11 +66,11 @@ class CityController extends AbstractController {
 
       public function updateCapAction(Request $request) {
 
-      $repository = $this->getDoctrine()->getRepository(City::class);
-      $repositoryCap = $this->getDoctrine()->getRepository(Cap::class);
+      $repository = $this->doctrine->getRepository(City::class);
+      $repositoryCap = $this->doctrine->getRepository(Cap::class);
       $cities = $repository->findAll();
 
-      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager = $this->doctrine->getManager();
 
       foreach ($cities as $city) {
       if ($city->getCap() == NULL) {
@@ -524,10 +524,10 @@ INSERT INTO `restaurant_real` (`id`, `address_id`, `restaurant`, `name`, `surnam
      * @Route("/admin/createRoomRealPrice", name="create_room_real_price", methods={"GET"})
      */
     public function createRoomRealPriceAction(Request $request) {
-        $em = $this->getDoctrine()->getManager();
-        $rooms = $this->getDoctrine()->getRepository(RoomReal::class)->findAll();
+        $em = $this->doctrine->getManager();
+        $rooms = $this->doctrine->getRepository(RoomReal::class)->findAll();
         $result = array();
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
 
         $ELM = 80;
         $ELD = 80;
@@ -597,10 +597,10 @@ INSERT INTO `restaurant_real` (`id`, `address_id`, `restaurant`, `name`, `surnam
 
       public function updateRoomRealPriceAction(Request $request)
       {
-      $em = $this->getDoctrine()->getManager();
-      $rooms = $this->getDoctrine()->getRepository(RoomRealPrice::class)->findGuests(4);
+      $em = $this->doctrine->getManager();
+      $rooms = $this->doctrine->getRepository(RoomRealPrice::class)->findGuests(4);
       $result = array();
-      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager = $this->doctrine->getManager();
 
       foreach ($rooms as $room) {
 

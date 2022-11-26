@@ -21,7 +21,7 @@ class RoomRealController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $rooms = $this->getDoctrine()->getRepository(RoomReal::class)->findAll();
+        $rooms = $this->doctrine->getRepository(RoomReal::class)->findAll();
         return $this->render('roomreal/index.html.twig', ['rooms' => $rooms]);
     }
     
@@ -91,7 +91,7 @@ class RoomRealController extends AbstractController {
                 
                 $room->setRoom($entity);
                 
-                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager = $this->doctrine->getManager();
                 $entityManager->persist($room);
                 $entityManager->flush();
                 $result['status'] = 'OK';
@@ -118,7 +118,7 @@ class RoomRealController extends AbstractController {
        $result = array();
        $result['status'] = 'ERROR'; 
        $room->setHotel(null);
-       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager = $this->doctrine->getManager();
        $entityManager->persist($room);
        $entityManager->flush();
        $result['status'] = 'OK';

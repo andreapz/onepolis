@@ -117,7 +117,7 @@
 
             <ul>
                 {% for ticket in event.tickets %}
-                    <li>{{ ticket.name }} [{{ ticket.days }} {% transchoice ticket.days %}days_plural{% endtranschoice %}] </li>
+                    <li>{{ ticket.name }} [{{ ticket.days }} {% if ticket.days > 1 %}days_plural{% endif %}] </li>
                 {% endfor %}
             </ul>
         </div>

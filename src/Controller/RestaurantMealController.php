@@ -43,7 +43,7 @@ class RestaurantMealController extends AbstractController {
                 $ticket->setMeal($restaurantMeal);
             }
             
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             
             foreach ($originalTickets as $ticket) {
                 if (false === $restaurantMeal->getTickets()->contains($ticket)) {
@@ -117,7 +117,7 @@ class RestaurantMealController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($restaurantMeal);
             $entityManager->flush();
 

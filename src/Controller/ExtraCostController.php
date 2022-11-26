@@ -21,7 +21,7 @@ class ExtraCostController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $rooms = $this->getDoctrine()->getRepository(ExtraCost::class)->findAll();
+        $rooms = $this->doctrine->getRepository(ExtraCost::class)->findAll();
         // Every template name also has two extensions that specify the format and
         // engine for that template.
         // See https://symfony.com/doc/current/templating.html#template-suffix
@@ -92,7 +92,7 @@ class ExtraCostController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($extra);
             $entityManager->flush();
 
@@ -131,7 +131,7 @@ class ExtraCostController extends AbstractController {
        $result = array();
        $result['status'] = 'ERROR'; 
        $room->setHotel(null);
-       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager = $this->doctrine->getManager();
        $entityManager->persist($room);
        $entityManager->flush();
        $result['status'] = 'OK';

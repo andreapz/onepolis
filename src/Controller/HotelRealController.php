@@ -31,7 +31,7 @@ class HotelRealController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $hotels = $this->getDoctrine()->getRepository(HotelReal::class)->findByEvent($id);
+        $hotels = $this->doctrine->getRepository(HotelReal::class)->findByEvent($id);
         return $this->render('admin/hotelreal/index.html.twig', ['hotels' => $hotels, 'id' => $id]);
     }
 
@@ -111,7 +111,7 @@ class HotelRealController extends AbstractController {
 
     public function form(HotelReal $hotel, Request $request) {
         $hotelVirtual = $hotel->getHotel();
-        $hotelVirtuals = $this->getDoctrine()->getRepository(Hotel::class)->findAll();
+        $hotelVirtuals = $this->doctrine->getRepository(Hotel::class)->findAll();
 
         $form = $this->createForm(HotelRealType::class, $hotel, array('hotels' => $hotelVirtuals));
         $form->handleRequest($request);
@@ -126,7 +126,7 @@ class HotelRealController extends AbstractController {
 
             // Hotel END
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($hotel);
             $entityManager->flush();
 
@@ -150,7 +150,7 @@ class HotelRealController extends AbstractController {
      * @Route("/admin/hotelreal/search/{hotel}", requirements={"hotel": "\d+"}, name="hotelreal_handle_search", methods={"POST", "GET"})
      */
     public function searchRequest(Request $request, $hotel) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $roomsfree = $em->getRepository(RoomReal::class)->findFreeByHotel($hotel);
         $result = array();
 
@@ -185,7 +185,7 @@ class HotelRealController extends AbstractController {
      * @Route("/admin/hotelreal/match/{id}", requirements={"id": "\d+"}, name="admin_hotel_match", methods={"POST", "GET"})
      */
     public function matchAction($id, Request $request) {
-        $hotels = $this->getDoctrine()->getRepository(Hotel::class)->findByEvent($id);
+        $hotels = $this->doctrine->getRepository(Hotel::class)->findByEvent($id);
 
         $postData = $request->request->get('match');
         $name_value = $postData['hotel'];
@@ -218,7 +218,7 @@ class HotelRealController extends AbstractController {
      */
     public function matchAutoAction(Request $request, $event, $hotel)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         if ($hotel) {
             $data = $em->getRepository(Citizen::class)->findByHotel($event, $hotel);
@@ -295,7 +295,7 @@ class HotelRealController extends AbstractController {
             return $this->jsonReturn($result);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $h = $entityManager->getRepository(HotelMatch::class)->find($i);
         $h->setNote($n);
         $entityManager->persist($h);
@@ -320,7 +320,7 @@ class HotelRealController extends AbstractController {
             return $this->jsonReturn($result);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         foreach ($c as $citizen) {
             foreach ($r as $room) {
                 $h = new HotelMatch();
@@ -354,7 +354,7 @@ class HotelRealController extends AbstractController {
             $result['status'] = 'ERROR';
             return $this->jsonReturn($result);
         }
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
 
         foreach ($c as $citizen) {
@@ -380,7 +380,7 @@ class HotelRealController extends AbstractController {
      * @Route("/admin/hotelreal/matched/{id}", requirements={"id": "\d+"}, name="admin_hotel_matched", methods={"POST", "GET"})
      */
     public function matchedAction($id, Request $request) {
-        $hotels = $this->getDoctrine()->getRepository(Hotel::class)->findByEvent($id);
+        $hotels = $this->doctrine->getRepository(Hotel::class)->findByEvent($id);
 
         $postData = $request->request->get('match');
         $name_value = $postData['hotel'];
@@ -425,8 +425,8 @@ class HotelRealController extends AbstractController {
      */
     public function searchAllocationMapRequest($event)
     {
-        $data = $this->getDoctrine()->getRepository(HotelReal::class)->findAllocationMap($event);
-        $prices = $this->getDoctrine()->getRepository(HotelReal::class)->findPrices($event);
+        $data = $this->doctrine->getRepository(HotelReal::class)->findAllocationMap($event);
+        $prices = $this->doctrine->getRepository(HotelReal::class)->findPrices($event);
         
         $result[] = array();
         $rate = array();

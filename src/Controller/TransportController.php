@@ -37,7 +37,7 @@ class TransportController extends AbstractController
     */
     public function searchAllocationMapRequest($event)
     {
-        $data = $this->getDoctrine()->getRepository(Transport::class)->findAllocationMap($event);
+        $data = $this->doctrine->getRepository(Transport::class)->findAllocationMap($event);
         
         $result[] = array();
         

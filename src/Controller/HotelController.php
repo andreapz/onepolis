@@ -21,7 +21,7 @@ class HotelController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction() {
-        $hotels = $this->getDoctrine()->getRepository(Hotel::class)->findAll();
+        $hotels = $this->doctrine->getRepository(Hotel::class)->findAll();
         // Every template name also has two extensions that specify the format and
         // engine for that template.
         // See https://symfony.com/doc/current/templating.html#template-suffix
@@ -73,7 +73,7 @@ class HotelController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($hotel);
             $entityManager->flush();
 
@@ -125,7 +125,7 @@ class HotelController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
             
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($hotel);
             $entityManager->flush();
 
@@ -157,7 +157,7 @@ class HotelController extends AbstractController {
     public function editAction(Hotel $hotel, Request $request) {
         //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
         //@Security("is_granted('ROLE_ADMIN')")
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $originalRooms = new ArrayCollection();
 
         // Create an ArrayCollection of the current Tag objects in the database
@@ -203,7 +203,7 @@ class HotelController extends AbstractController {
         $event = new Event();
         $event->setTitle('Mariapoli2018');
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         // tells Doctrine you want to (eventually) save the Product (no queries yet)
         $em->persist($event);
@@ -219,7 +219,7 @@ class HotelController extends AbstractController {
      * @Route("/admin/hotels", name="admin_hotels", methods={"POST", "GET"})
      */
     public function hotelsAction() {
-        $hotels = $this->getDoctrine()
+        $hotels = $this->doctrine
                 ->getRepository('App:Hotel')
                 ->findAll();
 
@@ -232,7 +232,7 @@ class HotelController extends AbstractController {
      * @Route("/admin/hotel/update/{hotelId}")
      */
     public function updateAction($hotelId) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $event = $em->getRepository('App:Event')->find($eventId);
 
         if (!$event) {

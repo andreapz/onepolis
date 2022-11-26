@@ -21,7 +21,7 @@ class RestaurantController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction() {
-        $restaurants = $this->getDoctrine()->getRepository(Restaurant::class)->findAll();
+        $restaurants = $this->doctrine->getRepository(Restaurant::class)->findAll();
         // Every template name also has two extensions that specify the format and
         // engine for that template.
         // See https://symfony.com/doc/current/templating.html#template-suffix
@@ -74,7 +74,7 @@ class RestaurantController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
@@ -126,7 +126,7 @@ class RestaurantController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
             
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
@@ -158,7 +158,7 @@ class RestaurantController extends AbstractController {
     public function editAction(Restaurant $restaurant, Request $request) {
         //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
         //@Security("is_granted('ROLE_ADMIN')")
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $originalMeals = new ArrayCollection();
 
         // Create an ArrayCollection of the current Tag objects in the database
@@ -204,7 +204,7 @@ class RestaurantController extends AbstractController {
         $event = new Event();
         $event->setTitle('Mariapoli2018');
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         // tells Doctrine you want to (eventually) save the Product (no queries yet)
         $em->persist($event);
@@ -220,7 +220,7 @@ class RestaurantController extends AbstractController {
      * @Route("/admin/restaurants", name="admin_restaurants", methods={"GET"})
      */
     public function restaurantsAction() {
-        $restaurants = $this->getDoctrine()
+        $restaurants = $this->doctrine
                 ->getRepository('App:Restaurant')
                 ->findAll();
 
@@ -233,7 +233,7 @@ class RestaurantController extends AbstractController {
      * @Route("/admin/restaurant/update/{restaurantId}")
      */
     public function updateAction($restaurantId) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $event = $em->getRepository('App:Event')->find($eventId);
 
         if (!$event) {

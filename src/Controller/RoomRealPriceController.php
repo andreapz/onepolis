@@ -22,7 +22,7 @@ class RoomRealPriceController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $rooms = $this->getDoctrine()->getRepository(RoomRealPrice::class)->findAll();
+        $rooms = $this->doctrine->getRepository(RoomRealPrice::class)->findAll();
         // Every template name also has two extensions that specify the format and
         // engine for that template.
         // See https://symfony.com/doc/current/templating.html#template-suffix
@@ -90,7 +90,7 @@ class RoomRealPriceController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($roomprice);
             $entityManager->flush();
 
@@ -114,7 +114,7 @@ class RoomRealPriceController extends AbstractController {
        $result = array();
        $result['status'] = 'ERROR'; 
        $roomprice->setRoom(null);
-       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager = $this->doctrine->getManager();
        $entityManager->persist($roomprice);
        $entityManager->flush();
        $result['status'] = 'OK';

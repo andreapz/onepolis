@@ -28,7 +28,7 @@ class RestaurantRealController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $restaurants = $this->getDoctrine()->getRepository(RestaurantReal::class)->findByEvent($id);
+        $restaurants = $this->doctrine->getRepository(RestaurantReal::class)->findByEvent($id);
         return $this->render('admin/restaurantreal/index.html.twig', ['restaurants' => $restaurants, 'id' => $id]);
     }
 
@@ -104,7 +104,7 @@ class RestaurantRealController extends AbstractController {
 
     public function form(RestaurantReal $restaurant, Request $request) {
         $restaurantVirtual = $restaurant->getRestaurant();
-        $restaurantVirtuals = $this->getDoctrine()->getRepository(Restaurant::class)->findAll();
+        $restaurantVirtuals = $this->doctrine->getRepository(Restaurant::class)->findAll();
 
         $form = $this->createForm(RestaurantRealType::class, $restaurant, array('restaurants' => $restaurantVirtuals));
         $form->handleRequest($request);
@@ -119,7 +119,7 @@ class RestaurantRealController extends AbstractController {
 
             // Restaurant END
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
@@ -143,7 +143,7 @@ class RestaurantRealController extends AbstractController {
      * @Route("/admin/restaurantreal/search/{restaurant}", requirements={"restaurant": "\d+"}, name="restaurantreal_handle_search", methods={"POST", "GET"})
      */
     public function searchRequest(Request $request, $restaurant) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $restaurantfree = $em->getRepository(RestaurantRealMeal::class)->findFreeByRestaurant($restaurant);
         $result = array();
 
@@ -176,7 +176,7 @@ class RestaurantRealController extends AbstractController {
      * @Route("/admin/restaurantreal/match/{id}", requirements={"id": "\d+"}, name="admin_restaurant_match", methods={"POST", "GET"})
      */
     public function matchAction($id, Request $request) {
-        $restaurants = $this->getDoctrine()->getRepository(Restaurant::class)->findByEvent($id);
+        $restaurants = $this->doctrine->getRepository(Restaurant::class)->findByEvent($id);
 
         $postData = $request->request->get('match');
         $name_value = $postData['restaurant'];
@@ -191,7 +191,7 @@ class RestaurantRealController extends AbstractController {
         }
             
         if(!empty($name_value)) {
-            $meals = $this->getDoctrine()->getRepository(RestaurantMeal::class)->findByRestaurant($name_value);
+            $meals = $this->doctrine->getRepository(RestaurantMeal::class)->findByRestaurant($name_value);
             
             $urltask = $this->generateUrl(
                         'task_handle_search_restaurant',
@@ -236,7 +236,7 @@ class RestaurantRealController extends AbstractController {
             return $this->jsonReturn($result);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         foreach ($m as $restaurantcost) {
             foreach ($r as $restaurantMealReal) {
                 $h = new RestaurantMatch();
@@ -271,7 +271,7 @@ class RestaurantRealController extends AbstractController {
             $result['status'] = 'ERROR';
             return $this->jsonReturn($result);
         }
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         foreach ($m as $matchid) {
                 $h = $em->getRepository(RestaurantMatch::class)->find($matchid);
@@ -297,7 +297,7 @@ class RestaurantRealController extends AbstractController {
      * @Route("/admin/restaurantreal/matched/{id}", requirements={"id": "\d+"}, name="admin_restaurant_matched", methods={"POST", "GET"})
      */
     public function matchedAction($id, Request $request) {
-        $restaurants = $this->getDoctrine()->getRepository(Restaurant::class)->findByEvent($id);
+        $restaurants = $this->doctrine->getRepository(Restaurant::class)->findByEvent($id);
 
         $postData = $request->request->get('match');
         $name_value = $postData['restaurant'];
@@ -340,7 +340,7 @@ class RestaurantRealController extends AbstractController {
      */
     public function searchAllocationMapRequest($event)
     {
-        $data = $this->getDoctrine()->getRepository(RestaurantReal::class)->findAllocationMap($event);
+        $data = $this->doctrine->getRepository(RestaurantReal::class)->findAllocationMap($event);
         
         $result[] = array();
         

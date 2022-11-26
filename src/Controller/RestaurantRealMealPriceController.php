@@ -22,7 +22,7 @@ class RestaurantRealMealPriceController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $meals = $this->getDoctrine()->getRepository(RestaurantRealMealPrice::class)->findAll();
+        $meals = $this->doctrine->getRepository(RestaurantRealMealPrice::class)->findAll();
         return $this->render('restaurantrealmealprice/index.html.twig', ['meals' => $meals]);
     }
     
@@ -79,7 +79,7 @@ class RestaurantRealMealPriceController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug($this->get('slugger')->slugify($post->getTitle()));
 
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($mealprice);
             $entityManager->flush();
 
@@ -104,7 +104,7 @@ class RestaurantRealMealPriceController extends AbstractController {
        $result = array();
        $result['status'] = 'ERROR'; 
        $mealprice->setMeal(null);
-       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager = $this->doctrine->getManager();
        $entityManager->persist($mealprice);
        $entityManager->flush();
        $result['status'] = 'OK';

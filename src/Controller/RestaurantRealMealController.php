@@ -21,7 +21,7 @@ class RestaurantRealMealController extends AbstractController {
      * @Cache(smaxage="10")
      */
     public function indexAction($id) {
-        $rooms = $this->getDoctrine()->getRepository(RestaurantRealMeal::class)->findAll();
+        $rooms = $this->doctrine->getRepository(RestaurantRealMeal::class)->findAll();
         // Every template name also has two extensions that specify the format and
         // engine for that template.
         // See https://symfony.com/doc/current/templating.html#template-suffix
@@ -89,7 +89,7 @@ class RestaurantRealMealController extends AbstractController {
 
             if ($form->isSubmitted() && $form->isValid()) {
 
-                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager = $this->doctrine->getManager();
                 $entityManager->persist($meal);
                 $entityManager->flush();
 
@@ -116,7 +116,7 @@ class RestaurantRealMealController extends AbstractController {
        $result = array();
        $result['status'] = 'ERROR'; 
        $room->setRestaurant(null);
-       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager = $this->doctrine->getManager();
        $entityManager->persist($room);
        $entityManager->flush();
        $result['status'] = 'OK';
