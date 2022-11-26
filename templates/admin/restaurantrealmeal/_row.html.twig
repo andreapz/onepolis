@@ -1,0 +1,28 @@
+<tr class="table-light" id="meal-{{ meal.id }}">
+<th scope="row" class="col-sm-3">
+    {% if show_control == 0 %}
+        <input type="radio" class="radio-meal" rid="{{ meal.id }}" id="radio_meal_{{ meal.id }}" name="match[meal]" required="required" value="{{ meal.id }}">
+    {% endif %}
+    {{ meal.name }}</th>
+<td class="col-sm-2">{{ meal.guests }}</td>
+{% if show_control %}
+<td class="col-sm-1"><a href="{{ path('admin_restaurantrealmeal_delete', {id: meal.id}) }}" class="alert-text alert-link delete-restaurantmeal" rel="meal-{{ meal.id }}">
+        {{ include('images/delete.html.twig') }}</a></td>
+<td class="col-sm-3">
+
+     <a href="{{ path('admin_restaurantrealmealprice_new', {id: meal.id}) }}" class="btn btn-secondary show-add-mealcost" rel="mealpricelist-{{ meal.id }}">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            {{ 'meal.add_cost'|trans|raw }}
+        </a>
+   <ul class="nav nav-pills flex-column" id="mealpricelist-{{ meal.id }}">
+        {% if meal.costs %}
+        {% for cost in meal.costs %}
+        {{ include('admin/restaurantrealmealprice/_row.html.twig', {
+            mealprice: cost,
+        }, with_context = false) }}
+        {% endfor %}
+        {% endif %}
+    </ul>
+</td>
+{% endif %}
+</tr>

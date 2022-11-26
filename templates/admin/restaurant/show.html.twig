@@ -1,0 +1,40 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1><a href="{{ path('event_show', {id: event_id}) }}">{{ event_title }}</a>: 
+        {{ restaurant.name }} 
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <a href="{{ path('admin_restaurant_edit', {id: restaurant.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></a>
+        {% endif %}</h1>
+    
+        <div><p>{{ restaurant.description }} giorni</p></div>
+ 
+    
+    {% if restaurant.meals %}
+    <p class="restaurantMeals">
+     <div>
+         <ul>
+    {% for meal in restaurant.meals %}
+        <li>
+            <h4><a href="{{ path('restaurant_meal_show', {id: meal.id}) }}">{{ meal.name }}</a></h4> {{ meal.mealDate|date('d/m/Y') }}
+        </li>
+    {% endfor %}
+         </ul>
+     </div>
+     </p>
+     {% endif %}
+     
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+     <a href="{{ path('admin_restaurant_meal_new', {id: restaurant.id}) }}" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {{ 'one.add_meal'|trans|raw }}</a>
+    {% endif %}    
+{% endblock %}
+
+
+{% block sidebar %}
+    {{ parent() }}
+<a href="{{ path('event_show', {id: event_id}) }}" class="btn btn-sm btn-default">
+        {{ event_title }}
+    </a>
+{% endblock %}

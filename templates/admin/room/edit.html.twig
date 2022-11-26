@@ -1,0 +1,38 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1>{{ 'title.room_new'|trans }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.total) }}
+        
+        <h4>{{ 'label.roomCost'|trans }}</h3>
+        
+        <ul class="tickets_room" data-prototype="{{ form_widget(form.tickets.vars.prototype)|e('html_attr') }}">
+        <p class="tickets_room">
+            {% for ticket in form.tickets %}
+                <li class="ticket_room_form">
+                    <div id="room_tickets_{{ loop.index0 }}">
+                        {{ form_row(ticket.name) }}
+                        {{ form_row(ticket.price) }}
+                        {{ form_row(ticket.minAge) }}
+                        {{ form_row(ticket.maxAge) }}
+                        {{ form_row(ticket.total) }}
+                        {{ form_row(ticket.initialDate) }}
+                        {{ form_row(ticket.endDate) }}
+                    </div>
+                </li>
+        {% endfor %}        
+        </ul>
+        
+        <input type="submit" value="{{ 'label.create_room'|trans }}" class="btn btn-primary" />
+        <a href="{{ path('admin_rooms') }}" class="btn btn-link">
+            {{ 'action.back_to_list'|trans }}
+        </a>
+
+    {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

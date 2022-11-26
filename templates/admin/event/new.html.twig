@@ -1,0 +1,29 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1>{{ 'title.event_new'|trans }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.initialDate) }}
+        {{ form_row(form.endDate) }}
+        
+        <h4>{{ 'label.address'|trans }}</h3>
+        <p class="addresses">
+            {% for address in form.addresses %}
+                {{ form_row(address.street) }}
+                {{ form_row(address.city) }}
+                {{ form_row(address.postcode) }}
+                {{ form_row(address.province) }}
+                {{ form_row(address.state) }}
+        {% endfor %}
+        </p>
+        <input type="submit" value="{{ 'label.create_event'|trans }}" class="btn btn-primary" />
+        <a href="{{ path('admin_events') }}" class="btn btn-link">
+            {{ 'action.back_to_list'|trans }}
+        </a>
+        
+    {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

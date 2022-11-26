@@ -1,0 +1,13 @@
+<div class="col-sm-10">
+{{ form_start(form, {'attr': {'id': 'meal_add'}}) }}
+<fieldset class="col-sm-5">
+{{ form_row(form.name,  {'attr': {'placeholder': 'meal.name'} }) }}
+{{ form_row(form.guests,  {'attr': {'placeholder': 'room.guests'}  }) }}
+</fieldset>
+
+<input type="submit" value="{{ button_label|default('label.save'|trans) }}" class="btn btn-primary" />
+
+{{ form_end(form) }}
+</div>
+
+

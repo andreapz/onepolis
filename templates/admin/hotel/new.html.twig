@@ -1,0 +1,19 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1>{{ 'title.hotel_new'|trans }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        
+        </p>
+        <input type="submit" value="{{ 'label.create_hotel'|trans }}" class="btn btn-primary" />
+        <a href="{{ path('admin_hotels') }}" class="btn btn-link">
+            {{ 'action.back_to_list'|trans }}
+        </a>
+        
+    {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

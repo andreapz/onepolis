@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'restaurant_index' %}
+
+{% block main %}
+    
+    {% for restaurant in restaurants %}
+        <article class="post">
+            <h2>
+                <a href="{{ path('restaurant_index', {slug: restaurant.id}) }}">
+                    {{ restaurant.name }}
+                </a>
+            </h2>
+
+            <p class="post-metadata">
+                
+            </p>
+
+            {{ restaurant.description }}
+
+            
+        </article>
+    {% else %}
+        <div class="well">{{ 'restaurant.no_events_found'|trans }}</div>
+    {% endfor %}
+
+    
+{% endblock %}
+
+

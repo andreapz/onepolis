@@ -1,0 +1,18 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1>{{ 'room.list'|trans }}</h1>
+    
+    {% for room in rooms %}
+     <a href="{{ path('admin_roomreal_show', {id: room.id}) }}">
+            <div class="well well-lg">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item"><span class="text-info">{{ room.name }} {{ room.surname }}</span></li>
+                </ul>
+                
+                
+            </div>
+            </a>
+    {% endfor %}
+    
+{% endblock %}

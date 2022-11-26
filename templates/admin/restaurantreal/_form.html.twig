@@ -1,0 +1,27 @@
+{{ form_start(form) }}
+<h4>{{ 'label.restaurant'|trans }}</h4>
+<fieldset class="col-sm-4">
+{{ form_row(form.name,  {'attr': {'placeholder': 'label.name'} }) }}
+{{ form_row(form.surname,  {'attr': {'placeholder': 'label.surname'} } ) }}
+{{ form_row(form.phone,  {'attr': {'placeholder': 'label.phone'} }) }}
+{{ form_row(form.email,  {'attr': {'placeholder': 'label.email'} }) }}
+</fieldset><fieldset class="col-sm-4">
+{{ form_row(form.address.street,  {'attr': {'placeholder': 'address.street'} }) }}
+{{ form_row(form.address.city,  {'attr': {'placeholder': 'address.city'} }) }}
+<ul class="list-group" id="restaurantrealcityresult"></ul>
+{{ form_row(form.address.postcode,  {'attr': {'placeholder': 'address.postcode'} }) }}
+{{ form_row(form.address.province,  {'attr': {'placeholder': 'address.province'} }) }}
+{{ form_row(form.address.state,  {'attr': {'placeholder': 'address.state'} }) }}
+</fieldset><fieldset class="col-sm-4">
+{{ form_row(form.latitude,  {'attr': {'placeholder': 'label.latitude'} }) }}
+{{ form_row(form.longitude,  {'attr': {'placeholder': 'label.longitude'} }) }}
+{{ form_row(form.note,  {'attr': {'placeholder': 'label.note'} }) }}
+{{ form_row(form.restaurants) }}
+<input type="submit" value="{{ button_label|default('label.save'|trans) }}" class="btn btn-primary" />
+</fieldset>
+{{ form_end(form) }}
+
+<script>
+    var queryurl =  "{{ path('city_handle_search') }}";
+    var restaurantselected = [{{ h }}];    
+</script>

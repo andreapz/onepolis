@@ -1,0 +1,25 @@
+<div class="col-sm-10">
+{{ form_start(form, {'attr': {'id': 'room_add'}}) }}
+<fieldset class="col-sm-5">
+{{ form_row(form.name,  {'attr': {'placeholder': 'room.name'} }) }}
+{{ form_row(form.floor,  {'attr': {'placeholder': 'room.floor'} }) }}
+{{ form_row(form.rooms,  {'attr': {'placeholder': 'room.rooms'} }) }}
+{{ form_row(form.guests,  {'attr': {'placeholder': 'room.guests'}  }) }}
+{{ form_row(form.bath) }}
+{{ form_row(form.accessible) }}
+</fieldset>
+<fieldset class="col-sm-5">
+{{ form_row(form.single,  {'attr': {'placeholder': 'room.single'} }) }}
+{{ form_row(form.double,  {'attr': {'placeholder': 'room.double'} }) }}
+{{ form_row(form.twin,  {'attr': {'placeholder': 'room.twin'} }) }}
+{{ form_row(form.sofa,  {'attr': {'placeholder': 'room.sofa'} }) }}
+{{ form_row(form.bunk,  {'attr': {'placeholder': 'room.bunk'} }) }}
+</fieldset>
+<fieldset class="col-sm-10">
+{{ form_row(form.room) }}
+</fieldset>
+
+<input type="submit" value="{{ button_label|default('label.save'|trans) }}" class="btn btn-primary" />
+
+{{ form_end(form) }}
+</div>

@@ -1,0 +1,211 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+    
+    <div class="col-lg-7">
+        <p class="bs-component">
+        <button type="button" class="btn btn-secondary show-add-room"><i class="fa fa-plus" aria-hidden="true"></i>
+                {{ 'room.add_room'|trans|raw }}</button>
+        <button type="button" class="btn btn-secondary show-add-extracost"><i class="fa fa-plus" aria-hidden="true"></i>
+                {{ 'hotel.add_extracost'|trans|raw }}</button>
+        <a href="{{ path('admin_hotelreal_edit', {id: hotel.id}) }}" class="btn btn-sm btn-secondary">
+                <i class="fa fa-edit" aria-hidden="true"></i></a>
+        </p>
+   </div>
+    
+    <div class="well well-lg col-lg-12">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item"><span class="text-info">{{ hotel.name }} {{ hotel.surname }}</span></li>
+            <li class="nav-item"><i class="fa fa-address-card" aria-hidden="true"></i><span class="text-info">{{ hotel.address.street }}, {{ hotel.address.city }} ({{ hotel.address.province }})</span></li>
+            <li class="nav-item"><i class="fa fa-phone" aria-hidden="true"></i><span class="text-info">{{ hotel.phone }}</span> <i class="fa fa-envelope" aria-hidden="true"></i><span class="text-info">{{ hotel.email }}</span></li>
+            <li class="nav-item"><i class="fa fa-sticky-note" aria-hidden="true"></i><span class="text-info">{{ hotel.note }} </span></li>
+            <li class="nav-item"><span class="text-info">{{ hotel.hotel.name }}</span></li>
+        </ul>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'extracost.type'|trans|raw }}</th>  
+            <th scope="col">{{ 'extracost.price'|trans|raw }}</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody class="table-extracost">
+            {% for extracost in hotel.extras %}
+            {{ include('admin/extracost/_row.html.twig', {
+                extracost: extracost,
+            }, with_context = false) }}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'room.name'|trans|raw }}</th>  
+            <th scope="col">{{ 'room.guests'|trans|raw }}</th>
+            <th scope="col">{{ 'room.info'|trans|raw }}</th>
+            <th scope="col">{{ 'room.bath'|trans|raw }}</th>
+            <th scope="col">{{ 'room.accessible'|trans|raw }}</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody class="table-room">
+            {% for room in hotel.rooms %}
+            {{ include('admin/roomreal/_row.html.twig', {
+                room: room,
+                show_control: 1,
+            }, with_context = false) }}
+            {% endfor %}
+        </tbody>
+    </table>
+       
+{% endblock %}
+
+{% block sidebar %}
+    <div class="modal" id="modal-from-dom" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'room.add_room'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/roomreal/_form.html.twig', {
+                form: form,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %} 
+          </div>
+          <div id="roomresult"></div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+            
+    <div class="modal" id="modal-from-dom-room-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'hotel.remove_room'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_room'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-room">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+            
+    
+    <div class="modal" id="modal-from-dom-extracost" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'hotel.add_extracost'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/extracost/_form.html.twig', {
+                form: formextra,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %} 
+          </div>
+          <div id="extracostresult"></div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+            
+    <div class="modal" id="modal-from-dom-extracost-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'hotel.remove_extracost'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_extracost'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-extracost">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+            
+    
+    
+    <div class="modal" id="modal-from-dom-roomcost" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'room.add_roomcost'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/roomrealprice/_form.html.twig', {
+                form: formroomprice,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %} 
+          </div>
+          <div id="roomcostresult"></div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal" id="modal-from-dom-roomcost-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'hotel.remove_roomcost'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_roomcost'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-roomcost">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+            
+    
+    
+    <script>
+    var formurl = "{{ path('admin_roomreal_new', {id: hotel.id}) }}";
+    var extracosturl = "{{ path('admin_extracost_new', {id: hotel.id}) }}";
+    </script> 
+{% endblock %}            

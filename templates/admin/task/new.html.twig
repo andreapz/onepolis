@@ -1,0 +1,37 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<div id="bigform" class="col-sm-12">
+                    
+    {# render the task's only field: description #}
+
+    <h4>{{ 'label.citizen'|trans }}</h3>
+    <p class="citizens">
+        {{ include('admin/task/_form.html.twig', {
+            form: form,
+            button_label: 'action.save'|trans,
+            include_back_to_home_link: true,
+            c: c,
+            h: h,
+            d: d,
+            t: t,
+            b: b,
+            mealscount: mealscount,
+            roomscount: roomscount,
+            roommeals: roomMeals,
+            e: e,
+        }, with_context = false) }}
+    </p>
+    <a href="{{ path('admin_events') }}" class="btn btn-link">
+        {{ 'action.back_to_list'|trans }}
+    </a>  
+</div>        
+{% endblock %}
+
+
+{% block sidebar %}
+<a href="{{ path('event_show', {ueid: e.ueid}) }}" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>{{ 'action.show_post'|trans|raw }} {{ e.title    }}</a>
+
+    <div id="citizen_delegate_detail">
+    </div>
+{% endblock %}

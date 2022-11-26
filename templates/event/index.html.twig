@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'event_index' %}
+
+{% block main %}
+    
+    {% for event in events %}
+        <article class="post">
+            <h2>
+                <a href="{{ path('event_show', {id: event.id}) }}">
+                    {{ event.title }}
+                </a>
+            </h2>
+
+            <p class="post-metadata">
+                
+            </p>
+
+            {{ event.title }}
+
+            
+        </article>
+    {% else %}
+        <div class="well">{{ 'event.no_events_found'|trans }}</div>
+    {% endfor %}
+
+    
+{% endblock %}
+
+

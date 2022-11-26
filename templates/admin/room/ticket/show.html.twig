@@ -1,0 +1,18 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1><a href="{{ path('room_show', {id: roomcost.room.id}) }}">{{ roomcost.room.name }}</a></h1>
+    
+    <div>
+        <h4>{{ roomcost.name }} <a href="{{ path('room_ticket_edit', {id: roomcost.id}) }}"><i class="fa fa-edit" aria-hidden="true"></i></a>
+         
+        [{{ roomcost.initialDate|date('d/m/Y') }} - {{ roomcost.endDate|date('d/m/Y') }}]
+    </div>
+    
+    
+    
+       <a href="{{ path('admin_room_cost_new', {id: roomcost.id}) }}" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {{ 'one.add_ticket'|trans|raw }}</a>
+
+{% endblock %}

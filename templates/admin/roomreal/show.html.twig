@@ -1,0 +1,46 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <a href="{{ path('admin_roomreal_edit', {id: room.id}) }}">
+        <div class="well well-lg">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item"><span class="text-info">{{ room.name }} {{ room.surname }}</span></li>
+            </ul>
+            <span class="text-info">{{ room.address.street }}, {{ room.address.city }} ({{ room.address.province }})</span></li>
+        </div>
+    </a>
+    
+    
+{% endblock %}
+
+{% block sidebar %}
+    <div class="modal" id="modal-from-dom" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'room.add_room'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{ include('admin/roomreal/_form.html.twig', {
+                form: form,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            <div id='paymentresult'></div>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+            
+    <p>
+        <a href="" class="btn btn-lg btn-secondary show-add-room">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            {{ 'room.add_room'|trans|raw }}
+        </a>
+    </p>
+{% endblock %}            

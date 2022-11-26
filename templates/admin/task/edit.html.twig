@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<div id="bigform" class="col-sm-12">
+    {{ include('admin/task/_form.html.twig', {
+        form: form,
+        button_label: 'action.save'|trans,
+        include_back_to_home_link: true,
+        c: c,
+        h: h,
+        d: d,
+        t: t,
+        b: b,
+        mealscount: mealscount,
+        roomscount: roomscount,
+        roommeals: roomMeals,
+        task: task,
+    }, with_context = false) }}
+</div>
+{% endblock %}
+
+
+{% block sidebar %}
+<a href="{{ path('task_show', {id: task.id}) }}" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>{{ 'task.show_task'|trans|raw }}</a>
+
+    <div id="citizen_delegate_detail">
+    </div>
+{% endblock %}

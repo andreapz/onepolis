@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1>{{ 'hotel.list'|trans }}</h1>
+    
+    {% for hotel in hotels %}
+     <a href="{{ path('admin_hotelreal_show', {id: hotel.id}) }}">
+            <div class="well well-lg">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item"><span class="text-info">{{ hotel.name }} {{ hotel.surname }}</span></li>
+                </ul>
+                {% if hotel.address %}
+                <span class="text-info">{{ hotel.address.street }}, {{ hotel.address.city }} ({{ hotel.address.province }})</span></li>
+                {% endif %}
+            </div>
+            </a>
+    {% endfor %}
+    
+{% endblock %}
+
+{% block sidebar %}
+    <p>
+        <a href="{{ path('admin_hotelreal_new', {id: id}) }}" class="btn btn-lg btn-secondary">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            {{ 'hotel.add_hotel'|trans|raw }}
+        </a>
+    </p>
+{% endblock %}        

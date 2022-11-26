@@ -1,0 +1,13 @@
+{{ form_start(form, {'attr': {'id': 'citizen_payment'}}) }}
+<h4>{{ 'label.citizen_payment'|trans }}</h4>
+{{ form_row(form.value,  {'attr': {'placeholder': 'one.value'} }) }}
+{{ form_row(form.paymentDate) }}
+{{ form_row(form.code) }}
+{{ form_row(form.type) }}
+{{ form_row(form.description) }}
+<input type="submit" value="{{ button_label|default('label.save'|trans) }}" class="btn btn-primary" id="citizen_payment_submit"/>
+{{ form_end(form) }}
+
+<script>
+    var citizenurl =  "{{ path('citizen_handle_search') }}";
+</script>

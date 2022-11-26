@@ -1,0 +1,86 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary col-sm-12">
+
+<form name="match" method="post" class="form-inline my-2 my-lg-0">
+    <select id="match_hotel" name="match[hotel]" class="form-control mr-sm-2">
+    <option value="0">Nessuno</option>
+    {% for hotel in hotels %}
+            <option value="{{ hotel.id }}">{{ hotel.name}}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="{{ button_label|default('label.search'|trans) }}" class="btn btn-secondary  my-2 my-sm-0" />
+</form>
+<button type="button" class="btn btn-secondary btn-danger my-2 my-sm-0" id="match-task"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'hotel.delete_match'|trans|raw }}</button>
+</nav>
+<div id="tasks" class="col-lg-12"></div>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var urlt = "{{ urlt }}";
+
+        var v = "{{ value }}";
+        document.querySelector('#match_hotel').value = v;
+        if (v > 0) {
+             $.post(urlt, function(response) {
+                 for(var k in response) {
+                    var s = '';
+                    for(var r in response[k]['rooms']) {
+                        s = '<div class="col-sm-6"> <ul class="list-group">';
+                        s += '<li class="list-group-item d-flex justify-content-between align-items-center active"><h4>' + response[k]['name'] +'</h4></li>';
+                        s += '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                        s += '<table class="table table-hover"><thead><tr><th scope="col">{{ "room.name"|trans|raw }}</th>  <th scope="col">{{ "room.guests"|trans|raw }}</th><th scope="col">{{ "room.info"|trans|raw }}</th><th scope="col">{{ "room.bath"|trans|raw }}</th><th scope="col">{{ "room.accessible"|trans|raw }}</th></tr></thead><tbody class="table-room">';
+                        s += response[k]['rooms'][r]['html'];
+                        s += '</tbody></table></li>';
+
+                        for(var t in response[k]['rooms'][r]['tasks']) {
+                            s += '<li class="list-group-item d-flex justify-content-between align-items-center bg-light"><h5>{{ 'task.task'|trans|raw }}' + t +'</h5></li>';
+
+                            for(var c in response[k]['rooms'][r]['tasks'][t]['citizen']) {
+                              s += '<li class="list-group-item d-flex justify-content-between align-items-center" id="l_citizen_'+ response[k]['rooms'][r]['tasks'][t]['citizen'][c]['hmid'] +'"><b><input type="checkbox" class="match_citizen" cid="'+ response[k]['rooms'][r]['tasks'][t]['citizen'][c]['hmid'] +'" id="match_citizen_'+ response[k]['rooms'][r]['tasks'][t]['citizen'][c]['hmid'] +'" name="match[citizen][]" value="'+ response[k]['rooms'][r]['tasks'][t]['citizen'][c]['hmid'] +'">' + response[k]['rooms'][r]['tasks'][t]['citizen'][c]['name'] + ' ' + response[k]['rooms'][r]['tasks'][t]['citizen'][c]['surname'] + ' [' + response[k]['rooms'][r]['tasks'][t]['citizen'][c]['age']+' anni ]' + '</b>' + response[k]['rooms'][r]['tasks'][t]['citizen'][c]['note'] ;
+                              //s += response[k]['rooms'][r]['name'] + ' @' +  response[k]['name'] + '</li>';
+                            }
+                        }
+
+                        s += '</ul></div>';
+                        $('#tasks').append(s);
+                    }
+                 }
+
+            }, 'JSON');
+        }
+
+        $('#match-task').on('click', function (e) {
+            e.preventDefault();
+            var c = new Array();
+
+            //if (! $('input:checkbox').is('checked'))
+            $(".match_citizen").each(function( index ) {
+                if ($(this).prop("checked")){
+                    c.push($(this).attr('cid'));
+                }
+            });
+
+            $.post( "{{ path('admin_hotel_delete_allocation') }}", { 'c[]': c}).done(function( data ) {
+                if (data.status === 'OK') {
+                    c.forEach(function (entry) {
+                        $('#l_citizen_' + entry).remove();
+                    });
+                }
+              });
+          });
+
+
+    </script>
+{% endblock %}

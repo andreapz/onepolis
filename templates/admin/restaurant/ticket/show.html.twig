@@ -1,0 +1,13 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1><a href="{{ path('restaurant_meal_show', {id: restaurantCost.meal.id}) }}">{{ restaurantCost.meal.name }}</a></h1>
+    
+    <div>
+        <h4>{{ restaurantCost.name }} ({{ restaurantCost.price }}€) <a href="{{ path('restaurant_cost_edit', {id: restaurantCost.id}) }}"><i class="fa fa-edit" aria-hidden="true"></i></a></h4> 
+         
+        [{{ restaurantCost.bookInitDate|date('d/m/Y') }}, {{ restaurantCost.bookEndDate|date('d/m/Y') }}]
+    </div>
+     
+
+{% endblock %}

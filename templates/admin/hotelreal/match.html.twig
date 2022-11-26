@@ -1,0 +1,122 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary col-sm-12">
+
+<form name="match" method="post" class="form-inline my-2 my-lg-0">
+    <select id="match_hotel" name="match[hotel]" class="form-control mr-sm-2">
+    <option value="0">Nessuno</option>
+    {% for hotel in hotels %}
+            <option value="{{ hotel.id }}">{{ hotel.name}}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="{{ button_label|default('label.search'|trans) }}" class="btn btn-secondary  my-2 my-sm-0" />
+</form>
+
+<button type="button" class="btn btn-primary show-add-room my-2 my-sm-0" id="match-task"><i class="fa fa-plus" aria-hidden="true"></i>
+                {{ 'label.match'|trans|raw }}</button>
+</div>
+</nav>
+
+<div id="tasks" class="col-lg-6"></div>
+<div id="hotels" class="col-lg-6"></div>
+{% endblock %}
+
+
+{% block sidebar %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var urlt = "{{ urlt }}";
+        var urlh = "{{ urlh }}";
+        var v = "{{ value }}";
+        document.querySelector('#match_hotel').value = v;
+
+        var selectAll = function(e) {
+            var id = $(this).attr('rel');
+            $('.' + id).prop('checked', true);
+
+            e.preventDefault();
+        };
+
+        if (v > 0) {
+             $.post(urlt, function(response) {
+                 for(var k in response) {
+
+                    var s = '<div class=""> <ul class="list-group">';
+
+                    s += '<li class="list-group-item d-flex justify-content-between align-items-center active">';
+                    s += '<h4>{{ 'task.task'|trans|raw }} ' + k +'</h4>';
+                    s += '<a href="#" class="text-dark toggle_detail" id="match_task_' + k + '" rel="match_task_citizen_' + k + '"><i class="fa fa-plus" aria-hidden="true"></i></a></li>';
+
+                    for(var c in response[k]['citizen']) {
+                        s += '<li class="list-group-item d-flex justify-content-between align-items-center match_task_citizen_'+ k +'" id="l_citizen_'+ response[k]['citizen'][c]['id'] +'"><b><input type="checkbox" class="match_citizen match_task_citizen_' + k + '" cid="'+ response[k]['citizen'][c]['id'] +'" id="match_citizen_'+ response[k]['citizen'][c]['id'] +'" name="match[citizen][]" value="'+ response[k]['citizen'][c]['id'] +'">' + response[k]['citizen'][c]['name'] + ' ' + response[k]['citizen'][c]['surname'] + ' ['+ response[k]['citizen'][c]['age'] +' anni]</b>';
+                        s += '[' + response[k]['citizen'][c]['room']['name'] + ']</br> ' + response[k]['citizen'][c]['room_note'] + '</li>';
+                        
+                    }
+
+                    s += '</ul></div>';
+
+                    $('#tasks').append(s);
+                    $("#match_task_"+k).on( "click", selectAll);
+                 }
+
+            }, 'JSON');
+
+            $.post(urlh, function(response) {
+                 for(var k in response) {
+
+                    var s = '<div class=""> <ul class="list-group">';
+
+                    s += '<li class="list-group-item d-flex justify-content-between align-items-center active"><h4>' + response[k]['name'] +'</h4></li>';
+                    s += '<li class="list-group-item d-flex justify-content-between align-items-center">';
+
+                    s += '<table class="table table-hover"><thead><tr><th scope="col">{{ "room.name"|trans|raw }}</th>  <th scope="col">{{ "room.guests"|trans|raw }}</th><th scope="col">{{ "room.info"|trans|raw }}</th><th scope="col">{{ "room.bath"|trans|raw }}</th><th scope="col">{{ "room.accessible"|trans|raw }}</th></tr></thead><tbody class="table-room">';
+
+                    for(var c in response[k]['rooms']) {
+                        s +=  response[k]['rooms'][c]['html'];
+                    }
+                    s += '</tbody></table></li>';
+
+                    s += '</ul></div>';
+
+                    $('#hotels').append(s);
+                 }
+
+            }, 'JSON');
+        }
+
+        $('#match-task').on('click', function (e) {
+            e.preventDefault();
+            var c = new Array();
+            var r = new Array();
+            //if (! $('input:checkbox').is('checked'))
+            $(".match_citizen").each(function( index ) {
+                if ($(this).prop("checked")){
+                    c.push($(this).attr('cid'));
+                }
+            });
+            $(".radio-room").each(function( index ) {
+                if ($(this).prop("checked")){
+                    r.push($(this).attr('rid'));
+                }
+            });
+
+            $.post( "{{ path('admin_hotel_allocation') }}", { 'c[]': c, 'r[]': r }).done(function( data ) {
+                if (data.status === 'OK') {
+                    c.forEach(function (entry) {
+                        $('#l_citizen_' + entry).remove();
+                    });
+                    r.forEach(function (entry) {
+                        $('#room-' + entry).remove();
+                    });
+                }
+              });
+          });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block sidebar %}
+    <div class="modal" id="modal-from-dom" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'citizen.add_payment'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/payment/_form.html.twig', {
+                form: form,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %}
+            <div id='paymentresult'></div>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <p><a href="{{ path('task_new', {ueid: event.ueid}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-plus" aria-hidden="true"></i>{{ 'one.add_task'|trans|raw }}</a></p>
+        
+        <p><a href="{{ path('task_show_by_user', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'citizen.show_all_tasks'|trans|raw }}</a></p>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+        
+        <p><a href="" class="btn btn-lg btn-secondary show-add-payment">
+        <i class="fa fa-plus" aria-hidden="true"></i>{{ 'citizen.add_payment'|trans|raw }}</a></p>
+
+        <p><a href="{{ path('admin_hotel_real_index', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'title.hotel_list'|trans|raw }}</a></p>
+
+        <p><a href="{{ path('admin_hotel_matched', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'hotel.matched_hotel'|trans|raw }}</a></p>
+        
+        <p><a href="{{ path('admin_hotel_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'hotel.matched_hotel_map'|trans|raw }}</a></p>
+        
+        <p><a href="{{ path('admin_hotel_match', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-wrench" aria-hidden="true"></i>{{ 'hotel.match_hotel'|trans|raw }}</a></p>
+
+        <p><a href="{{ path('admin_restaurant_real_index', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'title.restaurant_list'|trans|raw }}</a></p>
+
+        <p><a href="{{ path('admin_restaurant_matched', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'restaurant.matched'|trans|raw }}</a></p>
+        
+        <p><a href="{{ path('admin_restaurant_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'restaurant.matched_restaurant_map'|trans|raw }}</a></p>
+        
+        <p><a href="{{ path('admin_restaurant_match', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-wrench" aria-hidden="true"></i>{{ 'restaurant.match'|trans|raw }}</a></p>
+
+        <p><a href="{{ path('admin_transport_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'transport.matched_transport_map'|trans|raw }}</a></p>
+        
+        {% endif %}
+
+        {% if is_granted('ROLE_ADMIN') == false %}
+        {% if false %}
+        {% for task in tasks %}
+            <a href="{{ path('task_show', {id: task.id}) }}">
+            <div class="well well-lg">
+                <ul class="nav nav-pills flex-column">
+                {% for citizen in task.citizens %}
+                    <li class="nav-item"><span class="text-info">{{ citizen.name }} {{ citizen.surname }}</span></li>
+                {% endfor %}
+                </ul>
+                {% if task.ordered %}
+                    <span class="text-info">
+                    {{ 'one.task_amount'|trans|raw }}: {{ task.amount }}€
+                    {{ 'one.task_order_date'|trans|raw }}: {{ task.orderedDate|date('d/m/Y') }}
+                    </span>
+                {% endif %}
+            </div>
+            </a>
+        {% endfor %}
+        {% endif %}
+        {% endif %}
+
+{% endblock %}
+{% block main %}
+
+    <h1>{{ event.title }}
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            <a href="{{ path('admin_event_edit', {ueid: event.ueid}) }}" class="btn btn-sm btn-primary">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+            </a>{% endif %}</h1>
+
+        <div>{{ nights }} giorni</div>
+
+        <p class="post-metadata">
+            <span class="metadata"><i class="fa fa-calendar"></i> {{ event.initialDate|date('d/m/Y') }}</span>
+            <span class="metadata"><i class="fa fa-calendar"></i> {{ event.endDate|date('d/m/Y') }}</span>
+        </p>
+
+        <p class="addresses">
+            {% if event.address %}
+                {{ event.address.street }}, {{ event.address.city }} ({{ event.address.postcode }})
+                {{ event.address.province }} - {{ event.address.state }}
+            {% endif %}
+        </p>
+
+        <div class="tickets">
+            <h3>Biglietti</h3>
+
+            <ul>
+                {% for ticket in event.tickets %}
+                    <li>{{ ticket.name }} [{{ ticket.days }} {% transchoice ticket.days %}days_plural{% endtranschoice %}] </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+
+
+        <div class="restaurants">
+            <h3>Ristoranti
+            {% if is_granted('ROLE_SUPER_ADMIN') %}<a href="{{ path('admin_restaurant_add', {id: event.id}) }}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </a>{% endif %}</h3>
+                {% for restaurant in event.restaurants %}
+                <h4>{% if is_granted('ROLE_ADMIN') %}<a href="{{ path('restaurant_show', {id: restaurant.id}) }}">{% endif %}
+                        {{ restaurant.name }}
+                    {% if is_granted('ROLE_ADMIN') %}</a>{% endif %}
+                </h4>
+                <p>[{{ restaurant.description }}]</p>
+                <ul>
+                    {% for meal in restaurant.meals %}
+                        <li>{% if is_granted('ROLE_ADMIN') %}<a href="{{ path('restaurant_meal_show', {id: meal.id}) }}">{% endif %}{{ meal.name }}
+                        {% if is_granted('ROLE_ADMIN') %}</a>{% endif %}
+                            {{ meal.mealDate|date('d/m/Y') }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="hotels">
+            <h3>Hotels {% if is_granted('ROLE_SUPER_ADMIN') %}<a href="{{ path('admin_hotel_add', {id: event.id}) }}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </a>{% endif %}</h3>
+                {% for hotel in event.hotels %}
+                <h4>{% if is_granted('ROLE_ADMIN') %}<a href="{{ path('hotel_show', {id: hotel.id}) }}">{% endif %}
+                        {{ hotel.name }}
+                    {% if is_granted('ROLE_ADMIN') %}</a>{% endif %}
+                </h4>
+                <p>[{{ hotel.description }}]</p>
+                <ul>
+                    {% for room in hotel.rooms %}
+                        <li>{% if is_granted('ROLE_ADMIN') %}<a href="{{ path('room_show', {id: room.id}) }}">{% endif %}
+                            {{ room.name }}{% if is_granted('ROLE_ADMIN') %}</a>{% endif %}
+                        </li>
+                        {% if 0 %}
+                        <ul>
+                        {% for ticket in room.tickets %}
+                            <li>{{ ticket.name }} {{ ticket.price }}
+                                [{{ ticket.initialDate|date('d/m/Y') }} - {{ ticket.endDate|date('d/m/Y') }}]</li>
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+
+        </div>
+<script>
+    var citizenqueryurl =  "{{ path('citizen_handle_search') }}";
+    var formurl = "{{ path('admin_citizen_new_payment') }}";
+</script>
+        {% endblock %}

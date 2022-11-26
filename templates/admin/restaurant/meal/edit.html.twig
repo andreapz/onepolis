@@ -1,0 +1,38 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1>{{ 'title.restaurant_meal'|trans }}</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    
+    <h4>{{ 'label.restaurantCost'|trans }}</h4>
+        
+        <ul class="tickets_restaurant" data-prototype="{{ form_widget(form.tickets.vars.prototype)|e('html_attr') }}">
+        <p class="tickets_restaurant">
+            {% for ticket in form.tickets %}
+                <li class="ticket_restaurant_form">
+                    <div id="restaurant_tickets_{{ loop.index0 }}">
+                        {{ form_row(ticket.name) }}
+                        {{ form_row(ticket.price) }}
+                        {{ form_row(ticket.minAge) }}
+                        {{ form_row(ticket.maxAge) }}
+                        {{ form_row(ticket.total) }}
+                        {{ form_row(ticket.booInitDate) }}
+                        {{ form_row(ticket.booEndDate) }}
+                        {{ form_row(ticket.type) }}
+                    </div>
+                </li>
+        {% endfor %}        
+        </ul>
+        
+    <input type="submit" value="{{ 'label.update'|trans }}" class="btn btn-primary" />
+    {% if meal.id %}
+    <a href="{{ path('restaurant_meal_show', {id: meal.id}) }}" class="btn btn-link">
+        {{ 'action.back_to_list'|trans }}
+    </a>  
+    {% endif %}
+    {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

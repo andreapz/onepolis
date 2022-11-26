@@ -1,0 +1,86 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary col-sm-12">
+
+<form name="match" method="post" class="form-inline my-2 my-lg-0">
+    <select id="match_user" name="match[user]" class="form-control mr-sm-2">
+    {% if is_granted('ROLE_ADMIN') %}
+    <option value="0">Tutti</option>
+    {% endif %}
+    {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username}}</option>
+    {% endfor %}
+    </select>
+    
+    <select id="match_room" name="match[room]" class="form-control mr-sm-2">
+        <option value="0">Tutti</option>
+    {% for room in rooms %}
+        <option value="{{ room.id }}">{{ room.name}}</option>
+    {% endfor %}
+    </select>
+    
+    <input type="submit" value="{{ button_label|default('label.search'|trans) }}" class="btn btn-secondary  my-2 my-sm-0" />
+</form>
+
+<div id="tasksearch" class="col-lg-4">
+    
+    
+    <div class="">
+        <input type="text" id="citizen_task" maxlength="50" class="form-control" value="" placeholder="{{ 'one.search_task'|trans|raw }}">
+        <input type="text" id="citizen_id" maxlength="50" class="form-control" value="" style="display: none">
+    
+    
+    <ul class="list-group" id="citizen_task_result"></ul>
+    </div>
+    
+</div>
+<button type="button" class="btn btn-secondary"><i class="fa fa-eye" id="open_all_tasks" aria-hidden="true"></i></button>
+<button type="button" class="btn btn-secondary"><i class="fa fa-eye-slash" id="close_all_tasks" aria-hidden="true"></i></button>       
+
+</nav>
+<div id="taskreport" class="col-lg-12">
+ <ul class="list-group col-lg-4">
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Totale utenti: <b id="user_tot"></b></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Totale: <b id="amount_tot"></b></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Bonifico: <b id="amount_totb"></b></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Contanti: <b id="amount_totc"></b></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Saldo: <b id="amount_tots"></b></h6></li>
+    </ul>
+    
+<ul class="list-group col-lg-4" id="tastreporthotel"></ul>
+<ul class="list-group col-lg-4" id="tastreportrestaurant"></ul>
+<ul class="list-group col-lg-4" id="tastreportbus"></ul>
+<ul class="list-group col-lg-4" id="tastreportck"></ul>
+</div>
+<div id="tasks" class="col-lg-12"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var urlt = "{{ urlt }}";
+        
+        var u = "{{ userid }}";
+        var r = "{{ roomid }}";
+        
+        document.querySelector('#match_user').value = u;
+        document.querySelector('#match_room').value = r;
+          
+        if (u >= 0) {
+            {{ include('admin/task/showbyjs.html.twig', {
+                
+            }, with_context = false) }}
+
+        }
+       var citizenqueryurl =  "{{ path('citizen_handle_search') }}";
+    </script>
+{% endblock %}
+
+{% block sidebar %}
+
+    
+    
+{% endblock %}

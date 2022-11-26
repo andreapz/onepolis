@@ -1,0 +1,50 @@
+<tr class="table-light" id="room-{{ room.id }}">
+<th scope="row" class="col-sm-3">
+    {% if show_control == 0 %}
+        <input type="radio" class="radio-room" rid="{{ room.id }}" id="radio_room_{{ room.id }}" name="match[room]" required="required" value="{{ room.id }}">
+    {% endif %}
+    {{ room.name }}</th>
+<td class="col-sm-2">{{ room.guests }}{% for guest in 1..room.guests %}{{ include('images/user.html.twig') }}{% endfor %}</td>
+<td class="col-sm-2">
+  <ul class="nav nav-pills flex-column">
+      {% if room.single %}<li class="nav-item">{{ room.single }} {{ include('images/single-bed.html.twig') }}</li>{% endif %}
+      {% if room.double is defined and room.double%}<li class="nav-item">{{ room.double }} {{ include('images/double-bed.html.twig') }}</li>{% endif %}
+      {% if room.doublebed is defined and room.doublebed%}<li class="nav-item">{{ room.doublebed }} {{ include('images/double-bed.html.twig') }}</li>{% endif %}
+      {% if room.twin %}<li class="nav-item">{{ room.twin }} {{ include('images/single-bed.html.twig') }}{{ include('images/single-bed.html.twig') }}</li>{% endif %}
+      {% if room.sofa %}<li class="nav-item">{{ room.sofa }} {{ include('images/sofa-bed.html.twig') }}</li>{% endif %}
+      {% if room.bunk %}<li class="nav-item">{{ room.bunk }} {{ include('images/bunk-bed.html.twig') }}</li>{% endif %}
+  </ul>
+
+</td>
+<td class="col-sm-1">{% if room.bath %}{{ 'yes'|trans|raw }}{% else %}{{ 'no'|trans|raw }}{% endif %}</td>
+<td class="col-sm-1">{% if room.accessible is defined %}
+                        {% if room.accessible %}{{ 'yes'|trans|raw }}
+                        {% else %}{{ 'no'|trans|raw }}
+                        {% endif %}
+                     {% else %}
+                        {% if room.access is defined and room.access %}{{ 'yes'|trans|raw }}
+                        {% else %}{{ 'no'|trans|raw }}
+                        {% endif %}
+                     {% endif %}</td>
+
+{% if show_control %}
+<td class="col-sm-1"><a href="{{ path('admin_roomreal_delete', {id: room.id}) }}" class="alert-text alert-link delete-room" rel="room-{{ room.id }}">
+        {{ include('images/delete.html.twig') }}</a></td>
+<td class="col-sm-3">
+
+     <a href="{{ path('admin_roomrealprice_new', {id: room.id}) }}" class="btn btn-secondary show-add-roomcost" rel="roompricelist-{{ room.id }}">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            {{ 'room.add_cost'|trans|raw }}
+        </a>
+    <ul class="nav nav-pills flex-column" id="roompricelist-{{ room.id }}">
+        {% if room.costs %}
+        {% for cost in room.costs %}
+        {{ include('admin/roomrealprice/_row.html.twig', {
+            roomprice: cost,
+        }, with_context = false) }}
+        {% endfor %}
+        {% endif %}
+    </ul>
+</td>
+{% endif %}
+</tr>

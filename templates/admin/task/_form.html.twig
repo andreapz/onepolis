@@ -1,0 +1,62 @@
+{{ form_start(form) }}
+
+<fieldset class="col-sm-4">
+{{ form_row(form.name,  {'attr': {'placeholder': 'one.add_task'} }) }}
+{{ form_row(form.surname) }}
+{{ form_row(form.cityBirth) }}
+<ul class="list-group" id="citizen_cityBirth_result"></ul>
+{{ form_row(form.birthDate) }}
+{{ form_row(form.phone) }}
+{{ form_row(form.email) }}
+{{ form_row(form.gender) }}
+{{ form_row(form.needSupport) }}
+<div style="display: none">
+{{ form_row(form.delegate) }}
+</div>
+<div class="form-group">
+    <label class="control-label" for="citizen_delegate_custom">{{ 'label.delegate'|trans }}</label>
+    <input type="text" id="citizen_delegate_custom" maxlength="50" class="form-control" value="{{ d }}">
+    <input type="text" id="citizen_delegate_id" maxlength="50" class="form-control" value="" style="display: none">
+</div>
+<ul class="list-group" id="citizen_delegate_result"></ul>
+</fieldset>
+
+<fieldset class="col-sm-4">
+{{ form_row(form.address.street) }}
+{{ form_row(form.address.city) }}
+<ul class="list-group" id="cityresult"></ul>
+{{ form_row(form.address.postcode) }}
+{{ form_row(form.address.province) }}
+{{ form_row(form.address.state) }}
+{{ form_row(form.branch) }}
+{{ form_row(form.relationship) }}
+{{ form_row(form.partner) }}
+{{ form_row(form.first) }}
+{{ form_row(form.guest) }}
+<div style="display: none">
+{{ form_row(form.transport) }}
+</div>
+</fieldset>
+
+<fieldset class="col-sm-4">
+{{ form_row(form.tickettypes) }}
+{{ form_row(form.rooms) }}
+{{ form_row(form.meals) }}
+{{ form_row(form.buses) }}
+{{ form_row(form.note) }}
+{{ form_row(form.roomNote) }}
+<input type="submit" value="{{ button_label|default('label.save'|trans) }}" class="btn btn-primary" />
+</fieldset>
+{{ form_end(form) }}
+
+<script>
+    var mealcosts = [{% for tr in c %}'{{ tr }}',{% endfor %} ];
+    var roomcosts = [{% for tr in h %}'{{ tr }}',{% endfor %} ];
+    var ticketcosts = [{% for tr in t %}'{{ tr }}',{% endfor %} ];   
+    var ticketbuses = [{% for tr in b %}'{{ tr }}',{% endfor %} ];   
+    var mealscount = {{ mealscount|raw }};
+    var roomscount = {{ roomscount|raw }};
+    var roommeals = {{ roommeals|raw }};
+    var queryurl =  "{{ path('city_handle_search') }}";
+    var citizenqueryurl =  "{{ path('citizen_handle_search') }}";
+</script>

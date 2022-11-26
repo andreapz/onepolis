@@ -1,0 +1,12 @@
+{{ form_start(form) }}
+<h4>{{ 'label.citizen'|trans }}</h4>
+<fieldset class="col-sm-4">
+{{ form_row(form.hotels) }}
+<input type="submit" value="{{ button_label|default('label.save'|trans) }}" class="btn btn-primary" />
+</fieldset>
+{{ form_end(form) }}
+
+<script>
+    var curl =  "d";//"{ { path('task_handle_search') }}";
+    var hurl = "c";
+</script>

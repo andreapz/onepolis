@@ -1,0 +1,370 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+{% if task.ordered %}     
+    <div class="modal" id="modal-from-dom" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'citizen.add_payment'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+              {{ include('admin/payment/_form.html.twig', {
+                  form: form,
+                  button_label: 'action.save'|trans,
+              }, with_context = false) }}
+              {% endif %} 
+              <div id='paymentresult'></div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+            </div>
+          </div>
+        </div>
+    </div>
+              
+    <div class="modal" id="modal-from-dom-payment-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ task.event.title }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_payment'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-payment">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-from-dom-reset-order" >
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h3 class="modal-title">{{ task.event.title }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <p>{{ 'proceed_reset_order_task'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+            <a href="{{ path('task_reset_order', {id: task.id}) }}" class="btn btn-primary danger">Si</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+        </div>
+    </div>
+{% else %}
+    <div class="modal" id="modal-from-dom" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">{{ task.event.title }}</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{ 'proceed_order_task'|trans }}?</p>
+          <p>{{ 'task_will_not_modified'|trans }}</p>
+        </div>
+        <div class="modal-footer">
+          <a href="{{ path('task_order', {id: task.id}) }}" class="btn btn-primary danger">Si</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}        
+
+    
+ 
+
+    <div class="row">
+        <a href="{{ path('event_show', {ueid: task.event.ueid}) }}" class="btn btn-sm">
+            <h1>{{ task.event.title }}: {{ 'task.task'|trans|raw }} {{ task.id }}</h1>
+        </a>
+
+        {% if task.ordered %}
+            
+        {% else %}
+        <a href="{{ path('citizen_add', {id: task.id}) }}" class="btn btn-lg btn-primar">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            {{ 'one.add_user'|trans|raw }}
+        </a>
+        {% endif %} 
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="bs-component">
+                {% for citizen in task.citizens %}
+                <div class="card border-primary mb-3" style="width: 49%; float: left; margin-left: 2px;">
+                    <div class="card-header"><h3>
+                    {% if task.ordered %}     
+                    {{ citizen.name }} {{ citizen.surname }}
+                    {% else %}
+                    <a href="{{ path('citizen_edit', {id: citizen.id}) }}">{{ citizen.name }} {{ citizen.surname }}</a>
+                    {% endif %}
+                    {% if citizen.guest %}<span class="badge badge-pill badge-dark">{{ 'label.guest'|trans|raw }}</span>{% endif %}
+                    {% if citizen.needSupport %}<span class="badge badge-pill badge-dark">{{ 'label.needSupport'|trans|raw }}</span>{% endif %}
+                    {% if citizen.transport %}<span class="badge badge-pill badge-dark"><i class="fa fa-car" aria-hidden="true"></i></span>{% endif %}
+                    {% for bus in citizen.getTicketsbus %}
+                        <span class="badge badge-pill badge-dark"><i class="fa fa-bus" aria-hidden="true"></i></span>{% endfor %}
+                        {% set del = 1 %}
+                        {% if citizen.deleted == 1 %}
+                            {% set del = 0 %}
+                        {% endif %}
+                        <a href="{{ path('citizen_delete', {id: citizen.id, d: del}) }}" class="btn btn-sm btn-secondary delete_citizen" id="delete_citizen_{{ citizen.id }}" rel="{{ citizen.id }}">
+                                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                {% if citizen.deleted == 0 %}
+                                    {{ 'label.delete'|trans|raw }}
+                                {% else %}
+                                    {{ 'label.reload'|trans|raw }}
+                                {% endif %}
+                        </a>
+                        </h3> 
+                    </div>
+                    
+                    <div class="card-body">
+                        <ul class="nav nav-pills flex-column">
+                        <li class="nav-item">
+                            <span class="text-info">{{ citizen.cityBirth }}, {{ citizen.birthDate|date('d/m/Y') }} [{{ ages[citizen.id] }} {% transchoice ages[citizen.id] %}years_plural{% endtranschoice %}]</span></li>
+                        <li class="nav-item">
+                            <span class="text-info"><i class="fa fa-phone" aria-hidden="true"></i>{{ citizen.phone }} <i class="fa fa-envelope" aria-hidden="true"></i>{{ citizen.email }}</span></li> 
+                        {% if citizen.address %}
+                            <li class="nav-item">
+                            <span class="text-info">{{ citizen.address.street }}, {{ citizen.address.city }} ({{ citizen.address.province }})</span></li>
+                        {% endif %}
+                        {% if citizen.id in delegates|keys %}
+                        <li class="nav-item">
+                            <span class="text-info"><i class="fa fa-user" aria-hidden="true"></i>{{ delegates[citizen.id] }}</span></li>{% endif %}
+                        <li class="nav-item">
+                            {% if citizen.relationship %}
+                            {% if citizen.relationship.id in relations|keys %}{{ 'label.relationships'|trans }}
+                            <span class="text-info">{{ relations[citizen.relationship.id] }}</span>{% endif %}{% endif %}
+                            {% if citizen.branch %}
+                            {% if citizen.branch.id in branches|keys %}
+                                {{ 'label.branches'|trans }}
+                                <span class="text-info">{{ branches[citizen.branch.id] }}</span>{% endif %}{% endif %}</li>
+                        {% if citizen.note %}
+                        <li class="nav-item">
+                            <span class="text-info"><i class="fa fa-sticky-note" aria-hidden="true"></i>{{ citizen.note }}</span></li>{% endif %}
+                        {% if citizen.roomNote %}
+                        <li class="nav-item">
+                            <span class="text-info"><i class="fa fa-bed" aria-hidden="true"></i>{{ citizen.roomNote }}</span></li>{% endif %}
+                        </ul>
+                        
+                        
+                        {% if citizen.ticketsevent %}
+                        <ul class="nav nav-pills flex-column">
+                        <li class="text-primary">{{ 'label.ticket'|trans }}</li>
+                        <li class="nav-item">
+                            <span class="text-secondary">{{ citizen.ticketsevent.name }} ({{ citizen.ticketsevent.price }}€)</span>
+                        </li>
+                        </ul>
+                        {% endif %}
+
+                        <ul class="nav nav-pills flex-column">
+                        <li class="text-primary">{{ 'label.meals'|trans }}</li>
+                        {% for restaurantCosts in citizen.getTicketsrestaurant %}
+                            <li class="nav-item">
+                                <span class="text-secondary">{{ restaurantCosts.type }} {{ restaurantCosts.bookDate|date('d/m/Y') }} {{ restaurantCosts.name }} ({{ restaurantCosts.price }}€) 
+                                 {% if citizen.id in restaurantes|keys %}{{ restaurantes[citizen.id].name }} {{ restaurantes[citizen.id].surname }}{% endif %}
+                                </span>
+                            </li>
+                        {% endfor %}        
+                        </ul>
+                    
+                        
+                        <ul class="nav nav-pills flex-column">
+                        <li class="text-primary">{{ 'label.overnight_stay'|trans }}</li>
+                        {% for roomCosts in citizen.getTicketsroom %}
+                            <li class="nav-item">
+                                <span class="text-secondary">{{ roomCosts.name }} ({{ roomCosts.price }}€)
+                                {% if citizen.id in rooms| keys %}{{ rooms[citizen.id].room }} [{{ rooms[citizen.id].name }} {{ rooms[citizen.id].surname }}]{% endif %}
+                                </span>
+                            </li>
+                        {% endfor %}        
+                        </ul>
+                        
+                        <ul class="nav nav-pills flex-column">
+                        <li class="text-primary">{{ 'label.transport'|trans }}</li>
+                        {% for busCost in citizen.getTicketsbus %}
+                            <li class="nav-item">
+                                <span class="text-secondary">{{ busCost.name }} ({{ busCost.price }}€)
+                                </span>
+                            </li>
+                        {% endfor %}        
+                        </ul>
+                        
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <ul class="nav nav-pills flex-column" id="checkins_{{ citizen.id }}">
+                        <li class="text-primary">{{ 'label.checkins'|trans }}</li>
+                        {% for checkin in citizen.checkins %}
+                            <li class="nav-item">
+                                <span class="text-secondary">{% if checkin.type == 1 %} {{ 'citizen.checkin'|trans|raw }} {% else %} {{ 'citizen.checkout'|trans|raw }} {% endif %} {{ checkin.checkDate|date('d/m/Y H:m:s') }}</span>
+                            </li>
+                        {% endfor %}     
+                        </ul>
+                        
+                        {% if citizen.checkins|length > 0 %}
+                            {% for checkin in citizen.checkins %}
+                            {% if loop.last == true %}
+                                {% if checkin.type == 0 %}
+                                    <a href="{{ path('admin_citizen_check', {citizen: citizen.id, type: 1 }) }}" class="btn btn-primary danger checkbtn" rel="{{ citizen.id }}">{{ 'citizen.checkin'|trans|raw }}</a>
+                                 {% else %}
+                                    <a href="{{ path('admin_citizen_check', {citizen: citizen.id, type: 0 }) }}" class="btn btn-primary danger checkbtn" rel="{{ citizen.id }}">{{ 'citizen.checkout'|trans|raw }}</a>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <a href="{{ path('admin_citizen_check', {citizen: citizen.id, type: 1 }) }}" class="btn btn-primary danger checkbtn" rel="{{ citizen.id }}">{{ 'citizen.checkin'|trans|raw }}</a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>   
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+        
+{% endblock %}
+
+{% block sidebar %}
+    <div class="modal" id="modal-from-dom" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'citizen.add_payment'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+              {{ include('admin/payment/_form.html.twig', {
+                  form: form,
+                  button_label: 'action.save'|trans,
+              }, with_context = false) }}
+              {% endif %} 
+              <div id='paymentresult'></div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    {% if task.ordered %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <p><a href="" class="btn btn-lg btn-secondary show-reset-order">
+                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{ 'citizen.reset_order'|trans|raw }}</a></p>
+            <p>
+        {% endif %}             
+        {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <a href="" class="btn btn-lg btn-secondary show-add-payment">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    {{ 'citizen.add_payment'|trans|raw }}
+                </a>
+            </p>
+        {% endif %} 
+        <p>
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+            <span class="block">{{ 'one.task_amount'|trans|raw }}: {{ task.amount }}€</span>
+            <span class="block">{{ 'one.task_order_date'|trans|raw }}: {{ task.orderedDate|date('d/m/Y') }}</span>
+            <span class="block">{{ 'one.task_payment_code'|trans|raw }}: {{ task.code }}</span>
+            </div>
+        </div>
+        </p>
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body" id="payment-list">
+                <div class="block">{{ 'one.citizen_payments_diff'|trans|raw }}: <span id="payment-diff">{{ diff }}</span>€</div>
+                <div class="block">{{ 'one.citizen_payments'|trans|raw }}:   <span id="payment-total">{{ total }}</span>€</div>
+        
+        {% for payment in payments %}
+        <span class="text-secondary" id="payment-{{ payment.id }}">{{ payment.paymentDate|date('d/m/Y') }} {{ payment.type }} ({{ payment.value }}€) <a href="{{ path('admin_citizen_delete_payment', {id: payment.id}) }}" class="alert-text alert-link delete-payment" rel="payment-{{ payment.id }}">x</a></span>
+        
+
+        {% endfor %} 
+        
+        </div>
+        </div>
+    {% else %}
+    <a href="" class="btn btn-lg btn-secondary confirm-delete">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {{ 'one.task_order'|trans|raw }}
+    </a>    
+    {% endif %} 
+    
+    <script>
+    var formurl = "{{ path('admin_citizen_new_payment') }}";
+    </script> 
+{% endblock %}         
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+
+    $('.checkbtn').on('click', function(e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        var rel = $(this).attr('rel');
+        var btn = $(this);
+        btn.hide();
+        
+        $.ajax({url: href, dataType: 'JSON', method: 'POST'})
+        .done(function(response) {
+            if (response['status']=='OK') {
+                c = response['check']['type'] == 1 ? '{{ 'citizen.checkin'|trans|raw }}' : '{{ 'citizen.checkout'|trans|raw }}';
+                $('#checkins_' + rel).append('<li class="nav-item"><span class="text-secondary">' + c + ' ' + response['check']['checkDate']["date"] + '</span></li>');
+                
+                btn.text(response['check']['type'] == 0 ? '{{ 'citizen.checkin'|trans|raw }}' : '{{ 'citizen.checkout'|trans|raw }}');
+                btn.attr('href', response['check']['url']);
+                btn.show();
+            }
+        })
+        .fail(function(response) {
+            btn.show();
+        });
+    });
+    
+    $('.delete_citizen').on('click', function(e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        var rel = $(this).attr('rel');
+        var btn = $(this);
+        btn.hide();
+        
+        $.ajax({url: href, dataType: 'JSON', method: 'POST'})
+        .done(function(response) {
+            if (response['status']=='OK') {
+                btn.text(response['d'] == 1 ? '{{ 'label.delete'|trans|raw }}' : '{{ 'label.reload'|trans|raw }}');
+                btn.attr('href', response['url']);
+                btn.show();
+            }
+        })
+        .fail(function(response) {
+            btn.show();
+        });
+    });
+    
+ </script> 
+{% endblock %}        

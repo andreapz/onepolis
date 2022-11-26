@@ -1,0 +1,53 @@
+{#
+    By default, forms enable client-side validation. This means that you can't
+    test the server-side validation errors from the browser. To temporarily
+    disable this validation, add the 'novalidate' attribute:
+
+    {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+#}
+
+{{ form_start(form, {attr: attr|default({})}) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.initialDate) }}
+    {{ form_row(form.endDate) }}
+
+    <h4>{{ 'label.address'|trans }}</h3>
+    <p class="addresses">
+        {{ form_row(form.address.street) }}
+        {{ form_row(form.address.city) }}
+        <ul class="list-group" id="event_city_result"></ul>
+        {{ form_row(form.address.postcode) }}
+        {{ form_row(form.address.province) }}
+        {{ form_row(form.address.state) }}
+    </p>
+
+    <h4>{{ 'label.tickets'|trans }}</h3>
+
+    <ul class="tickets" data-prototype="{{ form_widget(form.tickets.vars.prototype)|e('html_attr') }}">
+    <p class="tickets">
+        {% for ticket in form.tickets %}
+            <li class="ticket_form">
+                <div id="event_tickets_{{ loop.index0 }}">
+                    {{ form_row(ticket.name) }}
+                    {{ form_row(ticket.price) }}
+                    {{ form_row(ticket.minAge) }}
+                    {{ form_row(ticket.maxAge) }}
+                    {{ form_row(ticket.total) }}
+                    {{ form_row(ticket.limitDate) }}
+                </div>
+            </li>
+        {% endfor %}        
+    </ul>
+    </p>
+
+    <button type="submit" class="{{ button_css|default("btn btn-primary") }}">
+        <i class="fa fa-save" aria-hidden="true"></i> {{ button_label|default('label.create_event'|trans) }}
+    </button>
+
+    {% if include_back_to_home_link|default(false) %}
+        <a href="{{ path('admin_events') }}" class="btn btn-link">
+            <i class="fa fa-list-alt" aria-hidden="true"></i> {{ 'action.back_to_list'|trans }}
+        </a>
+    {% endif %}
+
+{{ form_end(form) }}

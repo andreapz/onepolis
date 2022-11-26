@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1><a href="{{ path('hotel_show', {id: hotel_id}) }}">{{ hotel_name }}</a></h1>
+    
+        <div>
+            <h4>{{ room.name }}<a href="{{ path('admin_room_edit', {id: room.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></a></h4>
+        </div>
+    
+        <div><p>{{ room.description }} [{{ room.total }}]</p></div>
+ 
+    {% if room.tickets %}
+    <p class="roomCosts">
+        <div>
+            <ul>
+    {% for ticket in room.tickets %}
+        <li><h4><a href="{{ path('room_ticket_show', {id: ticket.id}) }}">{{ ticket.name }}</a> {{ ticket.price }} [{{ ticket.initialDate|date('d/m/Y') }} - {{ ticket.endDate|date('d/m/Y') }}]</h4></li>
+    {% endfor %}
+            </ul>
+         </div>
+     </p>
+     {% endif %}
+     
+     <a href="{{ path('admin_room_cost_new', {id: room.id}) }}" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {{ 'one.add_ticket'|trans|raw }}</a>
+     
+{% endblock %}

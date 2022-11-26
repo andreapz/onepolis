@@ -1,0 +1,23 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<div id="bigform" class="col-sm-12">
+                    
+    {# render the task's only field: description #}
+
+    <div id="template">{{ templatesql|raw }}</div>
+
+</div>        
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    //var t = "";
+    //$('#template').append(t);
+</script>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}

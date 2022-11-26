@@ -1,0 +1,6 @@
+<tr class="table-light" id="restaurantextracost-{{ restaurantextracost.id }}">
+<th scope="row" class="col-sm-4">{{ restaurantextracost.type }}</th>
+<td class="col-sm-3">{{ restaurantextracost.price }}</td>
+<td class="col-sm-1"><a href="{{ path('admin_restaurantextracost_delete', {id: restaurantextracost.id}) }}" class="alert-text alert-link delete-restaurantextracost" rel="restaurantextracost-{{ restaurantextracost.id }}">
+        {{ include('images/delete.html.twig') }}</a></td>
+</tr>

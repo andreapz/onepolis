@@ -1,0 +1,6 @@
+<li class="text-primary" id="roomprice-{{ roomprice.id }}">
+    <span class="text-secondary">{{ roomprice.guests }}: {{ roomprice.price }}€
+    <a href="{{ path('admin_roomrealprice_delete', {id: roomprice.id}) }}" class="alert-text alert-link delete-roomcost" rel="roomprice-{{ roomprice.id }}">x</a>
+    </span>
+</li>    
+        

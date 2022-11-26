@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'login' %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="well">
+                {% include "@FOSUser/Registration/register_content.html.twig" %}
+            </div>
+        </div>
+
+        <div id="login-help" class="col-sm-7">
+            <h3>
+                <i class="hidden-xs fa fa-long-arrow-left" aria-hidden="true"></i>
+                {{ 'help.register_users'|trans }}
+            </h3>
+
+            <div id="login-users-help" class="panel panel-default">
+                <div class="panel-body">
+                    <p>
+                        {{ 'help.add_credential'|trans }}<br/>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    {{ parent() }}
+{% endblock %}

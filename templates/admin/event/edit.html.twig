@@ -1,0 +1,37 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body_id 'admin_event_edit' %}
+    
+{% block main %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1>{{ 'title.event_new'|trans }}</h1>
+
+    {{ include('admin/event/_form.html.twig', {
+        form: form,
+        button_label: 'action.save'|trans,
+        include_back_to_home_link: true,
+    }, with_context = false) }}
+    
+    
+    {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+    <div class="section">
+        <a href="{{ path('event_show', {ueid: event.ueid}) }}" class="btn btn-lg btn-block btn-success">
+            <i class="fa fa-eye" aria-hidden="true"></i> {{ 'action.show_event'|trans }}
+        </a>
+    </div>
+
+    {{ parent() }}
+
+    
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var queryurl =  "{{ path('city_handle_search') }}";
+    </script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+    
+    <div class="col-lg-7">
+        <p class="bs-component">
+        <button type="button" class="btn btn-secondary show-add-restaurantmeal"><i class="fa fa-plus" aria-hidden="true"></i>
+                {{ 'restaurant.add_meal'|trans|raw }}</button>
+        <button type="button" class="btn btn-secondary show-add-restaurantextracost"><i class="fa fa-plus" aria-hidden="true"></i>
+                {{ 'hotel.add_extracost'|trans|raw }}</button>
+        <a href="{{ path('admin_restaurantreal_edit', {id: restaurant.id}) }}" class="btn btn-sm btn-secondary">
+                <i class="fa fa-edit" aria-hidden="true"></i></a>
+        </p>
+   </div>
+    
+    <div class="well well-lg col-lg-12">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item"><span class="text-info">{{ restaurant.name }} {{ restaurant.surname }}</span></li>
+            <li class="nav-item"><i class="fa fa-address-card" aria-hidden="true"></i><span class="text-info">{{ restaurant.address.street }}, {{ restaurant.address.city }} ({{ restaurant.address.province }})</span></li>
+            <li class="nav-item"><i class="fa fa-phone" aria-hidden="true"></i><span class="text-info">{{ restaurant.phone }}</span> <i class="fa fa-envelope" aria-hidden="true"></i><span class="text-info">{{ restaurant.email }}</span></li>
+            <li class="nav-item"><i class="fa fa-sticky-note" aria-hidden="true"></i><span class="text-info">{{ restaurant.note }} </span></li>
+            <li class="nav-item"><span class="text-info">{{ restaurant.restaurant.name }}</span></li>
+        </ul>
+    </div>
+        
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'extracost.type'|trans|raw }}</th>  
+            <th scope="col">{{ 'extracost.price'|trans|raw }}</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody class="table-restaurantextracost">
+            {% for restaurantextracost in restaurant.extras %}
+            {{ include('admin/restaurantextracost/_row.html.twig', {
+                restaurantextracost: restaurantextracost,
+            }, with_context = false) }}
+            {% endfor %}
+        </tbody>
+    </table>
+   
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'restaurant.meal.name'|trans|raw }}</th> 
+            <th scope="col">{{ 'room.guests'|trans|raw }}</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody class="table-room">
+            {% for meal in restaurant.meals %}
+            {{ include('admin/restaurantrealmeal/_row.html.twig', {
+                meal: meal,
+                show_control: 1,
+            }, with_context = false) }}
+            {% endfor %}
+        </tbody>
+    </table>
+       
+{% endblock %}
+
+{% block sidebar %}
+    <div class="modal" id="modal-from-dom" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'restaurant.add_meal'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/restaurantrealmeal/_form.html.twig', {
+                form: form,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %} 
+          </div>
+          <div id="roomresult"></div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+            
+    <div class="modal" id="modal-from-dom-restaurantmeal-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'restaurant.remove_meal'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_meal'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-restaurantmeal">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+            
+    <div class="modal" id="modal-from-dom-restaurantextracost" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'hotel.add_extracost'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/restaurantextracost/_form.html.twig', {
+                form: formextra,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %} 
+          </div>
+          <div id="restaurantextracostresult"></div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+            
+    <div class="modal" id="modal-from-dom-restaurantextracost-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'hotel.remove_extracost'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_extracost'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-restaurantextracost">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+            
+    <div class="modal" id="modal-from-dom-mealcost" >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ 'restaurant.add_mealcost'|trans|raw }}</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ include('admin/restaurantrealmealprice/_form.html.twig', {
+                form: formprice,
+                button_label: 'action.save'|trans,
+            }, with_context = false) }}
+            {% endif %} 
+          </div>
+          <div id="mealcostresult"></div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal" id="modal-from-dom-mealcost-delete" >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">{{ 'restaurant.remove_mealcost'|trans|raw }}</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{ 'proceed_delete_mealcost'|trans }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary danger" id="modal-delete-mealcost">Si</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+              
+    <script>
+    var formurl = "{{ path('admin_restaurantrealmeal_new', {id: restaurant.id}) }}";
+    var restaurantextracosturl = "{{ path('admin_restaurantextracost_new', {id: restaurant.id}) }}";
+    </script> 
+{% endblock %}            

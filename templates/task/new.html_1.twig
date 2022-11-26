@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    {{ form_start(form) }}
+    {# render the task's only field: description #}
+
+    <h4>{{ 'label.citizen'|trans }}</h3>
+    <p class="citizens">
+        {% for citizen in form.citizens %}
+            {{ form_row(citizen.name) }}
+        {% endfor %}
+    </p>
+    <input type="submit" value="{{ 'label.create_event'|trans }}" class="btn btn-primary" />
+    <a href="{{ path('admin_events') }}" class="btn btn-link">
+        {{ 'action.back_to_list'|trans }}
+    </a>  
+    {{ form_end(form) }}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+
+        var restaurantcosts = [{% for id in ids %}'{{ id }}',{% endfor %} ];
+
+        $(document).ready(function () {
+
+            if (typeof restaurantcosts !== 'undefined') {
+
+                restaurantcosts.forEach(function (entry) {
+                    console.log(entry);
+                    $('#task_restaurantCosts_' + entry).prop('checked', true);
+                });
+            }
+
+        });
+    </script>
+{% endblock %}

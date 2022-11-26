@@ -1,0 +1,17 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1>{{ 'title.restaurant_cost'|trans }}</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <input type="submit" value="{{ 'label.update'|trans }}" class="btn btn-primary" />
+    {% if roomcost.id %}
+    <a href="{{ path('room_ticket_show', {id: roomcost.id}) }}" class="btn btn-link">
+        {{ 'action.back_to_list'|trans }}
+    </a>  
+    {% endif %}
+    {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

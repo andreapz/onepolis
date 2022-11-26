@@ -1,0 +1,27 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1>{{ 'restaurant.list'|trans }}</h1>
+    
+    {% for restaurant in restaurants %}
+     <a href="{{ path('admin_restaurantreal_show', {id: restaurant.id}) }}">
+            <div class="well well-lg">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item"><span class="text-info">{{ restaurant.name }} {{ restaurant.surname }}</span></li>
+                </ul>
+                <span class="text-info">{{ restaurant.address.street }}, {{ restaurant.address.city }} ({{ restaurant.address.province }})</span></li>
+                
+            </div>
+            </a>
+    {% endfor %}
+    
+{% endblock %}
+
+{% block sidebar %}
+    <p>
+        <a href="{{ path('admin_restaurantreal_new', {id: id}) }}" class="btn btn-lg btn-secondary">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            {{ 'restaurant.add_restaurant'|trans|raw }}
+        </a>
+    </p>
+{% endblock %}        

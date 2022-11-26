@@ -1,0 +1,156 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary col-sm-12">
+
+<form name="match" method="post" class="form-inline my-2 my-lg-0">
+    <select id="match_user" name="match[user]" class="form-control mr-sm-2">
+    {% if is_granted('ROLE_ADMIN') %}
+    <option value="0">Nessuno</option>
+    {% endif %}
+    {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username}}</option>
+    {% endfor %}
+    </select>
+    
+    <input type="submit" value="{{ button_label|default('label.search'|trans) }}" class="btn btn-secondary  my-2 my-sm-0" />
+</form>
+
+<div id="tasksearch" class="col-lg-4">
+    
+    
+    <div class="">
+        <input type="text" id="citizen_task" maxlength="50" class="form-control" value="" placeholder="{{ 'one.search_task'|trans|raw }}">
+        <input type="text" id="citizen_id" maxlength="50" class="form-control" value="" style="display: none">
+    
+    
+    <ul class="list-group" id="citizen_task_result"></ul>
+    </div>
+    
+</div>
+        
+{% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('task_show_all', {id: event}) }}" class="btn  btn-secondary my-2 my-sm-0" id="match-task">
+        <i class="fa fa-search" aria-hidden="true"></i>{{ 'citizen.show_all_tasks'|trans|raw }}</a>
+{% endif %}
+</nav>
+
+<div id="tasks" class="col-lg-12s"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var urlt = "{{ urlt }}";
+        
+        var u = "{{ userid }}";
+        
+        document.querySelector('#match_user').value = u;
+          
+        if (u > 0) {
+             $.post(urlt, function(response) {
+                 for(var k in response) {
+
+                    var s = '<div class="col-lg-12s">';
+                    
+                    s = '<div class="col-lg-12s">';
+                    s += '<ul class="list-group">';
+                    
+                    s += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primary"><h4><a href="' + response[k]['url'] + '" class="text-dark">{{ 'task.task'|trans|raw }} ' + k + ' ' + response[k]['code'] + '</a></h4>';
+
+                    amount = 0;
+                    if (response[k]['ordered'] == 1) {
+                        
+                        s += ' {{ 'one.task_amount'|trans|raw }}:' + ' ' + response[k]['amount'] + ' {{ 'one.task_order_date'|trans|raw }}:' + ' ' + response[k]['ordered_date'] + ' <span id="diff_'+ k +'">{{ 'one.citizen_payments_diff'|trans|raw }}: </span>';
+                        amount = parseInt(response[k]['amount']) * -1;
+                    }
+                    s += '</li>'; 
+
+                    s += '<li class="list-group-item">';
+
+                    s += '<table class="table table-hover"><thead><tr><th scope="col">{{ 'label.name'|trans|raw }} {{ 'label.surname'|trans|raw }}</th>';
+                    
+                    s += '<th scope="col">{{ 'label.cityBirth'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.address'|trans|raw }}</th>';
+
+                    s += '<th scope="col">{{ 'label.phone'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.email'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.gender'|trans|raw }}</th>';
+                    
+                    s += '<th scope="col">{{ 'label.branches'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.relationships'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.overnight_stay'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.restaurant'|trans|raw }}</th>';                                                           
+                    s += '<th scope="col">{{ 'menu.user'|trans|raw }}</th>';
+
+                    s += '</tr></thead><tbody>';
+                    
+                    for(var c in response[k]['citizen']) {
+                        s += '<tr><th scope="row">' + response[k]['citizen'][c]['name'] + ' ' + response[k]['citizen'][c]['surname'];
+                        
+                        if (response[k]['citizen'][c]['guest'] == 1) {
+                            s += '<span class="badge badge-pill badge-dark">{{ 'label.guest'|trans|raw }}</span>';
+                        }
+                        if (response[k]['citizen'][c]['need_support'] == 1) {
+                            s += '<span class="badge badge-pill badge-dark">{{ 'label.needSupport'|trans|raw }}</span>';
+                        }
+                        + '</th>';
+                        s += '<td>' + response[k]['citizen'][c]['city_birth'] + ' ' + (response[k]['citizen'][c]['birth_date'] == null ? '' : response[k]['citizen'][c]['birth_date'].substring(0,10))  +'</td>';
+                        s += '<td>' + response[k]['citizen'][c]['street'] + ' ' + response[k]['citizen'][c]['city'] + ' ' + response[k]['citizen'][c]['postcode'] + ' ' + response[k]['citizen'][c]['province'] + ' ' + response[k]['citizen'][c]['state'] + '</td>';
+
+                        s += '<td>' + response[k]['citizen'][c]['phone'] + '</td>';
+                        s += '<td>' + response[k]['citizen'][c]['email'] + '</td>';
+                        s += '<td>' + response[k]['citizen'][c]['gender'] + '</td>';
+                        s += '<td>' + response[k]['citizen'][c]['branchname'] + '</td>';
+                        s += '<td>' + response[k]['citizen'][c]['relationshipname'] + '</td>';
+                        s += '<td>' + response[k]['citizen'][c]['roomname'] + ' (' + response[k]['citizen'][c]['roomprice'] + '€)</td>';
+
+                        s += '<td><ul class="list-group">';
+                        for(var m in response[k]['citizen'][c]['meals']) {
+                            s += '<li>' + response[k]['citizen'][c]['meals'][m]['name'] + ' ' + response[k]['citizen'][c]['meals'][m]['mealdate'].substring(0,10) + ' (' + response[k]['citizen'][c]['meals'][m]['price'] + '€)</li>';
+                        }
+                        s += '</ul></td>';
+
+                        s += '<td>' + response[k]['citizen'][c]['username'] + '</td>';
+                        
+                        
+                        
+                        
+                        
+				
+				//"note": "room_note": null,
+				
+			
+
+                        s +='</tr>';
+                        
+                    }
+                    s += '</tbody></table></li>';
+                    for(var p in response[k]['payments']) {
+                        amount +=  parseInt(response[k]['payments'][p]['value']);
+                        s += '<li class="list-group-item">' + ' ' + response[k]['payments'][p]['value'] + '€ [' + response[k]['payments'][p]['type']+ '] ' + response[k]['payments'][p]['payment_date'];     
+                        if (response[k]['payments'][p]['description']) {
+                            s += ' ' + response[k]['payments'][p]['description'] + '</li>'; 
+                        }
+
+                    }
+                    s += '</ul></div>';
+                    $('#tasks').append(s);
+                    $('#diff_'+k).append(amount+'€');
+                    
+                 }
+
+            }, 'JSON');
+
+        }
+       var citizenqueryurl =  "{{ path('citizen_handle_search') }}";
+    </script>
+{% endblock %}
+
+{% block sidebar %}
+
+    
+    
+{% endblock %}

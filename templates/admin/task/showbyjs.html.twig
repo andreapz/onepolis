@@ -1,0 +1,212 @@
+var hotelmap = null;
+
+var openAll = function(e) { 
+    $('.task_detail_hide').each(function( index ) {
+      $( this ).removeClass("task_detail_hide").addClass("task_detail_show");
+    });
+};
+
+var closeAll = function(e) { 
+    $('.task_detail_show').each(function( index ) {
+      $( this ).removeClass("task_detail_show").addClass("task_detail_hide");
+    });
+};
+
+$("#open_all_tasks").on( "click", openAll);
+$("#close_all_tasks").on( "click", closeAll);
+
+var showDetail = function(e) {
+    var id = $(this).attr('rel');
+
+    if ($('#task_detail_'+id).hasClass("task_detail_hide")) {
+        $('#task_detail_'+id).removeClass("task_detail_hide");
+        $('#task_detail_'+id).addClass("task_detail_show");
+        $('#toggle_detail_img_'+id).removeClass("fa fa-eye-slash");
+        $('#toggle_detail_img_'+id).addClass("fa fa-eye");
+    } else {
+        $('#task_detail_'+id).removeClass("task_detail_show");
+        $('#task_detail_'+id).addClass("task_detail_hide");       
+        $('#toggle_detail_img_'+id).removeClass("fa fa-eye");
+        $('#toggle_detail_img_'+id).addClass("fa fa-eye-slash");
+    }
+    e.preventDefault();
+};
+
+
+var showMap = function(response) {
+
+    var tot = 0;
+    var totb = 0;
+    var totc = 0;
+    var totbus = 0;
+    var totck = 0;
+
+    var hotelslist = '';
+    for(var h in response['hotels']) {
+        for(var room in response['hotels'][h]) {
+            hotelslist += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y" id="room_' + room + '"><h6>' + response['hotels'][h][room]['name'] + ': <b>' + response['hotels'][h][room]['count'] +'</b></h6></li>';
+        }
+    }
+    $('#tastreporthotel').append(hotelslist);
+
+    var restauranteslist = '';
+    for(var r in response['restaurantes']) {
+        for(var meal in response['restaurantes'][r]) {
+            restauranteslist += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>' + response['restaurantes'][r][meal]['name'] + ': <b>' + response['restaurantes'][r][meal]['count'] +'</b></h6></li>';
+        }
+    }
+    $('#tastreportrestaurant').append(restauranteslist);
+    
+    
+    
+    var buseslist = '';
+    for(var b in response['buses']) {
+        buseslist += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>' + b + ': <b>' + response['buses'][b]['count'] +'</b></h6></li>';
+    }
+    $('#tastreportbus').append(buseslist);
+    
+
+    for(var k in response['task']) {
+
+    var s = '<div class="col-lg-12">';
+        
+    s += '<ul class="list-group col-lg-12">';
+    
+    s += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h4><a href="' + response['task'][k]['url'] + '" class="text-dark">{{ 'task.task'|trans|raw }} ' + k;
+    if (response['task'][k]['code']) {
+        s += ' ' + response['task'][k]['code'];
+    }
+    s += '</a></h4>';
+    
+    
+    s += '<ul>';
+    for(var c in response['task'][k]['citizen']) {
+        s += '<li>' + response['task'][k]['citizen'][c]['name'] + ' ' + response['task'][k]['citizen'][c]['surname'] + ' ['+response['task'][k]['citizen'][c]['age'] +' anni]';
+        s += '[' + response['task'][k]['citizen'][c]['username'] + '] ';
+        if (response['task'][k]['citizen'][c]['cki'] > 0) {
+            s += '<i class="fa fa fa-check-circle" aria-hidden="true"></i>';
+            totck++;
+        }
+        s += '</li>';
+    }
+    s += '</ul>';
+   
+    amount = 0;
+    if (response['task'][k]['ordered'] == 1) {
+    tot += parseInt(response['task'][k]['amount']);
+        
+    s += '<ul><li> {{ 'one.task_amount'|trans|raw }}:' + ' ' + response['task'][k]['amount'] + '</li><li> {{ 'one.task_order_date'|trans|raw }}:' + ' ' + response['task'][k]['ordered_date'] + '</li><li> <span id="diff_'+ k +'">{{ 'one.citizen_payments_diff'|trans|raw }}: </span></li></ul>';
+        amount = parseInt(response['task'][k]['amount']) * -1;
+    }
+    s += '<a href="#" class="text-dark toggle_detail" id="toggle_detail_' + k + '" rel="' + k + '"><i class="fa fa-eye-slash" id="toggle_detail_img_' + k + '" aria-hidden="true"></i></a>';
+    s += '</li>'; 
+    s += '</ul><div id="task_detail_' + k +'" class="task_detail_hide">';
+
+    for(var c in response['task'][k]['citizen']) {
+        s += '<div class="card border-primary mb-3" style="width: 49%; float: left; margin-left: 2px;">';
+        s += '<div class="card-header"><h3>';
+        s += response['task'][k]['citizen'][c]['name'] + ' ' + response['task'][k]['citizen'][c]['surname'];
+        if (response['task'][k]['citizen'][c]['guest'] == 1) {
+            s += '<span class="badge badge-pill badge-dark">{{ 'label.guest'|trans|raw }}</span>';
+        }
+        if (response['task'][k]['citizen'][c]['need_support'] == 1) {
+                s += '<span class="badge badge-pill badge-dark">{{ 'label.needSupport'|trans|raw }}</span>';
+        }
+        if (response['task'][k]['citizen'][c]['cki'] > 0) {
+            s += '<i class="fa fa fa-check-circle" aria-hidden="true"></i>';
+        }
+    
+        
+        s += '</h3></div><div class="card-body">';
+        s += '<ul class="nav nav-pills flex-column">';
+        s += '<li class="nav-item"><span class="text-info">';
+        s += response['task'][k]['citizen'][c]['city_birth'] + ' ' + response['task'][k]['citizen'][c]['age'] + ' anni';
+        s += '</span></li>';
+        s += '<li class="nav-item">';
+        s += '<span class="text-info"><i class="fa fa-phone" aria-hidden="true"></i>'+response['task'][k]['citizen'][c]['phone']+' <i class="fa fa-envelope" aria-hidden="true"></i>'+response['task'][k]['citizen'][c]['email']+'</span></li>';
+        s += '<li class="nav-item"><span class="text-info">' + response['task'][k]['citizen'][c]['street'] + ' ' + response['task'][k]['citizen'][c]['city'] + ' ' + response['task'][k]['citizen'][c]['postcode'] + ' ' + response['task'][k]['citizen'][c]['province'] + ' ' + response['task'][k]['citizen'][c]['state'] + '</span></li>';
+        s += '<li class="nav-item">';
+        if (response['task'][k]['citizen'][c]['relationshipname']) {
+            s += '<span class="text-info">{{ 'label.relationships'|trans }}: '+response['task'][k]['citizen'][c]['relationshipname']+'</span> ';
+        }
+        if (response['task'][k]['citizen'][c]['branchname']) {
+            s += '<span class="text-info">{{ 'label.branches'|trans }}: '+response['task'][k]['citizen'][c]['branchname']+'</span>';
+        }
+        s += '</li>';
+        if (response['task'][k]['citizen'][c]['note']) {
+            s += '<li class="nav-item"><span class="text-info"><i class="fa fa-sticky-note" aria-hidden="true"></i>'+response['task'][k]['citizen'][c]['note']+'</span></li>';
+        }
+        if (response['task'][k]['citizen'][c]['room_note']) {
+            s += '<li class="nav-item"><span class="text-info"><i class="fa fa-bed" aria-hidden="true"></i>'+response['task'][k]['citizen'][c]['room_note']+'</span></li>';
+        }
+        s += '</ul>';
+
+        if (response['task'][k]['citizen'][c]['roomname']) {
+            s += '<ul class="nav nav-pills flex-column"><li class="text-primary">{{ 'label.overnight_stay'|trans }}</li>';
+            s += '<li class="nav-item"><span class="text-secondary">' + response['task'][k]['citizen'][c]['roomname'] + ' (' + response['task'][k]['citizen'][c]['roomprice'] + '€)</span></li>';
+            s += '</ul>';
+        }
+        s += '<ul class="nav nav-pills flex-column"><li class="text-primary">{{ 'label.meals'|trans }}</li>';
+        for(var m in response['task'][k]['citizen'][c]['meals']) {
+            s += '<li class="nav-item"><span class="text-secondary">' + response['task'][k]['citizen'][c]['meals'][m]['name'] + ' ' + response['task'][k]['citizen'][c]['meals'][m]['mealdate'].substring(0,10) + ' (' + response['task'][k]['citizen'][c]['meals'][m]['price'] + '€)</span></li>';
+        }
+        s += '</ul>';
+
+        s += '<ul class="nav nav-pills flex-column"><li class="text-primary">{{ 'label.transport'|trans }}</li>';
+        for(var b in response['task'][k]['citizen'][c]['buses']) {
+            s += '<li class="nav-item"><span class="text-secondary">' + b + ' (' + response['task'][k]['citizen'][c]['buses'][b] + '€)</span></li>';
+        }
+        s += '</ul>';
+        
+        s += '<li class="nav-item"><span class="text-info"><i class="fa fa-user" aria-hidden="true"></i>'+response['task'][k]['citizen'][c]['username']+'</span></li>';
+
+        s += '</ul>';
+
+        s += '</div>';
+        s += '</div>';
+    }
+    s += '<div class="card border-primary mb-3" style="width: 49%; float: left; margin-left: 2px;">';
+    s += '<div class="card-body">';
+    s += '<ul class="nav nav-pills flex-column"><li class="text-primary">{{ 'one.citizen_payments'|trans }}</li>';
+    for(var p in response['task'][k]['payments']) {
+        amount +=  parseInt(response['task'][k]['payments'][p]['value']);
+        if (response['task'][k]['payments'][p]['type'] === 'Bonifico') {
+            totb += parseInt(response['task'][k]['payments'][p]['value']);
+        } else {
+            totc += parseInt(response['task'][k]['payments'][p]['value']);
+        }
+        s += '<li class="nav-item"><span class="text-secondary">' + ' ' + response['task'][k]['payments'][p]['value'] + '€ [' + response['task'][k]['payments'][p]['type']+ '] ' + response['task'][k]['payments'][p]['payment_date'];     
+        if (response['task'][k]['payments'][p]['description']) {
+            s += ' ' + response['task'][k]['payments'][p]['description']; 
+        }
+        s += '</span></li>';
+
+    }
+    s += '</ul>';
+    s += '</div>';
+    s += '</div>';
+    s += '</div>';
+
+    s += '</div>';
+    $('#tasks').append(s);
+    $("#toggle_detail_" + k).on( "click", showDetail);
+    $('#diff_'+k).append(amount+'€');
+    
+    }
+    var tots = (-1) * (tot-totb-totc);
+    $('#amount_tot').append(tot);
+    $('#amount_totb').append(totb);
+    $('#amount_totc').append(totc);
+    $('#amount_tots').append(tots);
+    $('#user_tot').append(response['users']['tot']);
+    cks = '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6> Checkin<b>: ' + totck +'</b></h6></li>';
+    $('#tastreportck').append(cks);
+};
+
+$.post(urlt, function(response) {
+
+    hotelmap = response;
+    
+    showMap(hotelmap);
+    
+}, 'JSON');

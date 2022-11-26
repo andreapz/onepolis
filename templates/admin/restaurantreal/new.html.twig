@@ -1,0 +1,17 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<div id="bigform" class="col-sm-12">
+    {{ include('admin/restaurantreal/_form.html.twig', {
+        form: form,
+        h: h,
+        button_label: 'action.save'|trans,
+        include_back_to_home_link: true,
+    }, with_context = false) }}
+</div>
+{% endblock %}
+
+
+{% block sidebar %}
+    
+{% endblock %}    

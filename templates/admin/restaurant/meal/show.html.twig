@@ -1,0 +1,31 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1><a href="{{ path('restaurant_show', {id: restaurantMeal.restaurant.id}) }}">{{ restaurantMeal.restaurant.name }}</a></h1>
+    
+    <div>
+        <h4>{{ restaurantMeal.name }}</h4> <a href="{{ path('restaurant_meal_edit', {id: restaurantMeal.id}) }}"><i class="fa fa-edit" aria-hidden="true"></i></a>
+         
+        {{ restaurantMeal.mealDate|date('d/m/Y') }}
+    </div>
+    
+    
+    {% if restaurantMeal.tickets %}
+    <p class="restaurantCosts">
+     <div>
+         <ul>
+    {% for ticket in restaurantMeal.tickets %}
+        <li>
+            <h4><a href="{{ path('restaurant_cost_show', {id: ticket.id}) }}">{{ ticket.name }}</a> ({{ ticket.price }}€)</h4> [{{ ticket.bookInitDate|date('d/m/Y') }}, {{ ticket.bookEndDate|date('d/m/Y') }}]
+        </li>
+    {% endfor %}
+         </ul>
+     </div>
+     </p>
+     {% endif %}
+     
+       <a href="{{ path('admin_restaurant_cost_new', {id: restaurantMeal.id}) }}" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {{ 'one.add_ticket'|trans|raw }}</a>
+
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary col-sm-12" style="visibility: hidden;">
+
+<form name="match" method="post" class="form-inline my-2 my-lg-0">
+    <select id="show_options" name="show[opt]" class="form-control mr-sm-2">
+        <option value="0">Mappa</option>
+        <option value="1">Lista</option>
+    </select>
+    
+    <select id="show_age" name="show[opt]" class="form-control mr-sm-2">
+        <option value="0">Tutti</option>
+        <option value="1">0 - 4</option>
+        <option value="2">5 - 8</option>
+        <option value="3">9 - 17</option>
+        <option value="4">18 - 30</option>
+    </select>
+</form>
+        
+</nav>
+    
+<div id="tasks" class="col-lg-12"></div>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var url = "{{ url }}";
+        var restaurantData = null;
+        
+        $.post(url, function(response) {
+            restaurantData = response;
+            showReport($('#show_options').val());
+        }, 'JSON');
+       
+       var showReport = function(val) {
+           $('#tasks').empty();
+           if (restaurantData) {
+               if (val == 0) {
+                   $('#show_age').hide();
+                   showMap(restaurantData);
+               } 
+               else if (val == 1) {
+                   $('#show_age').show();
+                   showList(restaurantData);
+               } 
+            }
+       };
+       
+        $('#show_options').change(function() {
+            showReport($(this).val());
+        });
+        
+        $('#show_age').change(function() {
+            showReport($('#show_options').val());
+        });
+        
+        var showMap = function(response) {
+            
+            for(var k in response) {
+                var totalcost = 0;
+                var s = '';
+                
+                s += '<h2>' + response[k]['name'] + '</h2>';
+                s += '{{ 'room.total_price'|trans|raw }}: <span id="restaurant_total_cost_' + k + '"></span>';
+                
+                for(var r in response[k]['meals']) {
+                    
+                    s += '<h3>' + response[k]['meals'][r]['name'] + ' [' +response[k]['meals'][r]['reserved'] + ']</h3>' ;
+                    
+                    s += '<table class="table table-hover"><thead><tr>';
+                    s += '<th scope="col">{{ 'task.task'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.name'|trans|raw }} {{ 'label.surname'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'selling_price'|trans|raw }}</th>';
+                    s += '<th scope="col">{{ 'label.supplier_cost'|trans|raw }}</th>';
+                    
+                    s += '</tr></thead><tbody>';
+                    
+                    for(var t in response[k]['meals'][r]['tasks']) {
+                        var task = '<a href="' + response[k]['meals'][r]['tasks'][t]['url'] + '" target="blank">{{ 'task.task'|trans|raw }}: ' + t + '</a> ';
+                        for(var c in response[k]['meals'][r]['tasks'][t]['citizens']) {
+                            var cx = response[k]['meals'][r]['tasks'][t]['citizens'][c];
+                            var cname = cx['name'] + ' ' + cx['surname'] + ' [' + cx['age'] + ' anni], ';
+                            s += '<tr><th scope="row">' + task +'</th><td>'+ cname + '</td><td>' + response[k]['meals'][r]['price'] + '€</td><td>' + response[k]['meals'][r]['cost']+'€' ;
+                            s += '</td></tr>'; 
+                            totalcost += parseFloat(response[k]['meals'][r]['cost']);
+                        }
+                    }
+                    s += '</tbody></table>';
+                }
+
+                $('#tasks').append(s);
+                $('#restaurant_total_cost_'+k).text(totalcost+'€');
+            }
+
+       };
+
+        var showList = function(response) {
+            
+            var ageValue = $('#show_age').val();
+            var minAge = 0;
+            var maxAge = 200
+
+            if (ageValue == 1) {
+                minAge = 0;
+                maxAge = 4;
+            } else if (ageValue == 2) {
+                minAge = 5;
+                maxAge = 8;
+            } else if (ageValue == 3) {
+                minAge = 9;
+                maxAge = 17;
+            } else if (ageValue == 4) {
+                minAge = 18;
+                maxAge = 30;
+            }
+        
+            for(var k in response) {
+                var s = '';
+                
+                s += '<h2>' + response[k]['name'] + '</h2>';
+                s += '<table class="table table-hover"><thead><tr>';
+
+                s += '<th scope="col">{{ 'label.room'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'label.guests'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'label.reserved'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'room.price'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'label.name'|trans|raw }} {{ 'label.surname'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'label.room'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'label.transport'|trans|raw }}</th>';
+
+                s += '</tr></thead><tbody>';
+                
+                for(var r in response[k]['rooms']) {
+                    
+                    
+                    for(var t in response[k]['rooms'][r]['tasks']) {
+                        
+                        
+                        for(var c in response[k]['rooms'][r]['tasks'][t]['citizens']) {
+                            var cx = response[k]['rooms'][r]['tasks'][t]['citizens'][c];
+                            
+                            
+                            if (cx['age'] >= minAge && cx['age'] <= maxAge) {
+                                s += '<tr><th scope="row">' + response[k]['rooms'][r]['rrname'] + '</th><td>'  + response[k]['rooms'][r]['guests'] + '</td><td>' + response[k]['rooms'][r]['reserved'] + '</td><td>' + response[k]['rooms'][r]['price'] + '</td><td>' ;
+                                s +=  '<a href="' + response[k]['rooms'][r]['tasks'][t]['url'] + '" target="blank">{{ 'task.task'|trans|raw }}: ' + t + '</a> ' + cx['name'] + ' ' + cx['surname'] + ' [' + cx['age'] + ' anni], '  + '</td><td>' + cx['room']  + '</td><td>';
+                                if (cx['transport']) {
+                                    s += cx['transport'];
+                                }
+                                s += '</td></tr>'; 
+                            }
+                        }
+                    }
+                    
+                    
+
+                }
+                
+                
+                s += '</tbody></table>';
+                
+                
+                s += '<table class="table table-hover"><thead><tr>';
+
+                s += '<th scope="col">{{ 'label.room'|trans|raw }}</th>';
+                s += '<th scope="col">{{ 'label.room'|trans|raw }}</th>';                
+                s += '<th scope="col">{{ 'label.reserved'|trans|raw }}</th>';
+
+
+                s += '</tr></thead><tbody>';
+                
+                for(var b in response[k]['bundles']) {
+                    
+                    for(var r in response[k]['bundles'][b]['rooms']) {
+                        var roomb = response[k]['bundles'][b]['rooms'][r];
+                        s += '<tr><th scope="row">' + b + '</th><td>'  +  roomb['name'] + '</td><td>' + roomb['reserved'] + '</td><td>' ;
+                    }
+                }
+                
+                
+                s += '</tbody></table>';
+
+               $('#tasks').append(s);
+               
+            }
+        };
+    </script>
+{% endblock %}

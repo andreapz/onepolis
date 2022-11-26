@@ -1,0 +1,41 @@
+
+{% extends 'admin/layout.html.twig' %}
+
+{% block bigform %}
+<div id="taskreport" class="col-lg-12">
+ <ul class="list-group col-lg-4">
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Totale: <span id="amount_tot"></span></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Bonifico: <span id="amount_totb"></span></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Contanti: <span id="amount_totc"></span></h6></li>
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>Saldo: <span id="amount_tots"></span></h6></li>
+    </ul>
+<ul class="list-group col-lg-4" id="tastreporthotel">
+    
+</ul>
+<ul class="list-group col-lg-4" id="tastreportrestaurant">
+    
+</ul>
+</div>
+<div id="tasks" class="col-lg-12"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var urlt = "{{ urlt }}";
+        
+       {{ include('admin/task/showbyjs.html.twig', {
+                
+            }, with_context = false) }}
+
+        
+       var citizenqueryurl =  "{{ path('citizen_handle_search') }}";
+    </script>
+{% endblock %}
+
+{% block sidebar %}
+
+    
+    
+{% endblock %}

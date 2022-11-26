@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'task_index' %}
+
+{% block main %}
+    
+    {% for task in tasks %}
+        <article class="post">
+            <h2>
+                <a href="{{ path('task_index', {slug: task.id}) }}">
+                    {{ task.id }}
+                </a>
+            </h2>
+
+            <p class="post-metadata">
+                
+            </p>
+
+            {{ task.payed }}
+
+            
+        </article>
+    {% else %}
+        <div class="well">{{ 'task.no_task_found'|trans }}</div>
+    {% endfor %}
+
+    
+{% endblock %}
+
+
