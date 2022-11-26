@@ -14,6 +14,7 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Symfony\Bundle\MakerBundle\MakerBundle; //dev
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
 
 class Kernel extends BaseKernel
 {
@@ -43,6 +44,7 @@ class Kernel extends BaseKernel
             new MakerBundle(), //dev
             new SecurityBundle(),
             new FOSUserBundle(),
+            new WebpackEncoreBundle(),
         ];
     }
 }
