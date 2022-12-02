@@ -39,6 +39,8 @@ COPY symfony.conf /etc/apache2/sites-available/000-default.conf
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
 
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
+RUN apt install symfony-cli
 #RUN ../prvapi/deploy_stage.sh
 
 WORKDIR /var/www/html

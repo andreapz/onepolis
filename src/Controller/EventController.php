@@ -40,7 +40,7 @@ class EventController extends AbstractController
     /**
      * Finds and displays a Event entity.
      *
-     * @Route("/event/{ueid}", requirements={"id": "\d+"}, name="event_show", methods={"GET"})
+     * @Route("/event/{ueid}", name="event_show", methods={"GET"})
      */
     public function showAction($ueid) {
         $event = $this->getEvent($this, $this->doctrine, $ueid);

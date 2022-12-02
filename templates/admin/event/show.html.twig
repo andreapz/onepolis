@@ -20,49 +20,49 @@
             <div id='paymentresult'></div>
           </div>
           <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+             <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
           </div>
         </div>
       </div>
     </div>
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        <p><a href="{{ path('task_new', {ueid: event.ueid}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('task_new', {ueid: event.ueid}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-plus" aria-hidden="true"></i>{{ 'one.add_task'|trans|raw }}</a></p>
         
-        <p><a href="{{ path('task_show_by_user', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('task_show_by_user', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'citizen.show_all_tasks'|trans|raw }}</a></p>
         {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
         
-        <p><a href="" class="btn btn-lg btn-secondary show-add-payment">
+        <p><a href="" class="btn btn-lg btn-primary show-add-payment">
         <i class="fa fa-plus" aria-hidden="true"></i>{{ 'citizen.add_payment'|trans|raw }}</a></p>
 
-        <p><a href="{{ path('admin_hotel_real_index', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_hotel_real_index', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'title.hotel_list'|trans|raw }}</a></p>
 
-        <p><a href="{{ path('admin_hotel_matched', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_hotel_matched', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'hotel.matched_hotel'|trans|raw }}</a></p>
         
-        <p><a href="{{ path('admin_hotel_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_hotel_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'hotel.matched_hotel_map'|trans|raw }}</a></p>
         
-        <p><a href="{{ path('admin_hotel_match', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_hotel_match', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-wrench" aria-hidden="true"></i>{{ 'hotel.match_hotel'|trans|raw }}</a></p>
 
-        <p><a href="{{ path('admin_restaurant_real_index', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_restaurant_real_index', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'title.restaurant_list'|trans|raw }}</a></p>
 
-        <p><a href="{{ path('admin_restaurant_matched', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_restaurant_matched', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'restaurant.matched'|trans|raw }}</a></p>
         
-        <p><a href="{{ path('admin_restaurant_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_restaurant_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'restaurant.matched_restaurant_map'|trans|raw }}</a></p>
         
-        <p><a href="{{ path('admin_restaurant_match', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_restaurant_match', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-wrench" aria-hidden="true"></i>{{ 'restaurant.match'|trans|raw }}</a></p>
 
-        <p><a href="{{ path('admin_transport_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-secondary">
+        <p><a href="{{ path('admin_transport_allocation_map', {id: event.id}) }}" class="btn btn-lg btn-primary">
         <i class="fa fa-search" aria-hidden="true"></i>{{ 'transport.matched_transport_map'|trans|raw }}</a></p>
         
         {% endif %}

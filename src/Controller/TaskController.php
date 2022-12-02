@@ -29,6 +29,7 @@ use App\Repository\RestaurantCostCitizenRepository;
 use App\Form\Type\CitizenPaymentType;
 use App\Form\Type\TaskType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController {
+    public function __construct(private ManagerRegistry $doctrine) {}
 
     /**
      * @Route("/task/index/{ref}", defaults={"_format"="html"}, requirements={"ref": "\d+"}, name="task_index", methods={"GET"})
@@ -592,31 +594,31 @@ class TaskController extends AbstractController {
 
     /**
      * Finds and displays a Event entity.
-     * @Security("is_authenticated()")
-     * @Route("/tasks/showby/{id}", requirements={"id": "\d+"}, name="task_show_by_user", methods={"POST", "GET"})
+     * @Route("/tasks/showby/{id}", name="task_show_by_user", methods={"POST", "GET"})
      */
     public function showByUserAction($id, Request $request) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $userid = $this->getUser()->getId();
         $users = [$this->getUser()];
         $rooms = $this->doctrine->getRepository(Room::class)->findAll();
         
-        $postData = $request->request->get('match');
-        $roomid = $postData['room'];
+        if ($request->request->has('match')) { // or query
+            $postData = $request->request->get('match');
+            $roomid = $postData['room'];
             
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $users = $this->doctrine->getRepository(User::class)->findAll();
-            $userid = $postData['user'];
+            if ($this->isGranted('ROLE_ADMIN')) {
+                $users = $this->doctrine->getRepository(User::class)->findAll();
+                $userid = $postData['user'];
+            }
         }
         
         $urltask = "";
-       
         
         if (empty($roomid)) {
             $roomid = 0;
-        }
+        }        
         
-        
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted('ROLE_ADMIN')) {
             if(empty($userid) || $userid == 0) {
                 $urltask = $this->generateUrl('admin_tasks', array('id' => $id, 'r' => $roomid));
             } else {
@@ -630,7 +632,6 @@ class TaskController extends AbstractController {
             $userid = 0;
         }
         
-
         //$form = $this->createForm(MatchType::class, new Restaurant(), array('restaurants' => $restaurants));
         //$form->handleRequest($request);
 
@@ -678,7 +679,7 @@ class TaskController extends AbstractController {
     /**
      * Finds and displays a Event entity.
      *
-     * @Route("/tasks/search/{id}/u/{u}/r/{r}", requirements={"id": "\d+", "u": "\d+", "r": "\d+"}, name="task_search_by_user", methods={"GET"})
+     * @Route("/tasks/search/{id}/u/{u}/r/{r}", requirements={"u": "\d+", "r": "\d+"}, name="task_search_by_user", methods={"GET"})
      */
     public function searchByUserAction(Event $event, $u, $r) {
         if ($r > 0) {
