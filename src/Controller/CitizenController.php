@@ -32,6 +32,7 @@ use App\Form\Type\CitizenType;
 use App\Form\Type\CitizenPaymentType;
 use App\Form\Type\TaskType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,32 +40,33 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CitizenController extends AbstractController {
+    public function __construct(private ManagerRegistry $doctrine) {}
 
-    public static function edit($instance, Task $task, Citizen $citizen, Request $request, $cid, $msg, $persistCitizen) {
+    public static function edit($instance, $doctrine, Task $task, Citizen $citizen, Request $request, $cid, $msg, $persistCitizen) {
         $meals = $task->getRestaurantMeals();
         $rooms = $task->getHotelRooms();
         $buses = $task->getTransportBuses();
         $ticketTypes = $task->getTickets();
-        
-        $repositoryBranch = $instance->getDoctrine()->getRepository(Branch::class);
+
+        $repositoryBranch = $doctrine->getRepository(Branch::class);
         $branches = $repositoryBranch->findAll();
-        $repositoryRelationship = $instance->getDoctrine()->getRepository(Relationship::class);
+        $repositoryRelationship = $doctrine->getRepository(Relationship::class);
         $relationships = $repositoryRelationship->findAll();
-        $repository = $instance->getDoctrine()->getRepository(Citizen::class);
+        $repository = $doctrine->getRepository(Citizen::class);
         $delegateName = "";
-        
+
         $eventId = $task->getEvent()->getId();
-        $jMealsCount = RestaurantMeal::checkMealsCount($instance->getDoctrine()->getRepository(RestaurantMeal::class), $eventId);
-        $jRoomsCount = Room::checkRoomsCount($instance->getDoctrine()->getRepository(Room::class), $eventId);
-        $jRoomMeals = RoomMeal::checkRoomMeals($instance->getDoctrine()->getRepository(RoomMeal::class), $eventId);
-                
+        $jMealsCount = RestaurantMeal::checkMealsCount($doctrine->getRepository(RestaurantMeal::class), $eventId);
+        $jRoomsCount = Room::checkRoomsCount($doctrine->getRepository(Room::class), $eventId);
+        $jRoomMeals = RoomMeal::checkRoomMeals($doctrine->getRepository(RoomMeal::class), $eventId);
+
         if ($citizen->getDelegate() > 0) {
             $delegates = $repository->findById($citizen->getDelegate());
             foreach ($delegates as $entity) {
                 $delegateName = $entity->getName() . " " . $entity->getSurname();
             }
         }
-        
+
         $form = $instance->createForm(CitizenType::class, $citizen,
                 array('tickettypes' => $ticketTypes,
                     'meals' => $meals,
@@ -76,31 +78,31 @@ class CitizenController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $user = $instance->getUser();
             if ($citizen->getUid() == 0) {
                 $citizen->setUid($user->getId());
             }
-            
+
             $now = new \DateTime("now");
-            
+
             // MEALS INIT
             $data = $form['meals']->getData();
             if (!empty($data)) {
-                $citizen->registerMeals($data, $meals, $eventId, 
+                $citizen->registerMeals($data, $meals, $eventId,
                         $user->getId(), $cid, $now);
             }
             // MEALS END
-            
-            
+
+
             // ROOM INIT
             $entity = $form['rooms']->getData();
             if (!empty($entity)) {
-                $citizen->registerRoom($entity->getId(), $rooms, $user->getId(), 
+                $citizen->registerRoom($entity->getId(), $rooms, $user->getId(),
                         $cid, $now);
             }
             // ROOM END
-            
+
             // TRANSPORT INIT
             $databus = $form['buses']->getData();
             if (!empty($databus)) {
@@ -108,11 +110,11 @@ class CitizenController extends AbstractController {
                         $user->getId(), $cid, $now);
             }
             // TRANSPORT END
-            
+
             // TICKETS INIT
-            $datatt = $form['tickettypes']->getData();  
+            $datatt = $form['tickettypes']->getData();
             if (!empty($datatt)) {
-                $citizen->registerTicketEvent($ticketTypes, $datatt->getId(), 
+                $citizen->registerTicketEvent($ticketTypes, $datatt->getId(),
                         $eventId, $user->getId(), $cid, $now);
             }
             // TICKETS END
@@ -130,10 +132,10 @@ class CitizenController extends AbstractController {
             }
 
             $entityManager->flush();
-            
+
             return $instance->redirectToRoute('task_show', ['id' => $citizen->getTask()->getId()]);
         }
-        
+
         $mids = array();
         foreach ($citizen->getTicketsrestaurant() as $ticket) {
             array_push($mids, $ticket->getMid());
@@ -143,12 +145,12 @@ class CitizenController extends AbstractController {
         foreach ($citizen->getTicketsroom() as $ticket) {
             array_push($rids, $ticket->getRid());
         }
-        
+
         $tids = array();
         if (!empty($citizen->getTicketsevent())) {
             array_push($tids, $citizen->getTicketsevent()->getTtid());
         }
-        
+
         $bids = array();
         foreach ($citizen->getTicketsbus() as $ticketbus) {
             array_push($bids, $ticketbus->getBid());
@@ -192,9 +194,9 @@ class CitizenController extends AbstractController {
      * @Route("/citizen/{id}/edit", requirements={"id": "\d+"}, name="citizen_edit", methods={"POST", "GET"})
      */
     public function editAction(Citizen $citizen, Request $request) {
-        //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
 
-        return CitizenController::edit($this, $citizen->getTask(), $citizen, $request, $citizen->getId(), 'citizen.update_successfully', true);
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+        return CitizenController::edit($this, $this->doctrine, $citizen->getTask(), $citizen, $request, $citizen->getId(), 'citizen.update_successfully', true);
     }
 
     /**
@@ -220,7 +222,7 @@ class CitizenController extends AbstractController {
      * @Route("/citizen/handleSearch/{_query?}", name="citizen_handle_search", methods={"POST", "GET"})
      */
     public function handleSearchRequest(Request $request, $_query)
-    { 
+    {
         $em = $this->doctrine->getManager();
         if ($_query) {
             if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
@@ -229,8 +231,8 @@ class CitizenController extends AbstractController {
                 $userid = $this->getUser()->getId();
                 $data = $em->getRepository(Citizen::class)->findByNameAndUser($_query, $userid);
             }
-    
-        } else {            
+
+        } else {
             $data = $em->getRepository(Citizen::class)->findAll();
         }
         $result = array();
@@ -238,7 +240,7 @@ class CitizenController extends AbstractController {
             $url = $this->generateUrl(
                                 'task_show',
                                 array('id' => $citizen->getTask()->getId()));
-            
+
             $result[] = array('id' => $citizen->getId(),
                             'name' => $citizen->getName(),
                             'surname' => $citizen->getSurname(),
@@ -248,53 +250,53 @@ class CitizenController extends AbstractController {
         }
         $data =  json_encode($result);
         return new JsonResponse($data, 200, [], true);
-    }   
-    
+    }
+
     /**
     * @Route("/city/{id?}", name="city_page", methods={"GET"})
     */
     public function citySingle(Request $request, $id)
-    { 
+    {
         $em = $this->doctrine->getManager();
-        $city = null; 
- 
+        $city = null;
+
         if ($id) {
             $city = $em->getRepository(Cities::class)->findOneBy(['id' => $id]);
-        } 
+        }
         return $this->render('home/city.html.twig', [
             'city'  =>      $city
         ]);
-    } 
-    
+    }
+
     /**
      * Displays a form to save CitizenPayment entity.
      *
-     * 
+     *
      * @Route("/citizen/payment", name="admin_citizen_new_payment", methods={"POST", "GET"})
      */
     public function newPaymentAction(Request $request) {
-        
-        
+
+
         $payment = new CitizenPayment();
-        
+
         $form = $this->createForm(CitizenPaymentType::class, $payment);
         $form->handleRequest($request);
         $result = array();
-        $result['status'] = 'Waiting'; 
-       
+        $result['status'] = 'Waiting';
+
         if ($form->isSubmitted() && $form->isValid()) {
-           
+
             if (empty($payment->getCode())) {
                 $this->addFlash('error', 'payment.added_error');
                 $result['status'] = 'ERROR';
-                
+
             } else {
-            
+
                 $repositoryTask = $this->doctrine->getRepository(Task::class);
                 $task = $repositoryTask->findOneByCode($payment->getCode());
-                
+
                 if ($task) {
-                    
+
                     $user = $this->getUser();
 
                     $payment->setTid($task->getId());
@@ -312,7 +314,7 @@ class CitizenController extends AbstractController {
                     foreach ($payments as $p) {
                         $total += $p->getValue();
                     }
-                    $diff = $total - $task->getAmount();        
+                    $diff = $total - $task->getAmount();
 
                     $this->addFlash('success', 'payment.deleted_successfully');
 
@@ -321,7 +323,7 @@ class CitizenController extends AbstractController {
                     $result['diff'] = $diff;
                     $result['pid'] = $payment->getId();
                     $result['del'] = $this->generateUrl('admin_citizen_delete_payment', array('id' =>$payment->getId()));
-                    
+
                     $this->addFlash('success', 'payment.added_successfully');
 
                 } else {
@@ -333,24 +335,24 @@ class CitizenController extends AbstractController {
         $data =  json_encode($result);
         return new JsonResponse($data, 200, [], true);
     }
-    
+
     /**
      * Displays a form to save CitizenPayment entity.
      *
-     * 
+     *
      * @Route("/payment/{id}/delete", requirements={"id": "\d+"}, name="admin_citizen_delete_payment", methods={"POST", "GET"})
      */
     public function deletePaymentAction(CitizenPayment $payment, Request $request) {
-        
+
         $user = $this->getUser();
         $payment->setDuid($user->getId());
         $payment->setDeleteDate(new \DateTime());
         $payment->setDeleted(true);
-        
+
         $entityManager = $this->doctrine->getManager();
         $entityManager->persist($payment);
         $entityManager->flush();
-        
+
         $repositoryTask = $this->doctrine->getRepository(Task::class);
         $task = $repositoryTask->findOneId($payment->getTid());
 
@@ -359,35 +361,35 @@ class CitizenController extends AbstractController {
         foreach ($payments as $p) {
             $total += $p->getValue();
         }
-        $diff = $total - $task->getAmount();        
+        $diff = $total - $task->getAmount();
 
         $this->addFlash('success', 'payment.deleted_successfully');
 
         $result['status'] = 'OK';
         $result['total'] = $total;
         $result['diff'] = $diff;
-        
-        
+
+
         $data =  json_encode($result);
         return new JsonResponse($data, 200, [], true);
     }
-    
-    
+
+
     /**
      * Displays a form to save CitizenPayment entity.
      *
-     * 
+     *
      * @Route("/citizen/check/{citizen}/{type}", requirements={"citizen": "\d+", "type": "\d+",}, name="admin_citizen_check", methods={"POST", "GET"})
      */
     public function checkAction(Citizen $citizen, $type, Request $request) {
-        
+
         $checkin = CheckIn::create($citizen, $type, $this->getUser()->getId());
         $citizen->addCheckin($checkin);
         $entityManager = $this->doctrine->getManager();
         $entityManager->persist($citizen);
         $entityManager->flush();
         $result = array();
-        $result['status'] = 'OK'; 
+        $result['status'] = 'OK';
         $result['check']['type'] = $type;
         $result['check']['checkDate'] = $checkin->getCheckDate();
         $t = $checkin->getType() ? 0 : 1;
@@ -395,7 +397,7 @@ class CitizenController extends AbstractController {
         $data =  json_encode($result);
         return new JsonResponse($data, 200, [], true);
     }
-    
+
     /**
      * Displays a form to edit an existing Task entity.
      *
@@ -404,7 +406,7 @@ class CitizenController extends AbstractController {
      */
     public function deleteAction(Citizen $citizen, $d, Request $request) {
         $result = array();
-        
+
         if ($d == 0 || $d == 1) {
             $citizen->setDeleted($d);
             $entityManager = $this->doctrine->getManager();
@@ -418,11 +420,11 @@ class CitizenController extends AbstractController {
         } else {
             $result['status'] = 'error';
         }
-        
+
         $data =  json_encode($result);
         return new JsonResponse($data, 200, [], true);
     }
-    
+
     /**
      * Displays a form to edit an existing Task entity.
      *
@@ -430,7 +432,7 @@ class CitizenController extends AbstractController {
      * @Route("/citizen/deleteticketduplicated/{id}", requirements={"id": "\d+", "d": "\d+"}, name="citizen_delete_ticket_duplicated", methods={"POST", "GET"})
      */
     public function deleteTicketDuplicatedAction($id, Request $request) {
-        
+
         $em = $this->doctrine->getManager();
 
         $data = $em->getRepository(Citizen::class)->findTicketDuplicated($id);
@@ -439,10 +441,10 @@ class CitizenController extends AbstractController {
 
         foreach ($data as $c) {
 
-            
+
             $cid = $c['cid'];
             $tid = $c['tid'];
-            
+
             if (!isset($result[$cid])) {
                 $result[$cid] = $tid;
             } else {
@@ -451,9 +453,9 @@ class CitizenController extends AbstractController {
                 $em->persist($ticket);
                 $em->flush();
             }
-            
+
         }
-        
+
         return new JsonResponse(json_encode($result), 200, [], true);
     }
 
@@ -466,15 +468,15 @@ class CitizenController extends AbstractController {
      * @Route("/admin/hotelreal/allocationmap/{id}", requirements={"id": "\d+"}, name="admin_hotel_allocation_map", methods={"POST", "GET"})
      */
     public function allocationMapAction($id) {
-        
+
         $url = $this->generateUrl(
                         'task_handle_search_allocation_map',
                         array('event' => $id));
-        
+
         return $this->render('admin/hotelreal/allocationmap.html.twig', ['event' => $id,
             'url' => $url]);
     }
-    
+
     /**
      * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/citizen/searchckeckins/{event}", requirements={"event": "\d+"}, name="task_handle_search_checkins_map", methods={"POST", "GET"})
@@ -482,11 +484,11 @@ class CitizenController extends AbstractController {
     public function searchCheckinsMapRequest($event)
     {
         $data = $this->doctrine->getRepository(CheckIn::class)->findCheckins($event);
-        
+
         $result[] = array();
-        
+
         foreach ($data as $map) {
-            
+
             $taskID = $map['task'];
             if (!isset($result['tasks'][$taskID])) {
                 $url = $this->generateUrl('task_show',array('id' => $taskID));
@@ -494,15 +496,15 @@ class CitizenController extends AbstractController {
                 $result['tasks'][$taskID]['url'] = $url;
                 $result['tasks'][$taskID]['citizens'] = array();
             }
-            
+
             if (!isset($result['tasks'][$taskID]['citizens'][$map['id']])) {
-                
+
                 $birthDate = \DateTime::createFromFormat('Y-m-d H:i:s', $map['birth_date']);
                 $age = -1;
                 if ($birthDate) {
                     $age = $birthDate->diff(new \DateTime('now'))->y;
                 }
-                
+
                 $result['tasks'][$taskID]['citizens'][$map['id']] = array('id' => $map['id'],
                             'name' => $map['name'],
                             'surname' => $map['surname'],
@@ -510,9 +512,9 @@ class CitizenController extends AbstractController {
                             'type' => $map['type'],
                         );
             }
-            
+
         }
-        
+
 
         unset($result[0]);
         //var_dump($result); die();

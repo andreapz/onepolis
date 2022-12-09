@@ -56,11 +56,12 @@ class TaskController extends AbstractController {
 
     /**
      * Creates a new Task entity.
-     * @Security("is_authenticated()")
      * @Route("/task/{ueid}/new", name="task_new", methods={"POST", "GET"})
      *
      */
     public function newAction($ueid, Request $request) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $event = EventController::getEvent($this, $this->doctrine, $ueid);
         $citizen = new Citizen();
         $citizen->setDelegate(0);
@@ -71,14 +72,13 @@ class TaskController extends AbstractController {
         $task->addCitizen($citizen);
         $task->setEvent($event);
         $task->setUeid($event->getUeid());
-        
-        return CitizenController::edit($this, $task, $citizen, $request, 0, 'citizen.created_successfully', false);
+
+        return CitizenController::edit($this, $this->doctrine, $task, $citizen, $request, 0, 'citizen.created_successfully', false);
     }
 
 
     /**
      * Finds and displays a Event entity.
-     * @Security("is_authenticated()")
      * @Route("/task/{id}", requirements={"id": "\d+"}, name="task_show", methods={"GET"})
      */
     public function showAction(Task $task) {
@@ -86,6 +86,9 @@ class TaskController extends AbstractController {
         // using an annotation: @Security("is_granted('show', post)")
         //$this->denyAccessUnlessGranted('show', $post, 'Posts can only be shown to their authors.');
         //$interval = $event->getInitialDate()->diff($event->getEndDate());
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $addresses = array();
         $delegates = array();
         $ages = array();
@@ -93,12 +96,12 @@ class TaskController extends AbstractController {
         $relationmap = array();
         $restaurantes = array();
         $rooms = array();
-                
+
         $branches = $this->doctrine->getRepository(Branch::class)->findAll();
         $relations = $this->doctrine->getRepository(Relationship::class)->findAll();
         $repository = $this->doctrine->getRepository(Citizen::class);
         $roomRepository = $this->doctrine->getRepository(RoomReal::class);
-        
+
         foreach ($branches as $branche) {
             $branchmap[$branche->getId()] = $branche->getName();
         }
@@ -126,7 +129,7 @@ class TaskController extends AbstractController {
             $now = new \DateTime();
             $interval = $now->diff($citizen->getBirthDate());
             $ages[$citizen->getId()] = $interval->y;
-            
+
             $citizenId = $citizen->getId();
             $data = $repository->findRestaurantMatchedByCitizen($citizenId);
             foreach ($data as $restaurantreal) {
@@ -134,14 +137,14 @@ class TaskController extends AbstractController {
                 $restaurantes[$citizenId]['surname'] = $restaurantreal['surname'];
                 $restaurantes[$citizenId]['restaurantcost'] = $restaurantreal['restaurantcost'];
             }
-            
+
             $dataroom = $roomRepository->findHotelByCitizen($citizenId);
             foreach ($dataroom as $hotelreal) {
                 $rooms[$citizenId]['name'] = $hotelreal['name'];
                 $rooms[$citizenId]['surname'] = $hotelreal['surname'];
                 $rooms[$citizenId]['room'] = $hotelreal['room'];
             }
-            
+
             //var_dump($rooms); die();
             /*
             $birthDate = \DateTime::createFromFormat('Y-m-d H:i:s', $citizen->getBirthDate());
@@ -161,7 +164,8 @@ class TaskController extends AbstractController {
         $form = $this->createForm(CitizenPaymentType::class, $payment,
                 array('action' => $this->generateUrl('admin_citizen_new_payment')));
 
-        //var_dump($restaurantes); die();
+//        var_dump($restaurantes); die();
+
         return $this->render('admin/task/show.html.twig', [
                     'task' => $task,
                     'addresses' => $addresses,
@@ -305,7 +309,7 @@ class TaskController extends AbstractController {
         $amount = 0.0;
 
         foreach ($task->getCitizens() as $citizen) {
-            
+
             if (!$citizen->getDeleted()) {
                 $amount += floatval($citizen->getTicketsevent()->getPrice());
 
@@ -345,7 +349,7 @@ class TaskController extends AbstractController {
     public function orderResetAction(Task $task) {
 
         $task->setOrdered(0);
-        
+
         $entityManager = $this->doctrine->getManager();
         $entityManager->persist($task);
         $entityManager->flush();
@@ -475,7 +479,7 @@ class TaskController extends AbstractController {
 
             $birthDate = \DateTime::createFromFormat('Y-m-d H:i:s', $citizen['birth_date']);
             $age = $birthDate->diff(new \DateTime('now'));
-                
+
             $result[$hotelId]['rooms'][$roomId]['tasks'][$taskID]['citizen'][] = array('id' => $citizen['id'],
                         'name' => $citizen['name'],
                         'surname' => $citizen['surname'],
@@ -493,7 +497,7 @@ class TaskController extends AbstractController {
         //var_dump($result); die();
         return new JsonResponse(json_encode($result), 200, [], true);
     }
-    
+
     /**
      * @Route("/task/searchrestaurant/{event}/{restaurant}/{meal}", requirements={"event": "\d+", "restaurant": "\d+", "meal": "\d+"}, name="task_handle_search_restaurant", methods={"POST", "GET"})
      */
@@ -506,8 +510,8 @@ class TaskController extends AbstractController {
         } else {
             $data = $em->getRepository(Citizen::class)->findByMeal($meal);
         }
-        
-        
+
+
 
         //$restaurantCostCitizenRepository = $em->getRepository(RestaurantCostCitizen::class);
         //$roomRepository = $em->getRepository(Room::class);
@@ -522,7 +526,7 @@ class TaskController extends AbstractController {
                 $result[$taskID]['citizen'] = array();
                 $result[$taskID]['url'] = $url;
             }
-            
+
             $citizenID = $citizen['id'];
             if (!isset($result[$taskID]['citizen'][$citizenID])) {
                 $birthDate = \DateTime::createFromFormat('Y-m-d H:i:s', $citizen['birth_date']);
@@ -539,7 +543,7 @@ class TaskController extends AbstractController {
                     'name' => $citizen['mealname'],
                     'date' => $citizen['mealdate'],
                     'type' => $citizen['mtype']);
-            
+
             array_push($result[$taskID]['citizen'][$citizenID]['meals'], $meal);
         }
 
@@ -549,7 +553,7 @@ class TaskController extends AbstractController {
         $data =  json_encode($result);
         return new JsonResponse($data, 200, [], true);
     }
-    
+
     /**
      * @Route("/task/searchrestaurantallocation/{event}/{restaurant}", requirements={"event": "\d+", "restaurant": "\d+"}, name="task_handle_search_restaurant_allocation", methods={"POST", "GET"})
      */
@@ -577,7 +581,7 @@ class TaskController extends AbstractController {
                     'surname' => $citizen['csurname'],
                     'meals' => array());
             }
-            
+
             $result[$taskID]['citizen'][$citizenid]['meals'][$citizen['rmid']] = array(
                 'id' => $citizen['rmid'],
                 'name' => $citizen['rrmname'],
@@ -596,53 +600,53 @@ class TaskController extends AbstractController {
      * Finds and displays a Event entity.
      * @Route("/tasks/showby/{id}", name="task_show_by_user", methods={"POST", "GET"})
      */
-    public function showByUserAction($id, Request $request) {
+    public function showByUserAction(Event $event, Request $request) {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $userid = $this->getUser()->getId();
         $users = [$this->getUser()];
         $rooms = $this->doctrine->getRepository(Room::class)->findAll();
-        
+
         if ($request->request->has('match')) { // or query
-            $postData = $request->request->get('match');
+            $postData = $request->request->all()['match'];
             $roomid = $postData['room'];
-            
-            if ($this->isGranted('ROLE_ADMIN')) {
-                $users = $this->doctrine->getRepository(User::class)->findAll();
-                $userid = $postData['user'];
-            }
+            $userid = $postData['user'];
         }
-        
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $users = $this->doctrine->getRepository(User::class)->findAll();
+        }
+
         $urltask = "";
-        
+
         if (empty($roomid)) {
             $roomid = 0;
-        }        
-        
+        }
+
         if ($this->isGranted('ROLE_ADMIN')) {
             if(empty($userid) || $userid == 0) {
-                $urltask = $this->generateUrl('admin_tasks', array('id' => $id, 'r' => $roomid));
+                $urltask = $this->generateUrl('admin_tasks', array('id' => $event->getId(), 'r' => $roomid));
             } else {
-                $urltask = $this->generateUrl('task_search_by_user', array('id' => $id, 'u' => $userid, 'r' => $roomid));
+                $urltask = $this->generateUrl('task_search_by_user', array('id' => $event->getId(), 'u' => $userid, 'r' => $roomid));
             }
         } else if(!empty($userid)) {
-            $urltask = $this->generateUrl('task_search_by_user', array('id' => $id, 'u' => $userid, 'r' => $roomid));
-        } 
-        
+            $urltask = $this->generateUrl('task_search_by_user', array('id' => $event->getId(), 'u' => $userid, 'r' => $roomid));
+        }
+
         if(empty($userid)) {
             $userid = 0;
         }
-        
+
         //$form = $this->createForm(MatchType::class, new Restaurant(), array('restaurants' => $restaurants));
         //$form->handleRequest($request);
 
-        return $this->render('admin/task/showbyuser.html.twig', ['event' => $id,
-            'users' => $users, 
+        return $this->render('admin/task/showbyuser.html.twig', ['event' => $event->getId(),
+            'users' => $users,
             'userid' => $userid,
             'rooms' => $rooms,
             'roomid' => $roomid,
             'urlt' => $urltask]);
     }
-    
+
     /**
      * Finds and displays a Event entity.
      * @Security("is_authenticated()")
@@ -662,11 +666,11 @@ class TaskController extends AbstractController {
      * @Route("/task/list/{id}/{r}", requirements={"id": "\d+", "r": "\d+"}, name="admin_tasks", methods={"POST", "GET"})
      */
     public function tasksAction(Event $event, $r) {
-       
-        
+
+
         $citizens = $this->doctrine->getRepository(Citizen::class)
                 ->findByAdmin($event->getId(), '', $r);
-        
+
         $payments = $this->doctrine->getRepository(Task::class)
                 ->findByAdmin($event->getId(), '', $r);
 
@@ -679,28 +683,29 @@ class TaskController extends AbstractController {
     /**
      * Finds and displays a Event entity.
      *
-     * @Route("/tasks/search/{id}/u/{u}/r/{r}", requirements={"u": "\d+", "r": "\d+"}, name="task_search_by_user", methods={"GET"})
+     * @Route("/tasks/search/{id}/u/{u}/r/{r}", requirements={"id": "\d+", "u": "\d+", "r": "\d+"}, name="task_search_by_user", methods={"GET"})
      */
     public function searchByUserAction(Event $event, $u, $r) {
         if ($r > 0) {
-            
+
         }
+
         $userid = $u;
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             $userid = $this->getUser()->getId();
         }
-        
+
         $citizens = $this->doctrine->getRepository(Citizen::class)
                 ->findByUser($event->getId(), $userid, $r);
-        
+
         $payments = $this->doctrine->getRepository(Task::class)
                 ->findByUser($event->getId(), $userid, $r);
-        
+
         $checkins = $this->doctrine->getRepository(CheckIn::class)
                 ->findCheckins($event->getId());
-       
+
         return $this->searchByUser($citizens, $payments, $checkins);
-        
+
     }
 
     private function searchByUser($citizens, $payments, $checkins){
@@ -713,7 +718,7 @@ class TaskController extends AbstractController {
         $userc = 0;
 
         $checkmap[] = array();
-        
+
         foreach ($checkins as $map) {
             if (!isset($checkmap[$map['id']])) {
                 $checkmap[$map['id']] = $map['type'];
@@ -733,16 +738,16 @@ class TaskController extends AbstractController {
                 $result['task'][$taskID]['ordered'] = $citizen['ordered'];
                 $result['task'][$taskID]['ordered_date'] = $citizen['ordered_date'];
             }
-            
+
             $citizenID = $citizen['cid'];
             if (!isset($result['task'][$taskID]['citizen'][$citizenID])) {
-                
+
                 //$age = $citizen->getBirthDate()->diff(new \DateTime('now'));
                 $userc++;
 
                 $birthDate = \DateTime::createFromFormat('Y-m-d H:i:s', $citizen['birth_date']);
                 $age = $birthDate->diff(new \DateTime('now'));
-                
+
                 $cki = isset($checkmap[$citizenID]) ? $checkmap[$citizenID] : 0;
 
                 $result['task'][$taskID]['citizen'][$citizenID] = array('id' => $citizenID,
@@ -755,7 +760,7 @@ class TaskController extends AbstractController {
                         'gender' => $citizen['gender'],
                         'need_support' => $citizen['need_support'],
                         'note' => $citizen['note'],
-                        'room_note' => $citizen['room_note'],                    
+                        'room_note' => $citizen['room_note'],
                         'street' => $citizen['street'],
                         'city' => $citizen['city'],
                         'postcode' => $citizen['postcode'],
@@ -773,7 +778,7 @@ class TaskController extends AbstractController {
                         'age' => $age->y,
                         'cki' => $cki,
                         );
-                
+
                 $hotel = $citizen['hotel'];
                 if ($hotel) {
                     if (!isset($result['hotels'][$hotel])) {
@@ -790,11 +795,11 @@ class TaskController extends AbstractController {
                     }
                 }
             }
-            
+
             if ($citizen['busname'] &&
                     !isset($result['task'][$taskID]['citizen'][$citizenID]['buses'][$citizen['busname']])) {
                 $result['task'][$taskID]['citizen'][$citizenID]['buses'][$citizen['busname']] = $citizen['busprice'];
-                
+
                 if (!isset($result['buses'][$citizen['busname']])) {
                     $result['buses'][$citizen['busname']] = array();
                     $result['buses'][$citizen['busname']]['count'] = 0;
@@ -821,7 +826,7 @@ class TaskController extends AbstractController {
                         $result['restaurantes'][$restaurant][$mealid]['count'] = $c + 1;
                     }
                 }
-            
+
             if (isset($citizen['restccid'])) {
                 $restccid = $citizen['restccid'];
                 $result['task'][$taskID]['citizen'][$citizenID]['meals'][$restccid] = array('price' => $citizen['mealprice'], 'name' => $citizen['mealname'], 'mealdate' => $citizen['mealdate']);
@@ -837,8 +842,8 @@ class TaskController extends AbstractController {
                 $result['task'][$taskID]['url'] = $url;
                 $result['task'][$taskID]['payments'] = array();
             }
-            
-            
+
+
             if (isset($payment['cpid'])) {
                 $cpid = $payment['cpid'];
                 if (!isset($result['task'][$taskID]['payments'][$cpid])) {
@@ -850,7 +855,7 @@ class TaskController extends AbstractController {
                         );
                 }
             }
-            
+
         }
 
         $result['users']['tot'] = $userc;

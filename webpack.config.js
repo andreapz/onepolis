@@ -14,12 +14,7 @@ Encore
     // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
 
-    /*
-     * ENTRY CONFIG
-     *
-     * Each entry will result in one JavaScript file (e.g. app.js)
-     * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
-     */
+
     .addEntry('app', './assets/app.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
@@ -59,8 +54,8 @@ Encore
     // enables Sass/SCSS support
     .enableSassLoader()
     .enableVersioning()
-    .addEntry('js/common', './assets/js/shared.js')
     .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/common', './assets/js/shared.js')
     .addEntry('js/login', './assets/js/login.js')
     .addEntry('js/admin', './assets/js/admin.js')
     .addEntry('js/search', './assets/js/search.js')
@@ -79,7 +74,9 @@ Encore
     //.enableIntegrityHashes(Encore.isProduction())
 
     // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+    // .autoProvidejQuery()
+    // .enableVueLoader()
+    .enableReactPreset()
 ;
 
 module.exports = Encore.getWebpackConfig();

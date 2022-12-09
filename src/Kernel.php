@@ -16,6 +16,8 @@ use Symfony\Bundle\MakerBundle\MakerBundle; //dev
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
+use Symfony\UX\React\ReactBundle;
 
 class Kernel extends BaseKernel
 {
@@ -47,6 +49,8 @@ class Kernel extends BaseKernel
             new FOSUserBundle(),
             new WebpackEncoreBundle(),
             new WebProfilerBundle(),
+            new DoctrineFixturesBundle(),
+            new ReactBundle(),
         ];
     }
 }

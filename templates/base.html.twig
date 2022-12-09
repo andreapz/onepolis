@@ -9,7 +9,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>{% block title %}OnePolis{% endblock %}</title>
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" ></script>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('build/css/app.css') }}">
         {% endblock %}
@@ -19,7 +19,15 @@
     </head>
 
     <body id="{% block body_id %}{% endblock %}">
-
+    <div  {{ stimulus_controller('hello') }}></div>
+<div {{ stimulus_controller('hello') }}>
+    <input type="text" {{ stimulus_target('hello', 'name') }}>
+    <button {{ stimulus_action('hello', 'greet') }}>
+        Greet
+    </button>
+    <div {{ stimulus_target('hello', 'output') }}></div>
+</div>
+ <aside class="col-xs-12 col-9"><div {{ stimulus_controller('counter') }}></div></aside>
         {% block header %}
             <header>
                 <div class="navbar navbar-expand-lg navbar-dark bg-primary" role="navigation">

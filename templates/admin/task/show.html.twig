@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block main %}
-{% if task.ordered %}     
+{% if task.ordered %}
     <div class="modal" id="modal-from-dom" >
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -18,7 +18,7 @@
                   form: form,
                   button_label: 'action.save'|trans,
               }, with_context = false) }}
-              {% endif %} 
+              {% endif %}
               <div id='paymentresult'></div>
             </div>
             <div class="modal-footer">
@@ -27,7 +27,7 @@
           </div>
         </div>
     </div>
-              
+
     <div class="modal" id="modal-from-dom-payment-delete" >
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -88,10 +88,10 @@
       </div>
     </div>
   </div>
-{% endif %}        
+{% endif %}
 
-    
- 
+
+
 
     <div class="row">
         <a href="{{ path('event_show', {ueid: task.event.ueid}) }}" class="btn btn-sm">
@@ -99,13 +99,13 @@
         </a>
 
         {% if task.ordered %}
-            
+
         {% else %}
         <a href="{{ path('citizen_add', {id: task.id}) }}" class="btn btn-lg btn-primar">
             <i class="fa fa-plus" aria-hidden="true"></i>
             {{ 'one.add_user'|trans|raw }}
         </a>
-        {% endif %} 
+        {% endif %}
     </div>
 
     <div class="row">
@@ -114,7 +114,7 @@
                 {% for citizen in task.citizens %}
                 <div class="card border-primary mb-3" style="width: 49%; float: left; margin-left: 2px;">
                     <div class="card-header"><h3>
-                    {% if task.ordered %}     
+                    {% if task.ordered %}
                     {{ citizen.name }} {{ citizen.surname }}
                     {% else %}
                     <a href="{{ path('citizen_edit', {id: citizen.id}) }}">{{ citizen.name }} {{ citizen.surname }}</a>
@@ -136,15 +136,15 @@
                                     {{ 'label.reload'|trans|raw }}
                                 {% endif %}
                         </a>
-                        </h3> 
+                        </h3>
                     </div>
-                    
+
                     <div class="card-body">
                         <ul class="nav nav-pills flex-column">
                         <li class="nav-item">
-                            <span class="text-info">{{ citizen.cityBirth }}, {{ citizen.birthDate|date('d/m/Y') }} [{{ ages[citizen.id] }} {% transchoice ages[citizen.id] %}years_plural{% endtranschoice %}]</span></li>
+                            <span class="text-info">{{ citizen.cityBirth }}, {{ citizen.birthDate|date('d/m/Y') }} [{{ ages[citizen.id] }} {% if ages[citizen.id] > 1 %}years_plural{% endif %}]</span></li>
                         <li class="nav-item">
-                            <span class="text-info"><i class="fa fa-phone" aria-hidden="true"></i>{{ citizen.phone }} <i class="fa fa-envelope" aria-hidden="true"></i>{{ citizen.email }}</span></li> 
+                            <span class="text-info"><i class="fa fa-phone" aria-hidden="true"></i>{{ citizen.phone }} <i class="fa fa-envelope" aria-hidden="true"></i>{{ citizen.email }}</span></li>
                         {% if citizen.address %}
                             <li class="nav-item">
                             <span class="text-info">{{ citizen.address.street }}, {{ citizen.address.city }} ({{ citizen.address.province }})</span></li>
@@ -167,8 +167,8 @@
                         <li class="nav-item">
                             <span class="text-info"><i class="fa fa-bed" aria-hidden="true"></i>{{ citizen.roomNote }}</span></li>{% endif %}
                         </ul>
-                        
-                        
+
+
                         {% if citizen.ticketsevent %}
                         <ul class="nav nav-pills flex-column">
                         <li class="text-primary">{{ 'label.ticket'|trans }}</li>
@@ -182,14 +182,14 @@
                         <li class="text-primary">{{ 'label.meals'|trans }}</li>
                         {% for restaurantCosts in citizen.getTicketsrestaurant %}
                             <li class="nav-item">
-                                <span class="text-secondary">{{ restaurantCosts.type }} {{ restaurantCosts.bookDate|date('d/m/Y') }} {{ restaurantCosts.name }} ({{ restaurantCosts.price }}€) 
+                                <span class="text-secondary">{{ restaurantCosts.type }} {{ restaurantCosts.bookDate|date('d/m/Y') }} {{ restaurantCosts.name }} ({{ restaurantCosts.price }}€)
                                  {% if citizen.id in restaurantes|keys %}{{ restaurantes[citizen.id].name }} {{ restaurantes[citizen.id].surname }}{% endif %}
                                 </span>
                             </li>
-                        {% endfor %}        
+                        {% endfor %}
                         </ul>
-                    
-                        
+
+
                         <ul class="nav nav-pills flex-column">
                         <li class="text-primary">{{ 'label.overnight_stay'|trans }}</li>
                         {% for roomCosts in citizen.getTicketsroom %}
@@ -198,9 +198,9 @@
                                 {% if citizen.id in rooms| keys %}{{ rooms[citizen.id].room }} [{{ rooms[citizen.id].name }} {{ rooms[citizen.id].surname }}]{% endif %}
                                 </span>
                             </li>
-                        {% endfor %}        
+                        {% endfor %}
                         </ul>
-                        
+
                         <ul class="nav nav-pills flex-column">
                         <li class="text-primary">{{ 'label.transport'|trans }}</li>
                         {% for busCost in citizen.getTicketsbus %}
@@ -208,9 +208,9 @@
                                 <span class="text-secondary">{{ busCost.name }} ({{ busCost.price }}€)
                                 </span>
                             </li>
-                        {% endfor %}        
+                        {% endfor %}
                         </ul>
-                        
+
                         {% if is_granted('ROLE_ADMIN') %}
                         <ul class="nav nav-pills flex-column" id="checkins_{{ citizen.id }}">
                         <li class="text-primary">{{ 'label.checkins'|trans }}</li>
@@ -218,9 +218,9 @@
                             <li class="nav-item">
                                 <span class="text-secondary">{% if checkin.type == 1 %} {{ 'citizen.checkin'|trans|raw }} {% else %} {{ 'citizen.checkout'|trans|raw }} {% endif %} {{ checkin.checkDate|date('d/m/Y H:m:s') }}</span>
                             </li>
-                        {% endfor %}     
+                        {% endfor %}
                         </ul>
-                        
+
                         {% if citizen.checkins|length > 0 %}
                             {% for checkin in citizen.checkins %}
                             {% if loop.last == true %}
@@ -236,12 +236,12 @@
                         {% endif %}
                         {% endif %}
                     </div>
-                </div>   
+                </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-        
+
 {% endblock %}
 
 {% block sidebar %}
@@ -261,7 +261,7 @@
                   form: form,
                   button_label: 'action.save'|trans,
               }, with_context = false) }}
-              {% endif %} 
+              {% endif %}
               <div id='paymentresult'></div>
             </div>
             <div class="modal-footer">
@@ -276,14 +276,14 @@
             <p><a href="" class="btn btn-lg btn-secondary show-reset-order">
                     <i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{ 'citizen.reset_order'|trans|raw }}</a></p>
             <p>
-        {% endif %}             
+        {% endif %}
         {% if is_granted('IS_AUTHENTICATED_FULLY') or is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <a href="" class="btn btn-lg btn-secondary show-add-payment">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     {{ 'citizen.add_payment'|trans|raw }}
                 </a>
             </p>
-        {% endif %} 
+        {% endif %}
         <p>
         <div class="card text-white bg-primary mb-3">
             <div class="card-body">
@@ -297,26 +297,26 @@
             <div class="card-body" id="payment-list">
                 <div class="block">{{ 'one.citizen_payments_diff'|trans|raw }}: <span id="payment-diff">{{ diff }}</span>€</div>
                 <div class="block">{{ 'one.citizen_payments'|trans|raw }}:   <span id="payment-total">{{ total }}</span>€</div>
-        
+
         {% for payment in payments %}
         <span class="text-secondary" id="payment-{{ payment.id }}">{{ payment.paymentDate|date('d/m/Y') }} {{ payment.type }} ({{ payment.value }}€) <a href="{{ path('admin_citizen_delete_payment', {id: payment.id}) }}" class="alert-text alert-link delete-payment" rel="payment-{{ payment.id }}">x</a></span>
-        
 
-        {% endfor %} 
-        
+
+        {% endfor %}
+
         </div>
         </div>
     {% else %}
     <a href="" class="btn btn-lg btn-secondary confirm-delete">
         <i class="fa fa-plus" aria-hidden="true"></i>
         {{ 'one.task_order'|trans|raw }}
-    </a>    
-    {% endif %} 
-    
+    </a>
+    {% endif %}
+
     <script>
     var formurl = "{{ path('admin_citizen_new_payment') }}";
-    </script> 
-{% endblock %}         
+    </script>
+{% endblock %}
 
 
 {% block javascripts %}
@@ -329,13 +329,13 @@
         var rel = $(this).attr('rel');
         var btn = $(this);
         btn.hide();
-        
+
         $.ajax({url: href, dataType: 'JSON', method: 'POST'})
         .done(function(response) {
             if (response['status']=='OK') {
                 c = response['check']['type'] == 1 ? '{{ 'citizen.checkin'|trans|raw }}' : '{{ 'citizen.checkout'|trans|raw }}';
                 $('#checkins_' + rel).append('<li class="nav-item"><span class="text-secondary">' + c + ' ' + response['check']['checkDate']["date"] + '</span></li>');
-                
+
                 btn.text(response['check']['type'] == 0 ? '{{ 'citizen.checkin'|trans|raw }}' : '{{ 'citizen.checkout'|trans|raw }}');
                 btn.attr('href', response['check']['url']);
                 btn.show();
@@ -345,14 +345,14 @@
             btn.show();
         });
     });
-    
+
     $('.delete_citizen').on('click', function(e) {
         e.preventDefault();
         var href = $(this).attr('href');
         var rel = $(this).attr('rel');
         var btn = $(this);
         btn.hide();
-        
+
         $.ajax({url: href, dataType: 'JSON', method: 'POST'})
         .done(function(response) {
             if (response['status']=='OK') {
@@ -365,6 +365,6 @@
             btn.show();
         });
     });
-    
- </script> 
-{% endblock %}        
+
+ </script>
+{% endblock %}

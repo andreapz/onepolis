@@ -4,7 +4,7 @@ var $collectionHolder;
 var $addTicketLink = $('<a href="#" class="add_ticket_link">Add a ticket</a>');
 var $newLinkLi = $('<li></li>').append($addTicketLink);
 
-jQuery(document).ready(function () {
+jQuery(function () {
     // Get the ul that holds the collection of tickets
     $collectionHolder = $('ul.tickets');
 
@@ -77,7 +77,7 @@ var $collectionRestaurantHolder;
 var $addTicketRestaurantLink = $('<a href="#" class="add_ticket_restaurant_link">Add a restaurant ticket</a>');
 var $newRestaurantLinkLi = $('<li></li>').append($addTicketRestaurantLink);
 
-jQuery(document).ready(function () {
+jQuery(function () {
     // Get the ul that holds the collection of tickets
     $collectionRestaurantHolder = $('ul.tickets_restaurant');
 
@@ -151,7 +151,7 @@ var $collectionHotelHolder;
 var $addRoomHotelLink = $('<a href="#" class="add_room_hotel_link">Add a hotel room</a>');
 var $newHotelLinkLi = $('<li></li>').append($addRoomHotelLink);
 
-jQuery(document).ready(function () {
+jQuery(function () {
     // Get the ul that holds the collection of rooms
     $collectionHotelHolder = $('ul.rooms_hotel');
 
@@ -222,7 +222,7 @@ var $collectionRoomHolder;
 var $addTicketRoomLink = $('<a href="#" class="add_ticket_room_link">Add a room ticket</a>');
 var $newRoomLinkLi = $('<li></li>').append($addTicketRoomLink);
 
-jQuery(document).ready(function () {
+jQuery(function () {
     // Get the ul that holds the collection of tickets
     $collectionRoomHolder = $('ul.tickets_room');
 
@@ -287,7 +287,7 @@ function addTicketRoomFormDeleteLink($ticketFormLi) {
     });
 }
 
-jQuery(document).ready(function () {
+jQuery(function () {
 
     if (typeof restaurantcosts !== 'undefined') {
 
@@ -299,7 +299,7 @@ jQuery(document).ready(function () {
 
 });
 
-jQuery(document).ready(function () {
+jQuery(function () {
 
     if (typeof roomcosts !== 'undefined') {
 

@@ -20,7 +20,7 @@ class RepositoryTest extends KernelTestCase {
      */
     private $entityManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $kernel = self::bootKernel();
 
@@ -76,7 +76,7 @@ class RepositoryTest extends KernelTestCase {
         
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 

@@ -1,12 +1,12 @@
 var hotelmap = null;
 
-var openAll = function(e) { 
+var openAll = function(e) {
     $('.task_detail_hide').each(function( index ) {
       $( this ).removeClass("task_detail_hide").addClass("task_detail_show");
     });
 };
 
-var closeAll = function(e) { 
+var closeAll = function(e) {
     $('.task_detail_show').each(function( index ) {
       $( this ).removeClass("task_detail_show").addClass("task_detail_hide");
     });
@@ -25,7 +25,7 @@ var showDetail = function(e) {
         $('#toggle_detail_img_'+id).addClass("fa fa-eye");
     } else {
         $('#task_detail_'+id).removeClass("task_detail_show");
-        $('#task_detail_'+id).addClass("task_detail_hide");       
+        $('#task_detail_'+id).addClass("task_detail_hide");
         $('#toggle_detail_img_'+id).removeClass("fa fa-eye");
         $('#toggle_detail_img_'+id).addClass("fa fa-eye-slash");
     }
@@ -56,29 +56,29 @@ var showMap = function(response) {
         }
     }
     $('#tastreportrestaurant').append(restauranteslist);
-    
-    
-    
+
+
+
     var buseslist = '';
     for(var b in response['buses']) {
         buseslist += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h6>' + b + ': <b>' + response['buses'][b]['count'] +'</b></h6></li>';
     }
     $('#tastreportbus').append(buseslist);
-    
+
 
     for(var k in response['task']) {
 
     var s = '<div class="col-lg-12">';
-        
+
     s += '<ul class="list-group col-lg-12">';
-    
+
     s += '<li class="list-group-item d-flex justify-content-between align-items-center bg-primar-y"><h4><a href="' + response['task'][k]['url'] + '" class="text-dark">{{ 'task.task'|trans|raw }} ' + k;
     if (response['task'][k]['code']) {
         s += ' ' + response['task'][k]['code'];
     }
     s += '</a></h4>';
-    
-    
+
+
     s += '<ul>';
     for(var c in response['task'][k]['citizen']) {
         s += '<li>' + response['task'][k]['citizen'][c]['name'] + ' ' + response['task'][k]['citizen'][c]['surname'] + ' ['+response['task'][k]['citizen'][c]['age'] +' anni]';
@@ -90,16 +90,16 @@ var showMap = function(response) {
         s += '</li>';
     }
     s += '</ul>';
-   
+
     amount = 0;
     if (response['task'][k]['ordered'] == 1) {
     tot += parseInt(response['task'][k]['amount']);
-        
+
     s += '<ul><li> {{ 'one.task_amount'|trans|raw }}:' + ' ' + response['task'][k]['amount'] + '</li><li> {{ 'one.task_order_date'|trans|raw }}:' + ' ' + response['task'][k]['ordered_date'] + '</li><li> <span id="diff_'+ k +'">{{ 'one.citizen_payments_diff'|trans|raw }}: </span></li></ul>';
         amount = parseInt(response['task'][k]['amount']) * -1;
     }
     s += '<a href="#" class="text-dark toggle_detail" id="toggle_detail_' + k + '" rel="' + k + '"><i class="fa fa-eye-slash" id="toggle_detail_img_' + k + '" aria-hidden="true"></i></a>';
-    s += '</li>'; 
+    s += '</li>';
     s += '</ul><div id="task_detail_' + k +'" class="task_detail_hide">';
 
     for(var c in response['task'][k]['citizen']) {
@@ -115,8 +115,8 @@ var showMap = function(response) {
         if (response['task'][k]['citizen'][c]['cki'] > 0) {
             s += '<i class="fa fa fa-check-circle" aria-hidden="true"></i>';
         }
-    
-        
+
+
         s += '</h3></div><div class="card-body">';
         s += '<ul class="nav nav-pills flex-column">';
         s += '<li class="nav-item"><span class="text-info">';
@@ -157,7 +157,7 @@ var showMap = function(response) {
             s += '<li class="nav-item"><span class="text-secondary">' + b + ' (' + response['task'][k]['citizen'][c]['buses'][b] + '€)</span></li>';
         }
         s += '</ul>';
-        
+
         s += '<li class="nav-item"><span class="text-info"><i class="fa fa-user" aria-hidden="true"></i>'+response['task'][k]['citizen'][c]['username']+'</span></li>';
 
         s += '</ul>';
@@ -175,9 +175,9 @@ var showMap = function(response) {
         } else {
             totc += parseInt(response['task'][k]['payments'][p]['value']);
         }
-        s += '<li class="nav-item"><span class="text-secondary">' + ' ' + response['task'][k]['payments'][p]['value'] + '€ [' + response['task'][k]['payments'][p]['type']+ '] ' + response['task'][k]['payments'][p]['payment_date'];     
+        s += '<li class="nav-item"><span class="text-secondary">' + ' ' + response['task'][k]['payments'][p]['value'] + '€ [' + response['task'][k]['payments'][p]['type']+ '] ' + response['task'][k]['payments'][p]['payment_date'];
         if (response['task'][k]['payments'][p]['description']) {
-            s += ' ' + response['task'][k]['payments'][p]['description']; 
+            s += ' ' + response['task'][k]['payments'][p]['description'];
         }
         s += '</span></li>';
 
@@ -191,7 +191,7 @@ var showMap = function(response) {
     $('#tasks').append(s);
     $("#toggle_detail_" + k).on( "click", showDetail);
     $('#diff_'+k).append(amount+'€');
-    
+
     }
     var tots = (-1) * (tot-totb-totc);
     $('#amount_tot').append(tot);
@@ -203,10 +203,10 @@ var showMap = function(response) {
     $('#tastreportck').append(cks);
 };
 
-$.post(urlt, function(response) {
+$.get(urlt, function(response) {
 
     hotelmap = response;
-    
+
     showMap(hotelmap);
-    
+
 }, 'JSON');
