@@ -261,4 +261,15 @@ class EventController extends AbstractController
         //var_dump($result); die();
         return new JsonResponse(json_encode($result), 200, [], true);
     }
+
+     /**
+     * @Route("/react", name="react-test")
+     */
+    public function react()
+    {
+
+        return $this->render('react.html.twig', [
+            'packagesData' => array()
+]);
+    }
 }

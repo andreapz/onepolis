@@ -6,7 +6,7 @@ $web-font-path: 'data:text/css;base64,';
 $icon-font-path: "../../fonts/bootstrap/" !default;
 
 @import "flatly/_variables";
-@import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+// @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 @import "flatly/_bootswatch";
 @import "flatly/bootstrap.css";
 @import "~font-awesome/scss/font-awesome.scss";

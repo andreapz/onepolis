@@ -119,7 +119,7 @@ class CitizenController extends AbstractController {
             }
             // TICKETS END
 
-            $entityManager = $instance->getDoctrine()->getManager();
+            $entityManager = $doctrine->getManager();
             if ($persistCitizen) {
                 $entityManager->persist($citizen);
             } else {

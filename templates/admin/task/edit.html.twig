@@ -26,3 +26,8 @@
     <div id="citizen_delegate_detail">
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# <script src="{{ asset('build/js/citizen_cityBirth.js') }}"></script> #}
+{% endblock %}

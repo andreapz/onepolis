@@ -7,6 +7,7 @@ use App\Entity\City;
 use App\Repository\CapRepository;
 use App\Form\Type\CityType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,8 @@ use App\Entity\RoomReal;
 use App\Entity\RoomRealPrice;
 
 class CityController extends AbstractController {
+
+    public function __construct(private ManagerRegistry $doctrine) {}
 
     /**
      * @Route("/city/handleSearch/{_query?}", name="city_handle_search", methods={"POST", "GET"})

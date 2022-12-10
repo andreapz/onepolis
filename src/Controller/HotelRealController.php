@@ -16,6 +16,7 @@ use App\Form\Type\HotelRealType;
 use App\Form\Type\MatchType;
 use App\Form\Type\RoomRealPriceType;
 use App\Form\Type\RoomRealType;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,6 +27,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HotelRealController extends AbstractController {
 
+    public function __construct(private ManagerRegistry $doctrine) {}
+    
     /**
      * @Route("/admin/hotelreal/list/{id}", requirements={"id": "\d+"}, name="admin_hotel_real_index", methods={"GET"})
      * @Cache(smaxage="10")
@@ -38,7 +41,6 @@ class HotelRealController extends AbstractController {
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/new/{id}", requirements={"id": "\d+"}, name="admin_hotelreal_new", methods={"POST", "GET"})
      *
      *
@@ -47,6 +49,8 @@ class HotelRealController extends AbstractController {
      * it responds to all methods).
      */
     public function newAction($id, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $hotel = new HotelReal();
         $hotel->setEvent($id);
 
@@ -56,7 +60,6 @@ class HotelRealController extends AbstractController {
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/{id}", requirements={"id": "\d+"}, name="admin_hotelreal_show", methods={"POST", "GET"})
      *
      *
@@ -65,6 +68,8 @@ class HotelRealController extends AbstractController {
      * it responds to all methods).
      */
     public function showAction(HotelReal $hotel, Request $request) {
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $rooms = array();
             foreach ($hotel->getHotel()->getRooms() as $roombase) {
@@ -95,7 +100,6 @@ class HotelRealController extends AbstractController {
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/edit/{id}", requirements={"id": "\d+"}, name="admin_hotelreal_edit", methods={"POST", "GET"})
      *
      *
@@ -104,6 +108,8 @@ class HotelRealController extends AbstractController {
      * it responds to all methods).
      */
     public function editAction(HotelReal $hotel, Request $request) {
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         return $this->form($hotel, $request);
 
@@ -283,10 +289,11 @@ class HotelRealController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/updateroomnote", name="admin_hotel_update_room_note", methods={"POST", "GET"})
      */
     public function updateRoomNoteAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $n = $request->request->get('n');
         $i = $request->request->get('i');
 
@@ -306,10 +313,11 @@ class HotelRealController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/allocation", name="admin_hotel_allocation", methods={"POST", "GET"})
      */
     public function allocationAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $c = $request->request->get('c');
         $r = $request->request->get('r');
         $result = array();
@@ -341,10 +349,11 @@ class HotelRealController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/allocation/delete", name="admin_hotel_delete_allocation", methods={"POST", "GET"})
      */
     public function deleteAllocationAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $c = $request->request->get('c');
         $user = $this->getUser();
 
@@ -376,10 +385,11 @@ class HotelRealController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/matched/{id}", requirements={"id": "\d+"}, name="admin_hotel_matched", methods={"POST", "GET"})
      */
     public function matchedAction($id, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $hotels = $this->doctrine->getRepository(Hotel::class)->findByEvent($id);
 
         $postData = $request->request->get('match');
@@ -406,10 +416,11 @@ class HotelRealController extends AbstractController {
     }
     
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/allocationmap/{id}", requirements={"id": "\d+"}, name="admin_hotel_allocation_map", methods={"POST", "GET"})
      */
     public function allocationMapAction($id) {
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         
         $url = $this->generateUrl(
                         'task_handle_search_allocation_map',
@@ -420,11 +431,12 @@ class HotelRealController extends AbstractController {
     }
     
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/searchallocation/{event}", requirements={"event": "\d+"}, name="task_handle_search_allocation_map", methods={"POST", "GET"})
      */
     public function searchAllocationMapRequest($event)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         $data = $this->doctrine->getRepository(HotelReal::class)->findAllocationMap($event);
         $prices = $this->doctrine->getRepository(HotelReal::class)->findPrices($event);
         

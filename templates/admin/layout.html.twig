@@ -9,11 +9,63 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('build/css/admin.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('build/js/admin.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // you may need to change this code if you are not using Bootstrap Datepicker
+            $('.js-datepicker').datepicker({
+                format: 'dd/mm/yyyy'
+            });
+             $('.basicAutoComplete').autoComplete({
+                resolverSettings: {
+                    url: 'testdata/test-list.json'
+                }
+            });
+
+var j_citizen_cityBirth;
+
+
+    $(".c-cityBirth").on('keyup', function () {
+        $("li").remove('.list-group-item');
+        if ($(this).val().length > 2) {
+          if (j_citizen_cityBirth) {
+            j_citizen_cityBirth.abort();
+          }
+            var s = queryurl + "/" + $(this).val();
+            j_citizen_cityBirth = $.ajax({
+                url: s,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
+                }
+            })
+                    .done(function (data) {
+                        $("li").remove('.list-group-item');
+                        $.each(data, function (key, value) {
+                            //console.log(value);
+                            if (value.name)
+                            {
+                                $('#citizen_cityBirth_result').append('<li class="list-group-item link-class" prov="' + value.Province + '" state="Italia" cap="' + value.Cap+'">\n' + value.name + ' - ' + value.Province + '</li>');
+                            }
+                        });
+                    });
+        }
+    });
+    
+    $('#citizen_cityBirth_result').on('click', 'li', function () {
+        var click_text = $(this).text().split('-');
+        $('#citizen_cityBirth').val($.trim(click_text[0]));
+        $("li").remove('.list-group-item');
+    });
+        });
+    </script>
 {% endblock %}
 
 {% block header_navigation_links %}

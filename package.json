@@ -7,7 +7,6 @@
         "@symfony/ux-react": "file:vendor/symfony/ux-react/assets",
         "@symfony/webpack-encore": "^4.0.0",
         "bootstrap": "^5.2.3",
-        "bootstrap-sass": "^3.4.3",
         "core-js": "^3.23.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.56.1",
@@ -27,16 +26,13 @@
     "dependencies": {
         "@babel/core": "^7.20.5",
         "@babel/preset-env": "^7.20.2",
-        "bloodhound-js": "^1.2.3",
-        "bootstrap-tagsinput": "^0.7.1",
-        "eonasdan-bootstrap-datetimepicker": "^4.17.49",
         "font-awesome": "4.7.0",
         "highlight.js": "^11.7.0",
         "jquery": "^3.6.1",
         "lato-font": "3.0.0",
+        "popper": "^1.0.1",
         "prop-types": "^15.8.1",
         "react": "^18.0",
-        "react-dom": "^18.0",
-        "typeahead.js": "^0.11.1"
+        "react-dom": "^18.0"
     }
 }

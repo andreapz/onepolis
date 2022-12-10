@@ -46,10 +46,17 @@ class CitizenType extends AbstractType
             ]);
         $builder->add('cityBirth', null, [
                 'label' => 'label.cityBirth',
+                'attr' => ['class' => 'c-cityBirth'],
             ]);
-        $builder->add('birthDate', DateTimePickerType::class, [
+        // $builder->add('birthDate', DateTimePickerType::class, [DateType
+        //         'label' => 'label.birthDate',
+        //         'format' => 'dd/MM/yyyy',
+        //     ]);
+        $builder->add('birthDate', DateTimePickerType::class, [ 
                 'label' => 'label.birthDate',
-                'format' => 'dd/MM/yyyy',
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
             ]);
         $builder->add('phone', null, [
                 'label' => 'label.phone',
