@@ -31,7 +31,6 @@ class ExtraCostController extends AbstractController {
     /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/extracost/new/{id}", requirements={"id": "\d+"}, name="admin_extracost_new", methods={"POST", "GET"})
     *
     * 
@@ -39,17 +38,17 @@ class ExtraCostController extends AbstractController {
     * to constraint the HTTP methods each controller responds to (by default
     * it responds to all methods).
     */
-   public function newAction(HotelReal $hotel, Request $request) {
-       $extra = new ExtraCost();
-       $extra->setHotel($hotel);
+    public function newAction(HotelReal $hotel, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $extra = new ExtraCost();
+        $extra->setHotel($hotel);
 
-       return $this->form($extra, $request);
-   }    
+        return $this->form($extra, $request);
+    }    
 
    /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/extracost/{id}", requirements={"id": "\d+"}, name="admin_extracost_show", methods={"POST", "GET"})
     *
     * 
@@ -57,16 +56,14 @@ class ExtraCostController extends AbstractController {
     * to constraint the HTTP methods each controller responds to (by default
     * it responds to all methods).
     */
-   public function showAction(ExtraCost $extra, Request $request) {
-
-       return $this->render('admin/extracost/show.html.twig', ['extra' => $extra]);
-
+    public function showAction(ExtraCost $extra, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        return $this->render('admin/extracost/show.html.twig', ['extra' => $extra]);
     }   
 
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/extracost/edit/{id}", requirements={"id": "\d+"}, name="admin_extracost_edit", methods={"POST", "GET"})
      *
      * 
@@ -75,7 +72,7 @@ class ExtraCostController extends AbstractController {
      * it responds to all methods).
      */
     public function editAction(ExtraCost $extra, Request $request) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->form($extra, $request);
 
     }    
@@ -119,7 +116,6 @@ class ExtraCostController extends AbstractController {
     /**
     * Delete a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/extracost/delete/{id}", requirements={"id": "\d+"}, name="admin_extracost_delete", methods={"POST", "GET"})
     *
     * 
@@ -127,16 +123,17 @@ class ExtraCostController extends AbstractController {
     * to constraint the HTTP methods each controller responds to (by default
     * it responds to all methods).
     */
-   public function deleteAction(ExtraCost $room) {
-       $result = array();
-       $result['status'] = 'ERROR'; 
-       $room->setHotel(null);
-       $entityManager = $this->doctrine->getManager();
-       $entityManager->persist($room);
-       $entityManager->flush();
-       $result['status'] = 'OK';
-       $result['room']['id'] = $room->getId();
-       $data =  json_encode($result);
-       return new JsonResponse($data, 200, [], true);
-   }  
+    public function deleteAction(ExtraCost $room) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $result = array();
+        $result['status'] = 'ERROR'; 
+        $room->setHotel(null);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($room);
+        $entityManager->flush();
+        $result['status'] = 'OK';
+        $result['room']['id'] = $room->getId();
+        $data =  json_encode($result);
+        return new JsonResponse($data, 200, [], true);
+    }  
 }

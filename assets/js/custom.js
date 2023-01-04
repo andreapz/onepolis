@@ -443,48 +443,9 @@ $(document).ready(AjaxInit());
 
 
 function AjaxInit() {
-    var j_citizen_address_city;
-    $("#citizen_address_city").on("keyup", function () {
-        $("li").remove('.list-group-item');
-        if ($(this).val().length > 2) {
-          if (j_citizen_address_city) {
-            j_citizen_address_city.abort();
-          }
-            var s = queryurl + "/" + $(this).val();
-            j_citizen_address_city = $.ajax({
-                url: s,
-                dataType: 'json',
-                beforeSend: function (xhr) {
-                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
-                }
-            })
-                    .done(function (data) {
-                        $("li").remove('.list-group-item');
-                        $.each(data, function (key, value) {
-                            //console.log(value);
-                            if (value.name)
-                            {
-                                $('#cityresult').append('<li class="list-group-item link-class" prov="' + value.Province + '" state="Italia" cap="' + value.Cap+'">\n' + value.name + ' - ' + value.Province + '</li>');
-                            }
-                        });
-
-
-                    });
-        }
-    });
-
-    $('#cityresult').on('click', 'li', function () {
-        var click_text = $(this).text().split('-');
-        var prov = $(this).attr('prov');
-        var cap = $(this).attr('cap');
-        var state = $(this).attr('state');
-        $('#citizen_address_city').val($.trim(click_text[0]));
-        $('#citizen_address_province').val(prov);
-        $('#citizen_address_postcode').val(cap);
-        $('#citizen_address_state').val(state);
-        $("li").remove('.list-group-item');
-    });
-
+    
+    
+    
     var j_event_address_city;
     $("#event_address_city").on("keyup", function () {
         $("li").remove('.list-group-item');

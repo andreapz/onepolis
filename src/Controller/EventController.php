@@ -85,16 +85,15 @@ class EventController extends AbstractController
     /**
      * Creates a new Event entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/event/new", name="admin_event_new", methods={"POST", "GET"})
      */
     public function newAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $event = new Event();
         $address = new Address();
         $event->addAddress($address);
         
         //$post->setAuthor($this->getUser());
-        //* @Security("is_granted('ROLE_ADMIN')")
         $form = $this->createForm(EventType::class, $event);
         
         $form->handleRequest($request);
@@ -119,10 +118,10 @@ class EventController extends AbstractController
     /**
      * Displays a form to edit an existing Event entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/event/{ueid}/edit", requirements={"id": "\d+"}, name="admin_event_edit", methods={"POST", "GET"})
      */
     public function editAction(Request $request, $ueid) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $event = $this->getEvent($this, $this->doctrine, $ueid);
         
         $entityManager = $this->doctrine->getManager();
@@ -164,10 +163,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/event/create")
      */
     public function createAction() {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $event = new Event();
         $event->setTitle('Mariapoli2018');
 
@@ -179,10 +178,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/events", name="admin_events", methods={"GET"})
      */
     public function eventsAction() {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $events = $this->doctrine
                 ->getRepository('App:Event')
                 ->findAll();
@@ -193,10 +192,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/event/update/{ueid}")
      */
     public function updateAction($ueid) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if (!UUID::is_valid($ueid)) {
             throw $this->createNotFoundException('The EVENT does not exist');
         }
@@ -225,11 +224,11 @@ class EventController extends AbstractController
     }
     
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/event/report/{ueid}", requirements={"id": "\d+"}, name="event_report_map", methods={"POST", "GET"})
      */
     public function reportRequest($ueid)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if (!UUID::is_valid($ueid)) {
             throw $this->createNotFoundException('The EVENT does not exist');
         }

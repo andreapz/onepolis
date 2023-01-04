@@ -29,7 +29,6 @@ class RestaurantRealMealPriceController extends AbstractController {
     /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/restaurantrealmealprice/new/{id}", requirements={"id": "\d+"}, name="admin_restaurantrealmealprice_new", methods={"POST", "GET"})
     *
     * 
@@ -37,37 +36,34 @@ class RestaurantRealMealPriceController extends AbstractController {
     * to constraint the HTTP methods each controller responds to (by default
     * it responds to all methods).
     */
-   public function newAction(RestaurantRealMeal $meal, Request $request) {
-       $mealprice = new RestaurantRealMealPrice();
-       $mealprice->setMeal($meal);
+    public function newAction(RestaurantRealMeal $meal, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $mealprice = new RestaurantRealMealPrice();
+        $mealprice->setMeal($meal);
 
-       return $this->form($mealprice, $request);
-   }    
+        return $this->form($mealprice, $request);
+    }    
 
    /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/restaurantrealmealprice/{id}", requirements={"id": "\d+"}, name="admin_restaurantrealmealprice_show", methods={"POST", "GET"})
     *
     */
-   public function showAction(RestaurantRealMealPrice $extra, Request $request) {
-
-       return $this->render('admin/restaurantrealmealprice/show.html.twig', ['extra' => $extra]);
-
+    public function showAction(RestaurantRealMealPrice $extra, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        return $this->render('admin/restaurantrealmealprice/show.html.twig', ['extra' => $extra]);
     }   
 
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantrealmealprice/edit/{id}", requirements={"id": "\d+"}, name="admin_restaurantrealmealprice_edit", methods={"POST", "GET"})
      *
      */
     public function editAction(RestaurantRealMealPrice $mealprice, Request $request) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->form($mealprice, $request);
-
     }    
 
     public function form(RestaurantRealMealPrice $mealprice, Request $request) {
@@ -96,20 +92,20 @@ class RestaurantRealMealPriceController extends AbstractController {
     /**
     * Delete a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/restaurantrealmealprice/delete/{id}", requirements={"id": "\d+"}, name="admin_restaurantrealmealprice_delete", methods={"POST", "GET"})
     *
     */
-   public function deleteAction(RestaurantRealMealPrice $mealprice) {
-       $result = array();
-       $result['status'] = 'ERROR'; 
-       $mealprice->setMeal(null);
-       $entityManager = $this->doctrine->getManager();
-       $entityManager->persist($mealprice);
-       $entityManager->flush();
-       $result['status'] = 'OK';
-       $result['$mealprice']['id'] = $mealprice->getId();
-       $data =  json_encode($result);
-       return new JsonResponse($data, 200, [], true);
-   }  
+    public function deleteAction(RestaurantRealMealPrice $mealprice) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $result = array();
+        $result['status'] = 'ERROR'; 
+        $mealprice->setMeal(null);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($mealprice);
+        $entityManager->flush();
+        $result['status'] = 'OK';
+        $result['$mealprice']['id'] = $mealprice->getId();
+        $data =  json_encode($result);
+        return new JsonResponse($data, 200, [], true);
+    }  
 }

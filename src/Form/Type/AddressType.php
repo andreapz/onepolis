@@ -29,6 +29,7 @@ class AddressType extends AbstractType
             ])
             ->add('city', null, [
                 'label' => 'label.city',
+                'attr' => ['class' => 'address-city'],
             ])
             ->add('postcode', null, [
                 'label' => 'label.postcode',

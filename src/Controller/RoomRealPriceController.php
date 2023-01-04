@@ -32,7 +32,6 @@ class RoomRealPriceController extends AbstractController {
     /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/roomrealprice/new/{id}", requirements={"id": "\d+"}, name="admin_roomrealprice_new", methods={"POST", "GET"})
     *
     * 
@@ -41,6 +40,8 @@ class RoomRealPriceController extends AbstractController {
     * it responds to all methods).
     */
    public function newAction(RoomReal $room, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
        $roomprice = new RoomRealPrice();
        $roomprice->setRoom($room);
 
@@ -50,7 +51,6 @@ class RoomRealPriceController extends AbstractController {
    /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/roomrealprice/{id}", requirements={"id": "\d+"}, name="admin_roomrealprice_show", methods={"POST", "GET"})
     *
     * 
@@ -59,15 +59,13 @@ class RoomRealPriceController extends AbstractController {
     * it responds to all methods).
     */
    public function showAction(RoomRealPrice $extra, Request $request) {
-
-       return $this->render('admin/roomrealprice/show.html.twig', ['extra' => $extra]);
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        return $this->render('admin/roomrealprice/show.html.twig', ['extra' => $extra]);
     }   
 
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/roomrealprice/edit/{id}", requirements={"id": "\d+"}, name="admin_roomrealprice_edit", methods={"POST", "GET"})
      *
      * 
@@ -76,7 +74,7 @@ class RoomRealPriceController extends AbstractController {
      * it responds to all methods).
      */
     public function editAction(RoomRealPrice $roomprice, Request $request) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->form($roomprice, $request);
 
     }    
@@ -107,19 +105,19 @@ class RoomRealPriceController extends AbstractController {
     /**
     * Delete a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/roomrealprice/delete/{id}", requirements={"id": "\d+"}, name="admin_roomrealprice_delete", methods={"POST", "GET"})
     */
-   public function deleteAction(RoomRealPrice $roomprice) {
-       $result = array();
-       $result['status'] = 'ERROR'; 
-       $roomprice->setRoom(null);
-       $entityManager = $this->doctrine->getManager();
-       $entityManager->persist($roomprice);
-       $entityManager->flush();
-       $result['status'] = 'OK';
-       $result['$roomprice']['id'] = $roomprice->getId();
-       $data =  json_encode($result);
-       return new JsonResponse($data, 200, [], true);
-   }  
+    public function deleteAction(RoomRealPrice $roomprice) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $result = array();
+        $result['status'] = 'ERROR'; 
+        $roomprice->setRoom(null);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($roomprice);
+        $entityManager->flush();
+        $result['status'] = 'OK';
+        $result['$roomprice']['id'] = $roomprice->getId();
+        $data =  json_encode($result);
+        return new JsonResponse($data, 200, [], true);
+    }  
 }

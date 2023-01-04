@@ -159,7 +159,7 @@
                 <p>[{{ hotel.description }}]</p>
                 <ul>
                     {% for room in hotel.rooms %}
-                        <li>{% if is_granted('ROLE_ADMIN') %}<a href="{{ path('room_show', {id: room.id}) }}">{% endif %}
+                        <li>{% if is_granted('ROLE_ADMIN') %}<a href="{{ path('roombase_show', {id: room.id}) }}">{% endif %}
                             {{ room.name }}{% if is_granted('ROLE_ADMIN') %}</a>{% endif %}
                         </li>
                         {% if 0 %}

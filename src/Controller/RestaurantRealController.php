@@ -35,7 +35,6 @@ class RestaurantRealController extends AbstractController {
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantreal/new/{id}", requirements={"id": "\d+"}, name="admin_restaurantreal_new", methods={"POST", "GET"})
      *
      *
@@ -44,6 +43,7 @@ class RestaurantRealController extends AbstractController {
      * it responds to all methods).
      */
     public function newAction($id, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $restaurant = new RestaurantReal();
         $restaurant->setEvent($id);
 
@@ -53,7 +53,6 @@ class RestaurantRealController extends AbstractController {
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantreal/{id}", requirements={"id": "\d+"}, name="admin_restaurantreal_show", methods={"POST", "GET"})
      *
      *
@@ -63,7 +62,7 @@ class RestaurantRealController extends AbstractController {
      */
     public function showAction(RestaurantReal $restaurant, Request $request) {
 
-        
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(RestaurantRealMealType::class, new RestaurantRealMeal(),
             array('action' => $this->generateUrl('admin_restaurantrealmeal_new', ['id' => $restaurant->getId()])));
 
@@ -88,7 +87,6 @@ class RestaurantRealController extends AbstractController {
     /**
      * Creates a new Post entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantreal/edit/{id}", requirements={"id": "\d+"}, name="admin_restaurantreal_edit", methods={"POST", "GET"})
      *
      *
@@ -97,7 +95,7 @@ class RestaurantRealController extends AbstractController {
      * it responds to all methods).
      */
     public function editAction(RestaurantReal $restaurant, Request $request) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->form($restaurant, $request);
 
     }
@@ -172,10 +170,10 @@ class RestaurantRealController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantreal/match/{id}", requirements={"id": "\d+"}, name="admin_restaurant_match", methods={"POST", "GET"})
      */
     public function matchAction($id, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $restaurants = $this->doctrine->getRepository(Restaurant::class)->findByEvent($id);
 
         $postData = $request->request->get('match');
@@ -220,10 +218,10 @@ class RestaurantRealController extends AbstractController {
 
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantreal/allocation", name="admin_restaurant_allocation", methods={"POST", "GET"})
      */
     public function allocationAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $m = $request->request->get('m');
         $r = $request->request->get('r');
         $v = $request->request->get('v');
@@ -258,10 +256,10 @@ class RestaurantRealController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/restaurantreal/allocation/delete", name="admin_restaurant_delete_allocation", methods={"POST", "GET"})
      */
     public function deleteAllocationAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $m = $request->request->get('m');
         $user = $this->getUser();
 

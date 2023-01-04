@@ -401,10 +401,11 @@ class CitizenController extends AbstractController {
     /**
      * Displays a form to edit an existing Task entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
+
      * @Route("/citizen/delete/{id}/{d}", requirements={"id": "\d+", "d": "\d+"}, name="citizen_delete", methods={"POST", "GET"})
      */
     public function deleteAction(Citizen $citizen, $d, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $result = array();
 
         if ($d == 0 || $d == 1) {
@@ -428,11 +429,10 @@ class CitizenController extends AbstractController {
     /**
      * Displays a form to edit an existing Task entity.
      *
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/citizen/deleteticketduplicated/{id}", requirements={"id": "\d+", "d": "\d+"}, name="citizen_delete_ticket_duplicated", methods={"POST", "GET"})
      */
     public function deleteTicketDuplicatedAction($id, Request $request) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->doctrine->getManager();
 
         $data = $em->getRepository(Citizen::class)->findTicketDuplicated($id);
@@ -464,11 +464,10 @@ class CitizenController extends AbstractController {
 
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotelreal/allocationmap/{id}", requirements={"id": "\d+"}, name="admin_hotel_allocation_map", methods={"POST", "GET"})
      */
     public function allocationMapAction($id) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $url = $this->generateUrl(
                         'task_handle_search_allocation_map',
                         array('event' => $id));
@@ -478,11 +477,11 @@ class CitizenController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/citizen/searchckeckins/{event}", requirements={"event": "\d+"}, name="task_handle_search_checkins_map", methods={"POST", "GET"})
      */
     public function searchCheckinsMapRequest($event)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $data = $this->doctrine->getRepository(CheckIn::class)->findCheckins($event);
 
         $result[] = array();

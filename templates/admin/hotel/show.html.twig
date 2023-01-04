@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block main %}
-    <h1><a href="{{ path('event_show', {id: event_id}) }}">{{ event_title }}</a>: 
+    <h1><a href="{{ path('event_show', {ueid: event_id}) }}">{{ event_title }}</a>: 
         {{ hotel.name }} 
         {% if is_granted('ROLE_SUPER_ADMIN') %}
         <a href="{{ path('admin_hotel_edit', {id: hotel.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></a>
@@ -14,23 +14,23 @@
      <div>
          <ul>
     {% for room in hotel.rooms %}
-            <li><a href="{{ path('room_show', {id: room.id}) }}">{{ room.name }} [{{ room.total }}]</a></li>
+            <li><a href="{{ path('roombase_show', {id: room.id}) }}">{{ room.name }} [{{ room.total }}]</a></li>
     {% endfor %}
          </ul>
      </div>
      </p>
      {% endif %}
  {% if is_granted('ROLE_SUPER_ADMIN') %}    
- <a href="{{ path('admin_room_new', {id: hotel.id}) }}" class="btn btn-sm btn-primary">
+ <a href="{{ path('admin_roombase_new', {id: hotel.id}) }}" class="btn btn-sm btn-primary">
         <i class="fa fa-plus" aria-hidden="true"></i>
-        {{ 'room.add_room'|trans|raw }}
+        {{ 'room.add_roombase'|trans|raw }}
         {% endif %}</a>
 {% endblock %}
 
 
 {% block sidebar %}
     {{ parent() }}
-<a href="{{ path('event_show', {id: event_id}) }}" class="btn btn-sm btn-default">
+<a href="{{ path('event_show', {ueid: event_id}) }}" class="btn btn-sm btn-default">
         {{ event_title }}
     </a>
    

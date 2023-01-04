@@ -1,0 +1,33 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block main %}
+    <h1><a href="{{ path('hotel_show', {id: hotel_id}) }}">{{ hotel_name }}</a></h1>
+    
+        <div>
+            <h4>{{ roombase.name }}<a href="{{ path('admin_roombase_edit', {id: roombase.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></a></h4>
+        </div>
+    
+        <div><p>{{ roombase.description }} [{{ roombase.total }}]</p></div>
+ 
+    {% if roombase.rooms %}
+    <p class="rooms">
+        <div>
+            <ul>
+    {% for room in roombase.rooms %}
+            <li><a href="{{ path('room_show', {id: room.id}) }}">{{ room.name }} [{{ room.total }}]</a></li>
+    {% endfor %}
+            </ul>
+         </div>
+     </p>
+
+
+     {% endif %}
+     
+     {% if is_granted('ROLE_SUPER_ADMIN') %}    
+        <a href="{{ path('admin_room_new', {id: hotel.id}) }}" class="btn btn-sm btn-primary">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                {{ 'room.add_room'|trans|raw }}
+                </a>
+    {% endif %}
+     
+{% endblock %}

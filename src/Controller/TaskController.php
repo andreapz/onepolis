@@ -184,11 +184,10 @@ class TaskController extends AbstractController {
 
     /**
      * Finds and displays a Event entity.
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route(path="/tasks/{id}", requirements={"id": "\d+"}, name="task_show_all", methods={"GET"})
      */
     public function showAllAction(Event $event) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('admin/task/showall.html.twig', [
                     'event' => $event
         ]);
@@ -662,11 +661,10 @@ class TaskController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/task/list/{id}/{r}", requirements={"id": "\d+", "r": "\d+"}, name="admin_tasks", methods={"POST", "GET"})
      */
     public function tasksAction(Event $event, $r) {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $citizens = $this->doctrine->getRepository(Citizen::class)
                 ->findByAdmin($event->getId(), '', $r);

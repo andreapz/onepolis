@@ -18,11 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class TransportController extends AbstractController
 {
     /**
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/transport/allocationmap/{id}", requirements={"id": "\d+"}, name="admin_transport_allocation_map", methods={"POST", "GET"})
     */
     public function allocationMapAction($id) {
-        
+        $this->denyAccessUnlessGranted('ROLE_ADMIN'); 
         $url = $this->generateUrl(
                         'transport_search_allocation_map',
                         array('event' => $id));
@@ -32,11 +31,11 @@ class TransportController extends AbstractController
     }
     
     /**
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/transport/searchallocation/{event}", requirements={"event": "\d+"}, name="transport_search_allocation_map", methods={"POST", "GET"})
     */
     public function searchAllocationMapRequest($event)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $data = $this->doctrine->getRepository(Transport::class)->findAllocationMap($event);
         
         $result[] = array();

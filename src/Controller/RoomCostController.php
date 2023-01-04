@@ -40,9 +40,7 @@ class RoomCostController extends AbstractController {
      * @Route("/admin/room/ticket/{id}/edit", requirements={"id": "\d+"}, name="room_ticket_edit", methods={"POST", "GET"})
      */
     public function editAction(RoomCost $roomcost, Request $request) {
-        //$this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
-        //@Security("is_granted('ROLE_ADMIN')")
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(RoomCostType::class, $roomcost);
 
         $form->handleRequest($request);
@@ -78,11 +76,11 @@ class RoomCostController extends AbstractController {
      * it responds to all methods).
      */
     public function newAction(Room $room, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $roomCost = new RoomCost();
         $roomCost->setRoom($room);
         
         //$post->setAuthor($this->getUser());
-//* @Security("is_granted('ROLE_ADMIN')")
         // See http://symfony.com/doc/current/book/forms.html#submitting-forms-with-multiple-buttons
         $form = $this->createForm(RoomCostType::class, $roomCost);
         // ->add('saveAndCreateNew', SubmitType::class);

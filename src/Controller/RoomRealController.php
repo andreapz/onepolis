@@ -28,21 +28,20 @@ class RoomRealController extends AbstractController {
     /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/roomreal/new/{id}", requirements={"id": "\d+"}, name="admin_roomreal_new", methods={"POST", "GET"})
     *
     */
-   public function newAction(HotelReal $hotel, Request $request) {
-       $room = new RoomReal();
-       $room->setHotel($hotel);
+    public function newAction(HotelReal $hotel, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $room = new RoomReal();
+        $room->setHotel($hotel);
 
-       return $this->form($room, $request);
-   }    
+        return $this->form($room, $request);
+    }    
 
    /**
     * Creates a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/roomreal/{id}", requirements={"id": "\d+"}, name="admin_roomreal_show", methods={"POST", "GET"})
     *
     * 
@@ -50,63 +49,60 @@ class RoomRealController extends AbstractController {
     * to constraint the HTTP methods each controller responds to (by default
     * it responds to all methods).
     */
-   public function showAction(RoomReal $room, Request $request) {
-
-       return $this->render('admin/roomreal/show.html.twig', ['room' => $room]);
-
+    public function showAction(RoomReal $room, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        return $this->render('admin/roomreal/show.html.twig', ['room' => $room]);
     }   
 
-        /**
-         * Creates a new Post entity.
-         *
-         * @Security("is_granted('ROLE_ADMIN')")
-         * @Route("/admin/roomreal/edit/{id}", requirements={"id": "\d+"}, name="admin_roomreal_edit", methods={"POST", "GET"})
-         *
-         * 
-         * NOTE: the Method annotation is optional, but it's a recommended practice
-         * to constraint the HTTP methods each controller responds to (by default
-         * it responds to all methods).
-         */
-        public function editAction(RoomReal $room, Request $request) {
+    /**
+     * Creates a new Post entity.
+     *
+     * @Route("/admin/roomreal/edit/{id}", requirements={"id": "\d+"}, name="admin_roomreal_edit", methods={"POST", "GET"})
+     *
+     * 
+     * NOTE: the Method annotation is optional, but it's a recommended practice
+     * to constraint the HTTP methods each controller responds to (by default
+     * it responds to all methods).
+     */
+    public function editAction(RoomReal $room, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        return $this->form($room, $request);
 
-            return $this->form($room, $request);
+    }    
 
-        }    
-
-        public function form(RoomReal $room, Request $request) {
-            
-            $rooms = array();
-            foreach ($room->getHotel()->getHotel()->getRooms() as $roombase) {
-                array_push($rooms, $roombase);    
-            }
-           
-            $form = $this->createForm(RoomRealType::class, $room, 
-                    array('roomvirtuals' => $rooms));
-            $form->handleRequest($request);
-            $result = array();
-            $result['status'] = 'Waiting'; 
-
-            if ($form->isSubmitted() && $form->isValid()) {    
-                $entity = $form['room']->getData();
-                
-                $room->setRoom($entity);
-                
-                $entityManager = $this->doctrine->getManager();
-                $entityManager->persist($room);
-                $entityManager->flush();
-                $result['status'] = 'OK';
-                $result['room']['id'] = $room->getId();
-                $result['html'] = $this->renderView('admin/roomreal/_row.html.twig', array('room' => $room, 'show_control' => 1));
-            }
-
-           $data =  json_encode($result);
-           return new JsonResponse($data, 200, [], true);
+    public function form(RoomReal $room, Request $request) {
+        
+        $rooms = array();
+        foreach ($room->getHotel()->getHotel()->getRooms() as $roombase) {
+            array_push($rooms, $roombase);    
         }
         
+        $form = $this->createForm(RoomRealType::class, $room, 
+                array('roomvirtuals' => $rooms));
+        $form->handleRequest($request);
+        $result = array();
+        $result['status'] = 'Waiting'; 
+
+        if ($form->isSubmitted() && $form->isValid()) {    
+            $entity = $form['room']->getData();
+            
+            $room->setRoom($entity);
+            
+            $entityManager = $this->doctrine->getManager();
+            $entityManager->persist($room);
+            $entityManager->flush();
+            $result['status'] = 'OK';
+            $result['room']['id'] = $room->getId();
+            $result['html'] = $this->renderView('admin/roomreal/_row.html.twig', array('room' => $room, 'show_control' => 1));
+        }
+
+        $data =  json_encode($result);
+        return new JsonResponse($data, 200, [], true);
+    }
+    
     /**
     * Delete a new Post entity.
     *
-    * @Security("is_granted('ROLE_ADMIN')")
     * @Route("/admin/roomreal/delete/{id}", requirements={"id": "\d+"}, name="admin_roomreal_delete", methods={"POST", "GET"})
     *
     * 
@@ -114,16 +110,17 @@ class RoomRealController extends AbstractController {
     * to constraint the HTTP methods each controller responds to (by default
     * it responds to all methods).
     */
-   public function deleteAction(RoomReal $room) {
-       $result = array();
-       $result['status'] = 'ERROR'; 
-       $room->setHotel(null);
-       $entityManager = $this->doctrine->getManager();
-       $entityManager->persist($room);
-       $entityManager->flush();
-       $result['status'] = 'OK';
-       $result['room']['id'] = $room->getId();
-       $data =  json_encode($result);
-       return new JsonResponse($data, 200, [], true);
-   }  
+    public function deleteAction(RoomReal $room) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $result = array();
+        $result['status'] = 'ERROR'; 
+        $room->setHotel(null);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($room);
+        $entityManager->flush();
+        $result['status'] = 'OK';
+        $result['room']['id'] = $room->getId();
+        $data =  json_encode($result);
+        return new JsonResponse($data, 200, [], true);
+    }  
 }

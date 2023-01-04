@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Hotel;
 use App\Entity\Room;
+use App\Entity\RoomBase;
 use App\Entity\RoomCost;
 use App\Form\Type\RoomType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -40,8 +41,8 @@ class RoomController extends AbstractController {
         
         return $this->render('admin/room/show.html.twig', [
                     'room' => $room,
-                    'hotel_id' => $room->getHotel()->getId(),
-                    'hotel_name' => $room->getHotel()->getName(),
+                    'hotel_id' => $room->getParent()->getHotel()->getId(),
+                    'hotel_name' => $room->getParent()->getHotel()->getName(),
         ]);
     }
 
@@ -56,11 +57,12 @@ class RoomController extends AbstractController {
      * it responds to all methods).
      */
     public function newAction(Hotel $hotel, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $room = new Room();
         $room->setHotel($hotel);
         
         //$post->setAuthor($this->getUser());
-//* @Security("is_granted('ROLE_ADMIN')")
+
         // See http://symfony.com/doc/current/book/forms.html#submitting-forms-with-multiple-buttons
         $form = $this->createForm(RoomType::class, $room);
         // ->add('saveAndCreateNew', SubmitType::class);
@@ -216,10 +218,10 @@ class RoomController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/rooms", name="admin_rooms", methods={"GET"})
      */
     public function roomsAction() {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $rooms = $this->doctrine
                 ->getRepository('App:Room')
                 ->findAll();

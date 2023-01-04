@@ -40,7 +40,7 @@ class HotelController extends AbstractController {
         
         return $this->render('admin/hotel/show.html.twig', [
                     'hotel' => $hotel,
-                    'event_id' => $hotel->getEvent()->getId(),
+                    'event_id' => $hotel->getEvent()->getUeid(),
                     'event_title' => $hotel->getEvent()->getTitle(),
         ]);
     }
@@ -215,10 +215,10 @@ class HotelController extends AbstractController {
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/admin/hotels", name="admin_hotels", methods={"POST", "GET"})
      */
     public function hotelsAction() {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $hotels = $this->doctrine
                 ->getRepository('App:Hotel')
                 ->findAll();

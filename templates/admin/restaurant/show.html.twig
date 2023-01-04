@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block main %}
-    <h1><a href="{{ path('event_show', {id: event_id}) }}">{{ event_title }}</a>: 
+    <h1><a href="{{ path('event_show', {ueid: event_id}) }}">{{ event_title }}</a>: 
         {{ restaurant.name }} 
         {% if is_granted('ROLE_SUPER_ADMIN') %}
         <a href="{{ path('admin_restaurant_edit', {id: restaurant.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></a>
