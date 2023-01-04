@@ -42,11 +42,15 @@ class RoomCostType extends AbstractType
             ])
             ->add('initialDate', DateTimePickerType::class, [
                 'label' => 'label.initialDate',
-                'format' => 'dd-MM-yyyy',
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
             ])
             ->add('endDate', DateTimePickerType::class, [
                 'label' => 'label.endDate',
-                'format' => 'dd-MM-yyyy',
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
             ])
         ;
     }

@@ -7,6 +7,7 @@ use App\Entity\Room;
 use App\Entity\RoomCost;
 use App\Form\Type\RoomCostType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RoomCostController extends AbstractController {
+    
+    public function __construct(private ManagerRegistry $doctrine) {}
 
     /**
      * Finds and displays a Room entity.
@@ -79,6 +82,7 @@ class RoomCostController extends AbstractController {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $roomCost = new RoomCost();
         $roomCost->setRoom($room);
+        $roomCost->seteid($room->getEid());
         
         //$post->setAuthor($this->getUser());
         // See http://symfony.com/doc/current/book/forms.html#submitting-forms-with-multiple-buttons
@@ -116,4 +120,24 @@ class RoomCostController extends AbstractController {
                     'form' => $form->createView(),
         ]);
     }
+
+     /**
+    * Delete a new Post entity.
+    *
+    * @Route("/admin/room/ticket/delete/{id}", requirements={"id": "\d+"}, name="admin_room_cost_delete", methods={"POST", "GET"})
+    *
+    * 
+    * NOTE: the Method annotation is optional, but it's a recommended practice
+    * to constraint the HTTP methods each controller responds to (by default
+    * it responds to all methods).
+    */
+    public function deleteAction(RoomCost $roomcost) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $roomId = $roomcost->getRoom()->getId();
+        $roomcost->setRoom(null);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($roomcost);
+        $entityManager->flush();
+        return $this->redirectToRoute('room_show', ['id' => $roomId]);
+    }  
 }

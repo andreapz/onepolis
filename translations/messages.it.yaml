@@ -151,6 +151,12 @@ label.payment.type: Tipologia pagamento
 label.select_all: Seleziona tutti
 label.supplier_cost: costo fornitore
 label.selling_price: prezzo vendita
+label.price: Prezzo
+label.minAge: Soglia minima età
+label.maxAge: Soglia massima età
+label.total: Totale
+label.initialDate: Data inizio
+label.endDate: Data fine
 
 meal.add_cost: Aggiungi Costo
 

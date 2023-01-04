@@ -14,7 +14,7 @@
         <div>
             <ul>
     {% for ticket in room.tickets %}
-        <li><h4><a href="{{ path('room_ticket_show', {id: ticket.id}) }}">{{ ticket.name }}</a> {{ ticket.price }} [{{ ticket.initialDate|date('d/m/Y') }} - {{ ticket.endDate|date('d/m/Y') }}]</h4></li>
+        <li><h4><a href="{{ path('room_ticket_show', {id: ticket.id}) }}">{{ ticket.name }}</a> {{ ticket.price }}€ [{{ ticket.initialDate|date('d/m/Y') }} - {{ ticket.endDate|date('d/m/Y') }}]</h4></li>
     {% endfor %}
             </ul>
          </div>
