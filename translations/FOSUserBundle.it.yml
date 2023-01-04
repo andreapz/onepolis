@@ -1,0 +1,12 @@
+registration.confirmed: __registration.confirmed
+registration.back: __registration.back
+help.login_users: __help.login_users
+label.username: __label.username
+label.password: __label.password
+label.role: __label.role
+help.role_user: __help.role_user
+help.role_admin: __help.role_admin
+note: __note
+help.reload_fixtures: __help.reload_fixtures
+tip: __tip
+help.add_user: __help.add_user

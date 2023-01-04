@@ -1,0 +1,310 @@
+action.back_to_list: Indietro
+action.sign_in: accedi
+action.add: Aggiungi
+action.show: Visualizza
+action.edit: Modifica
+action.save: Invia
+action.show_post: Visualizza
+action.create_post: __action.create_post
+action.edit_contents: __action.edit_contents
+action.change_password: __action.change_password
+action.remove_admin: 'Cancella amministratore'
+action.add_admin: 'Aggiungi amministratore'
+action.delete_post: 'Cancella Post'
+action.show_event: __action.show_event
+action.browse_app: __action.browse_app
+action.browse_admin: __action.browse_admin
+action.edit_user: __action.edit_user
+action.edit_post: __action.edit_post
+action.publish_comment: __action.publish_comment
+action.show_code: __action.show_code
+
+'yes': si
+'no': 'no'
+
+citizen.add_payment: 'Aggiungi Pagamento'
+citizen.show_all_tasks: 'Visualizza Schede'
+citizen.checkin: 'Check-In'
+citizen.checkout: 'Check-Out'
+citizen.reset_order: Modifica scheda
+
+days: giorni
+day: giorno
+days_plural: '{0} giorni|{1} giorno|]1,Inf[ giorni'
+years_plural: '{0} anni|{1} anno|]1,Inf[ anni'
+
+delete_post_modal.title: __delete_post_modal.title
+delete_post_modal.body: __delete_post_modal.body
+
+
+event.no_event_found: 'Nessun Evento disponibile'
+event.no_events_found: __event.no_events_found
+
+extracost.type: Tipologia
+extracost.price: Prezzo
+
+help.login_users: Login
+help.register_users: Registrati
+help.add_credential: 'Compilare il form con i dati richiesti'
+help.credential: Credenziali
+help.app_description: 'Onepolis: gestione eventi'
+help.more_information: 'Accedi al servizio per procedere con la registrazione ad un evento'
+help.browse_app: __help.browse_app
+help.browse_admin: __help.browse_admin
+help.role_user: __help.role_user
+help.role_admin: __help.role_admin
+help.reload_fixtures: __help.reload_fixtures
+help.add_user: __help.add_user
+help.show_code: __help.show_code
+
+hotel.add_cost: Aggiungi Costo
+hotel.add_extracost: Aggiungi Costo Extra
+hotel.remove_extracost: Rimuovi Costo Extra
+hotel.hotel: Hotel
+hotel.add_hotel: Aggiungi Hotel
+hotel.remove_roomcost: Cancella costo
+hotel.match_hotel: Assegnazione Hotel
+hotel.matched_hotel: Lista assegnazioni Hotel
+hotel.matched_hotel_map: Mappa assegnazioni Hotel
+hotel.delete_match: Rimuovi Assegnazione
+hotel.no_hotel_found: 'Nessun Hotel disponibile'
+hotel.list: Lista Hotel
+hotel.remove_room: Rimuovi Stanza
+
+http_error.name: __http_error.name
+http_error.description: __http_error.description
+http_error.suggestion: __http_error.suggestion
+http_error_404.description: __http_error_404.description
+http_error_404.suggestion: __http_error_404.suggestion
+http_error_500.description: __http_error_500.description
+http_error_500.suggestion: __http_error_500.suggestion
+http_error_403.description: __http_error_403.description
+http_error_403.suggestion: __http_error_403.suggestion
+
+info.change_password: __info.change_password
+
+label.checkins: Check-In
+label.citizen_payment: Pagamento
+label.latitude: latitudine
+label.longitude: longitudine
+label.note: note
+label.roomNote: note alloggio
+label.search: Cerca
+label.value: Importo
+label.username: username
+label.password: password
+label.partner: Interno
+label.first: Prima Mariapoli
+label.delete: Cancella
+label.reload: Riattiva
+label.create_restaurant: 'Aggiungi Ristorante'
+label.name: Nome
+label.surname: Cognome
+label.actions: Azioni
+label.restaurant: 'Ristorante'
+label.restaurantCost: 'Costo Ristorante'
+label.update: Aggiorna
+label.roomCost: 'Costo Stanza'
+label.create_room: 'Aggiungi Stanza'
+label.room: Stanza
+label.create_hotel: __label.create_hotel
+label.title: Titolo
+label.address: Indirizzo
+label.create_address: Aggiungi indirizzo
+label.create_post: Aggiungi
+label.published_at: __label.published_at
+label.summary: __label.summary
+label.citizen: Cittadino
+label.delegate: Delegato minore
+label.save: Invia
+label.street: Via/Piazza
+label.city: Città
+label.operator: Operatore
+label.postcode: Cap
+label.province: Provincia
+label.state: Stato
+label.ticket: Biglietti
+label.meals: Pasti
+label.branches: Branca
+label.relationships: Relazione
+label.gender: Sesso
+label.email: Email
+label.phone: Telefono
+label.cityBirth: Nato a
+label.birthDate: Data nascita
+label.needSupport: Richiesta di assistenza
+label.guest: Ospite
+label.guests: Ospiti
+label.transport: Trasporto
+label.overnight_stay: Pernottamento
+label.match: Assegnazione
+label.hotel: Hotel
+label.tickets: Biglietti
+label.create_event: __label.create_event
+label.cancel: __label.cancel
+label.delete_post: __label.delete_post
+label.role: __label.role
+label.paymentDate: Data pagamento
+label.code: Codice scheda
+label.reserved: Occupanti
+label.payment.type: Tipologia pagamento
+label.select_all: Seleziona tutti
+label.supplier_cost: costo fornitore
+label.selling_price: prezzo vendita
+
+meal.add_cost: Aggiungi Costo
+
+menu.rss: __menu.rss
+menu.toggle_nav: __menu.toggle_nav
+menu.user: utente
+menu.users: utenti
+menu.logout: esci
+menu.admin: amministratore
+menu.events: Eventi
+
+mit_license: 'licenza mit'
+
+
+note: note
+
+one.register: Registrazione
+one.add_meal: 'Aggiungi Pasto'
+one.add_user: Aggiungi un utente
+one.add_ticket: 'Aggiungi Ticket'
+one.task_code: Codice Scheda
+one.add_task: 'Aggiungi una scheda'
+one.task_amount: Importo
+one.task_order_date: 'Data ordine'
+one.task_order: 'Registra scheda'
+one.task_payment_code: Codice Pagamento
+one.citizen_payments_diff: Saldo
+one.citizen_payments: Pagamento
+one.search_task: 'Cerca scheda'
+one.value: importo
+
+post.to_publish_a_comment: __post.to_publish_a_comment
+post.num_comments: __post.num_comments
+post.commented_on: __post.commented_on
+post.no_comments: __post.no_comments
+post.search_for: __post.search_for
+post.search_no_results: __post.search_no_results
+post.no_posts_found: __post.no_posts_found
+
+proceed_update_room_note: Aggiornamento note stanza
+proceed_order_task: 'Procedere con l''invio della scheda?'
+proceed_delete_room: Rimuovi Stanza
+proceed_delete_payment: Rimuovi Pagamento
+proceed_delete_extracost: Rimuovi Costo Extra
+proceed_delete_mealcost: Procedere con la cancellazione del costo?
+proceed_delete_roomcost: Cancella costo
+proceed_reset_order_task: 'Confermare l''annullamento del salvataggio della scheda?'
+
+restaurant.no_events_found: 'Nessun Evento disponibile'
+restaurant.no_restaurant_found: 'Nessun Ristorante disponibile'
+restaurant.delete_match: Rimuovi assegnazione
+restaurant.matched: Lista assegnazioni Ristorante
+restaurant.match: Assegnazione Ristorante
+restaurant.add_meal: Aggiungi Pasto
+restaurant.add_restaurant: Aggiungi Ristorante
+restaurant.list: Lista Ristoranti
+restaurant.matched_restaurant_map: Mappa assegnazioni Ristorante
+
+room.name: nome
+room.guests: ospiti
+room.info: descrizione
+room.bath_shared: bagno condiviso
+room.accessible: accessible
+room.floor: piano
+room.rooms: stanze
+room.bath: bagno privato
+room.single: letto singolo
+room.double: letto matrimoniale
+room.twin: letto doppio
+room.sofa: divano letto
+room.bunk: letto a castello
+room.price: costo
+room.total_price: costo totale
+room.add_cost: prezzo
+room.add_roomcost: Aggiungi tariffa
+room.no_room_found: 'Nessuna Stanza disponibile'
+room.add_room: 'Aggiungi Stanza'
+room.list: Lista Stanze
+
+rss.title: __rss.title
+rss.description: __rss.description
+
+task.show_task: Visualizza Scheda
+task.task: Scheda
+task.no_task_found: __task.no_task_found
+task_will_not_modified: 'Da questo momento non sarà possibile modificare l''ordine.'
+
+tip: __tip
+
+title.login: accedi
+title.restaurant_new: 'Nuovo Ristorante'
+title.restaurant_meal: Pastio
+title.restaurant_cost: 'Costo Ristorante'
+title.restaurant_list: 'Lista Ristoranti'
+title.room_new: 'Nuova Stanza'
+title.user_list: 'Lista Utenti'
+title.room_list: 'Lista Stanze'
+title.hotel_new: 'Nuovo Hotel'
+title.hotel_list: 'Lista Hotel'
+title.edit_post: __title.edit_post
+title.post_new: Nuovo
+title.post_list: Lista
+title.task_list: __title.task_list
+title.edit_user: __title.edit_user
+title.event_new: __title.event_new
+title.comment_error: __title.comment_error
+title.source_code: __title.source_code
+title.controller_code: __title.controller_code
+title.twig_template_code: __title.twig_template_code
+title.homepage: __title.homepage
+title.event_list: __title.event_list
+title.change_password: __title.change_password
+title.add_comment: __title.add_comment
+
+transport.matched_transport_map: Mappa assegnazioni Trasporto
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
