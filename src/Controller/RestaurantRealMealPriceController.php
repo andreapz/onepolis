@@ -7,6 +7,7 @@ use App\Entity\RestaurantRealMeal;
 use App\Entity\RestaurantRealMealPrice;
 use App\Form\Type\RestaurantRealMealPriceType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RestaurantRealMealPriceController extends AbstractController {
     
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     /**
      * @Route("/admin/restaurantrealmealprice/list/{id}", requirements={"id": "\d+"}, name="restaurantrealmealprice_index", methods={"GET"})
      * @Cache(smaxage="10")

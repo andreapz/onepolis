@@ -7,6 +7,7 @@ use App\Entity\RoomReal;
 use App\Entity\RoomRealPrice;
 use App\Form\Type\RoomRealPriceType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RoomRealPriceController extends AbstractController {
     
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     /**
      * @Route("/admin/roomrealprice/list/{id}", requirements={"id": "\d+"}, name="roomrealprice_index", methods={"GET"})
      * @Cache(smaxage="10")
@@ -35,9 +38,6 @@ class RoomRealPriceController extends AbstractController {
     * @Route("/admin/roomrealprice/new/{id}", requirements={"id": "\d+"}, name="admin_roomrealprice_new", methods={"POST", "GET"})
     *
     * 
-    * NOTE: the Method annotation is optional, but it's a recommended practice
-    * to constraint the HTTP methods each controller responds to (by default
-    * it responds to all methods).
     */
    public function newAction(RoomReal $room, Request $request) {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');

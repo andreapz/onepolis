@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Transport;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TransportController extends AbstractController
 {
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     /**
     * @Route("/admin/transport/allocationmap/{id}", requirements={"id": "\d+"}, name="admin_transport_allocation_map", methods={"POST", "GET"})
     */

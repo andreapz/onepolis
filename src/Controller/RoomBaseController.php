@@ -8,6 +8,7 @@ use App\Entity\RoomBase;
 use App\Entity\RoomCost;
 use App\Form\Type\RoomType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RoomBaseController extends AbstractController {
+
+    public function __construct(private ManagerRegistry $doctrine) {}
 
     /**
      * @Route("/roombase", name="roombase_index", methods={"GET"})

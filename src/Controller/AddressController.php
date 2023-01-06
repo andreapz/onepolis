@@ -7,6 +7,7 @@ use App\Entity\Citizen;
 
 use App\Form\Type\AddressType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -14,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AddressController extends AbstractController {
     
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     /**
      * Displays a form to edit an existing Task entity.
      *

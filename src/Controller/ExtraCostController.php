@@ -6,6 +6,7 @@ use App\Entity\HotelReal;
 use App\Entity\ExtraCost;
 use App\Form\Type\ExtraCostType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ExtraCostController extends AbstractController {
+    
+    public function __construct(private ManagerRegistry $doctrine) {}
     
     /**
      * @Route("/admin/extracost/list/{id}", requirements={"id": "\d+"}, name="extracost_index", methods={"GET"})

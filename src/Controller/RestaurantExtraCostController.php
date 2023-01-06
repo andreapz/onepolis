@@ -6,6 +6,7 @@ use App\Entity\RestaurantReal;
 use App\Entity\RestaurantExtraCost;
 use App\Form\Type\RestaurantExtraCostType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RestaurantExtraCostController extends AbstractController {
+    public function __construct(private ManagerRegistry $doctrine) {}
     
     /**
      * @Route("/admin/restaurantextracost/list/{id}", requirements={"id": "\d+"}, name="restaurantextracost_index", methods={"GET"})

@@ -6,6 +6,7 @@ use App\Entity\HotelReal;
 use App\Entity\RoomReal;
 use App\Form\Type\RoomRealType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RoomRealController extends AbstractController {
     
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     /**
      * @Route("/admin/roomreal/list/{id}", requirements={"id": "\d+"}, name="roomreal_index", methods={"GET"})
      * @Cache(smaxage="10")

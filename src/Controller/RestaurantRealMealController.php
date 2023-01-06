@@ -6,6 +6,7 @@ use App\Entity\RestaurantReal;
 use App\Entity\RestaurantRealMeal;
 use App\Form\Type\RestaurantRealMealType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RestaurantRealMealController extends AbstractController {
     
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     /**
      * @Route("/admin/restaurantrealmeal/list/{id}", requirements={"id": "\d+"}, name="restaurantrealmeal_index", methods={"GET"})
      * @Cache(smaxage="10")

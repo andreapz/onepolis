@@ -13,6 +13,7 @@ use App\Form\Type\RestaurantExtraCostType;
 use App\Form\Type\RestaurantRealType;
 use App\Form\Type\RestaurantRealMealPriceType;
 use App\Form\Type\RestaurantRealMealType;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RestaurantRealController extends AbstractController {
+
+    public function __construct(private ManagerRegistry $doctrine) {}
 
     /**
      * @Route("/admin/restaurantreal/list/{id}", requirements={"id": "\d+"}, name="admin_restaurant_real_index", methods={"GET"})

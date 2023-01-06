@@ -668,10 +668,10 @@ function AjaxInit() {
         $('#modal-from-dom').modal('show');
     });
 
-    $('.show-add-room').on('click', function(e) {
-        e.preventDefault();
-        $('#modal-from-dom').modal('show');
-    });
+    // $('.show-add-room').on('click', function(e) {
+    //     e.preventDefault();
+    //     $('#modal-from-dom').modal('show');
+    // });
 
     $('.delete-payment').on('click', function(e) {
         e.preventDefault();
@@ -706,18 +706,18 @@ function AjaxInit() {
         $('#modal-from-dom-room-delete').modal('show');
     });
 
-    $('#modal-delete-room').on('click', function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        var rel = $(this).attr('rel');
+    // $('#modal-delete-room').on('click', function(e) {
+    //     e.preventDefault();
+    //     var href = $(this).attr('href');
+    //     var rel = $(this).attr('rel');
 
-        $.post(href, function(response) {
-            if (response['status']=='OK') {
-                $('#'+rel).remove();
-            }
-            $('#modal-from-dom-room-delete').modal('hide');
-        }, 'JSON');
-    });
+    //     $.post(href, function(response) {
+    //         if (response['status']=='OK') {
+    //             $('#'+rel).remove();
+    //         }
+    //         $('#modal-from-dom-room-delete').modal('hide');
+    //     }, 'JSON');
+    // });
 
     var j_citizen_task;
 
@@ -780,144 +780,144 @@ function AjaxInit() {
         }, 'JSON');
     });
 
-    $('#room_add').unbind('submit').bind('submit', function(e) {
+    // $('#room_add').unbind('submit').bind('submit', function(e) {
 
-        $('.alert').remove();
-        e.preventDefault();
+    //     $('.alert').remove();
+    //     e.preventDefault();
 
-        var formSerialize = $(this).serialize();
+    //     var formSerialize = $(this).serialize();
 
-        $.post(formurl, formSerialize, function(response) {
+    //     $.post(formurl, formSerialize, function(response) {
 
-            if (response['status']=='OK') {
-                $('.table-room').append(response['html']);
-                $('#roomresult').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Well done!</strong> La camera è stata inserita.</div>');
+    //         if (response['status']=='OK') {
+    //             $('.table-room').append(response['html']);
+    //             $('#roomresult').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Well done!</strong> La camera è stata inserita.</div>');
 
-                /*$('#room_real_name').val("");
-                $('#room_real_floor').val("");
-                $('#room_real_rooms').val("");
-                $('#room_real_guests').val("");
-                $('#room_real_single').val("");
-                $('#room_real_double').val("");
-                $('#room_real_twin').val("");
-                $('#room_real_sofa').val("");
-                $('#room_real_bunk').val("");*/
-                AjaxInit();
-            } else {
-                $('#roomresult').append('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><strong>Ops!</strong> Qualcosa è andato storto. Controlla i dati e riprova.</div>');
-            }
-        }, 'JSON');
-    });
+    //             /*$('#room_real_name').val("");
+    //             $('#room_real_floor').val("");
+    //             $('#room_real_rooms').val("");
+    //             $('#room_real_guests').val("");
+    //             $('#room_real_single').val("");
+    //             $('#room_real_double').val("");
+    //             $('#room_real_twin').val("");
+    //             $('#room_real_sofa').val("");
+    //             $('#room_real_bunk').val("");*/
+    //             AjaxInit();
+    //         } else {
+    //             $('#roomresult').append('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><strong>Ops!</strong> Qualcosa è andato storto. Controlla i dati e riprova.</div>');
+    //         }
+    //     }, 'JSON');
+    // });
 
-    $('.show-add-extracost').on('click', function(e) {
-        e.preventDefault();
-        $('#modal-from-dom-extracost').modal('show');
-    });
+    // $('.show-add-extracost').on('click', function(e) {
+    //     e.preventDefault();
+    //     $('#modal-from-dom-extracost').modal('show');
+    // });
 
-    $('#extracost_add').unbind('submit').bind('submit', function(e) {
+    // $('#extracost_add').unbind('submit').bind('submit', function(e) {
 
-        $('.alert').remove();
-        e.preventDefault();
+    //     $('.alert').remove();
+    //     e.preventDefault();
 
-        var formSerialize = $(this).serialize();
+    //     var formSerialize = $(this).serialize();
 
-        $.post(extracosturl, formSerialize, function(response) {
+    //     $.post(extracosturl, formSerialize, function(response) {
 
-            if (response['status']=='OK') {
-                $('.table-extracost').append(response['html']);
-                $('#extra_cost_price').val("");
-                $('#extracostresult').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Well done!</strong> Il costo è stata inserito.</div>');
+    //         if (response['status']=='OK') {
+    //             $('.table-extracost').append(response['html']);
+    //             $('#extra_cost_price').val("");
+    //             $('#extracostresult').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Well done!</strong> Il costo è stata inserito.</div>');
 
-                AjaxInit();
-            } else {
-                $('#extracostresult').append('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><strong>Ops!</strong> Qualcosa è andato storto. Controlla i dati e riprova.</div>');
-            }
-        }, 'JSON');
-    });
+    //             AjaxInit();
+    //         } else {
+    //             $('#extracostresult').append('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><strong>Ops!</strong> Qualcosa è andato storto. Controlla i dati e riprova.</div>');
+    //         }
+    //     }, 'JSON');
+    // });
 
-    $('.delete-extracost').on('click', function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        var rel = $(this).attr('rel');
-        $('#modal-delete-extracost').attr('href', href);
-        $('#modal-delete-extracost').attr('rel', rel);
-        $('#modal-from-dom-extracost-delete').modal('show');
-    });
+    // $('.delete-extracost').on('click', function(e) {
+    //     e.preventDefault();
+    //     var href = $(this).attr('href');
+    //     var rel = $(this).attr('rel');
+    //     $('#modal-delete-extracost').attr('href', href);
+    //     $('#modal-delete-extracost').attr('rel', rel);
+    //     $('#modal-from-dom-extracost-delete').modal('show');
+    // });
 
-    $('#modal-delete-extracost').on('click', function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        var rel = $(this).attr('rel');
+    // $('#modal-delete-extracost').on('click', function(e) {
+    //     e.preventDefault();
+    //     var href = $(this).attr('href');
+    //     var rel = $(this).attr('rel');
 
-        $.post(href, function(response) {
-            if (response['status']=='OK') {
-                $('#'+rel).remove();
-            }
-            $('#modal-from-dom-extracost-delete').modal('hide');
-        }, 'JSON');
-    });
+    //     $.post(href, function(response) {
+    //         if (response['status']=='OK') {
+    //             $('#'+rel).remove();
+    //         }
+    //         $('#modal-from-dom-extracost-delete').modal('hide');
+    //     }, 'JSON');
+    // });
 
-    $('.show-add-roomcost').on('click', function(e) {
-        e.preventDefault();
-        isVisible = $('#modal-from-dom-roomcost').hasClass("in");
+    // $('.show-add-roomcost').on('click', function(e) {
+    //     e.preventDefault();
+    //     isVisible = $('#modal-from-dom-roomcost').hasClass("in");
 
-        if ( !isVisible ) {
-            var href = $(this).attr('href');
-            var rel = $(this).attr('rel');
-            $('#roomcost_add').attr('href', href);
-            $('#roomcost_add').attr('rel', rel);
-            $('#modal-from-dom-roomcost').modal('show');
-        }
-    });
+    //     if ( !isVisible ) {
+    //         var href = $(this).attr('href');
+    //         var rel = $(this).attr('rel');
+    //         $('#roomcost_add').attr('href', href);
+    //         $('#roomcost_add').attr('rel', rel);
+    //         $('#modal-from-dom-roomcost').modal('show');
+    //     }
+    // });
 
-    $('#roomcost_add').unbind('submit').bind('submit', function(e) {
+    // $('#roomcost_add').unbind('submit').bind('submit', function(e) {
 
-        $('.alert').remove();
+    //     $('.alert').remove();
 
-        e.preventDefault();
+    //     e.preventDefault();
 
-        var href = $(this).attr('href');
-        var rel = $(this).attr('rel');
+    //     var href = $(this).attr('href');
+    //     var rel = $(this).attr('rel');
 
-        var formSerialize = $(this).serialize();
+    //     var formSerialize = $(this).serialize();
 
-        $.post(href, formSerialize, function(response) {
+    //     $.post(href, formSerialize, function(response) {
 
-            if (response['status']=='OK') {
-                $('#'+rel).append(response['html']);
-                $('#room_real_price_price').val("");
-                $('#room_real_price_guests').val("");
-                $('#roomcostresult').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Well done!</strong> Il costo è stata inserito.</div>');
+    //         if (response['status']=='OK') {
+    //             $('#'+rel).append(response['html']);
+    //             $('#room_real_price_price').val("");
+    //             $('#room_real_price_guests').val("");
+    //             $('#roomcostresult').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Well done!</strong> Il costo è stata inserito.</div>');
 
-                AjaxInit();
-            } else {
-                $('#roomcostresult').append('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><strong>Ops!</strong> Qualcosa è andato storto. Controlla i dati e riprova.</div>');
-            }
-        }, 'JSON');
+    //             AjaxInit();
+    //         } else {
+    //             $('#roomcostresult').append('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><strong>Ops!</strong> Qualcosa è andato storto. Controlla i dati e riprova.</div>');
+    //         }
+    //     }, 'JSON');
 
-    });
+    // });
 
-    $('.delete-roomcost').on('click', function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        var rel = $(this).attr('rel');
-        $('#modal-delete-roomcost').attr('href', href);
-        $('#modal-delete-roomcost').attr('rel', rel);
-        $('#modal-from-dom-roomcost-delete').modal('show');
-    });
+    // $('.delete-roomcost').on('click', function(e) {
+    //     e.preventDefault();
+    //     var href = $(this).attr('href');
+    //     var rel = $(this).attr('rel');
+    //     $('#modal-delete-roomcost').attr('href', href);
+    //     $('#modal-delete-roomcost').attr('rel', rel);
+    //     $('#modal-from-dom-roomcost-delete').modal('show');
+    // });
 
-    $('#modal-delete-roomcost').on('click', function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        var rel = $(this).attr('rel');
+    // $('#modal-delete-roomcost').on('click', function(e) {
+    //     e.preventDefault();
+    //     var href = $(this).attr('href');
+    //     var rel = $(this).attr('rel');
 
-        $.post(href, function(response) {
-            if (response['status']=='OK') {
-                $('#'+rel).remove();
-            }
-            $('#modal-from-dom-roomcost-delete').modal('hide');
-        }, 'JSON');
-    });
+    //     $.post(href, function(response) {
+    //         if (response['status']=='OK') {
+    //             $('#'+rel).remove();
+    //         }
+    //         $('#modal-from-dom-roomcost-delete').modal('hide');
+    //     }, 'JSON');
+    // });
     
     $('.show-add-restaurantextracost').on('click', function(e) {
         e.preventDefault();

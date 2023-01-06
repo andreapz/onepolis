@@ -13,6 +13,7 @@ use App\Entity\RestaurantMeal;
 use App\Repository\RestaurantMealRepository;
 use App\Form\Type\RestaurantMealType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -20,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RestaurantMealController extends AbstractController {
 
-
+    public function __construct(private ManagerRegistry $doctrine) {}
     /**
      * Displays a form to edit an existing Task entity.
      *

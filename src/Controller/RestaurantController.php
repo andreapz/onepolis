@@ -7,6 +7,7 @@ use App\Entity\Restaurant;
 use App\Entity\RestaurantCost;
 use App\Form\Type\RestaurantType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RestaurantController extends AbstractController {
-
+    public function __construct(private ManagerRegistry $doctrine) {}
+    
     /**
      * @Route("/restaurant", name="restaurant_index", methods={"POST", "GET"})
      * @Cache(smaxage="10")
