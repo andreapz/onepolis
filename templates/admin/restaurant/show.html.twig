@@ -34,7 +34,7 @@
 
 {% block sidebar %}
     {{ parent() }}
-<a href="{{ path('event_show', {id: event_id}) }}" class="btn btn-sm btn-default">
+<a href="{{ path('event_show', {ueid: event_id}) }}" class="btn btn-sm btn-default">
         {{ event_title }}
     </a>
 {% endblock %}

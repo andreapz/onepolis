@@ -94,14 +94,13 @@ class RestaurantMealController extends AbstractController {
      *
      * @Route("/admin/restaurant/{id}/meal/new", name="admin_restaurant_meal_new", methods={"POST", "GET"})
      *
-     * 
-     * NOTE: the Method annotation is optional, but it's a recommended practice
-     * to constraint the HTTP methods each controller responds to (by default
-     * it responds to all methods).
      */
     public function newAction(Restaurant $restaurant, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $restaurantMeal = new RestaurantMeal();
         $restaurantMeal->setRestaurant($restaurant);
+        $restaurantMeal->setEid($restaurant->getEvent()->getId());
         
         //$post->setAuthor($this->getUser());
 //* @Security("is_granted('ROLE_ADMIN')")

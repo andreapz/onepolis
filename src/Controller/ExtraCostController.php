@@ -121,10 +121,6 @@ class ExtraCostController extends AbstractController {
     *
     * @Route("/admin/extracost/delete/{id}", requirements={"id": "\d+"}, name="admin_extracost_delete", methods={"POST", "GET"})
     *
-    * 
-    * NOTE: the Method annotation is optional, but it's a recommended practice
-    * to constraint the HTTP methods each controller responds to (by default
-    * it responds to all methods).
     */
     public function deleteAction(ExtraCost $room) {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');

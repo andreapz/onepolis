@@ -43,7 +43,7 @@ class RestaurantController extends AbstractController {
         
         return $this->render('admin/restaurant/show.html.twig', [
                     'restaurant' => $restaurant,
-                    'event_id' => $restaurant->getEvent()->getId(),
+                    'event_id' => $restaurant->getEvent()->getUeid(),
                     'event_title' => $restaurant->getEvent()->getTitle(),
         ]);
     }
