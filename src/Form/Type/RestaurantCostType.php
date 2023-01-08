@@ -41,11 +41,15 @@ class RestaurantCostType extends AbstractType
             ])
             ->add('bookInitDate', DateTimePickerType::class, [
                 'label' => 'label.bookDate',
-                'format' => 'dd/MM/yyyy',
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
             ])
             ->add('bookEndDate', DateTimePickerType::class, [
                 'label' => 'label.bookDate',
-                'format' => 'dd/MM/yyyy',
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
             ])
             ->add('type', null, [
                 'label' => 'label.type',

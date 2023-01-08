@@ -142,7 +142,7 @@
                     <div class="card-body">
                         <ul class="nav nav-pills flex-column">
                         <li class="nav-item">
-                            <span class="text-info">{{ citizen.cityBirth }}, {{ citizen.birthDate|date('d/m/Y') }} [{{ ages[citizen.id] }} {% if ages[citizen.id] > 1 %}years_plural{% endif %}]</span></li>
+                            <span class="text-info">{{ citizen.cityBirth }}, {{ citizen.birthDate|date('d/m/Y') }} [{{ ages[citizen.id] }} {% if ages[citizen.id] > 1 %}anni{% endif %}]</span></li>
                         <li class="nav-item">
                             <span class="text-info"><i class="fa fa-phone" aria-hidden="true"></i>{{ citizen.phone }} <i class="fa fa-envelope" aria-hidden="true"></i>{{ citizen.email }}</span></li>
                         {% if citizen.address %}

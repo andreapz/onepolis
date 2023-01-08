@@ -63,20 +63,19 @@ class HotelRealController extends AbstractController {
      * @Route("/admin/hotelreal/{id}", requirements={"id": "\d+"}, name="admin_hotelreal_show", methods={"POST", "GET"})
      *
      *
-     * NOTE: the Method annotation is optional, but it's a recommended practice
-     * to constraint the HTTP methods each controller responds to (by default
-     * it responds to all methods).
      */
     public function showAction(HotelReal $hotel, Request $request) {
 
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $rooms = array();
-            foreach ($hotel->getHotel()->getRooms() as $roombase) {
-                array_push($rooms, $roombase);    
-            }
-            
-           // $form = $this->createForm(RoomRealType::class, $room,array('roomvirtuals' => $rooms));
+        foreach ($hotel->getHotel()->getRooms() as $roombase) {
+            array_push($rooms, $roombase);    
+        }
+
+        //var_dump(count($hotel->getRooms())); die();
+
+        // $form = $this->createForm(RoomRealType::class, $room,array('roomvirtuals' => $rooms));
         
         $form = $this->createForm(RoomRealType::class, new RoomReal(),
             array('action' => $this->generateUrl('admin_roomreal_new', ['id' => $hotel->getId()]),

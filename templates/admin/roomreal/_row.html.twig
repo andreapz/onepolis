@@ -3,7 +3,7 @@
     {% if show_control == 0 %}
         <input type="radio" class="radio-room" rid="{{ room.id }}" id="radio_room_{{ room.id }}" name="match[room]" required="required" value="{{ room.id }}">
     {% endif %}
-    {{ room.name }}</th>
+    {{ room.name }} [{{ room.room.name }}]</th>
 <td class="col-sm-2">{{ room.guests }}{% for guest in 1..room.guests %}{{ include('images/user.html.twig') }}{% endfor %}</td>
 <td class="col-sm-2">
   <ul class="nav nav-pills flex-column">

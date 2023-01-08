@@ -844,7 +844,6 @@ class Citizen
         $ticketsMeal = array();
             
         foreach ($dataMeals as $mealForm) {
-
             $meal = RestaurantMeal::retrieveMeal($meals, $mealForm->getId());
 
             if (empty($meal)) {
